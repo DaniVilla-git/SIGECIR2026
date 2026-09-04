@@ -70,7 +70,7 @@
                         </th>
 
                          <th class="border px-4 py-2">
-                            Id profesional
+                            Nombre Profesional
                         </th>
 
                         
@@ -86,7 +86,7 @@
                         <td class="border px-4 py-2"><?php echo e($servicios->codigo_servicio); ?></td>
                         <td class="border px-4 py-2"><?php echo e($servicios->nombre_servicio); ?></td>
                         <td class="border px-4 py-2"><?php echo e($servicios->grupo_servicio); ?></td>
-                        <td class="border px-4 py-2"><?php echo e($servicios->id_profesional); ?></td>
+                        <td class="border px-4 py-2"><?php echo e($servicios->profesionales->id_profesional); ?></td>
                         <td class="border px-4 py-2">
 
 

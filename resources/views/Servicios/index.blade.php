@@ -67,7 +67,7 @@
                         </th>
 
                          <th class="border px-4 py-2">
-                            Id profesional
+                            Nombre Profesional
                         </th>
 
                         
@@ -83,7 +83,7 @@
                         <td class="border px-4 py-2">{{ $servicios->codigo_servicio}}</td>
                         <td class="border px-4 py-2">{{ $servicios->nombre_servicio}}</td>
                         <td class="border px-4 py-2">{{ $servicios->grupo_servicio}}</td>
-                        <td class="border px-4 py-2">{{ $servicios->id_profesional}}</td>
+                        <td class="border px-4 py-2">{{ $servicios->profesionales->id_profesional}}</td>
                         <td class="border px-4 py-2">
 
 

@@ -1,10 +1,10 @@
-@extends('layouts.app')
 
-@section('titulo')
+
+<?php $__env->startSection('titulo'); ?>
     Crear Servicio
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="container mx-auto mt-10">
 
         <div class="max-w-xl mx-auto bg-white shadow-lg rounded-lg p-8">
@@ -14,18 +14,18 @@
                 Nuevo Servicio
             </h2>
 
-            @if($errors->any())
+            <?php if($errors->any()): ?>
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-5">
                     <ul>
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                 </div>
-            @endif
+            <?php endif; ?>
 
-            <form action="{{ route('servicios.store')}}" method="post">
-            @csrf
+            <form action="<?php echo e(route('servicios.store')); ?>" method="post">
+            <?php echo csrf_field(); ?>
 
                 <div class="mb-5">
                     <label for="" class="block mb-2 font-semibold">Codigo Servicio</label>
@@ -60,4 +60,5 @@
         </div>
 
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\SIGECIR2026\resources\views/Servicios/create.blade.php ENDPATH**/ ?>

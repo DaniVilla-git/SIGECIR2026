@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('codigo_servicio');
             $table->string('nombre_servicio');
             $table->string('grupo_servicio');
-            $table->unsignedBigInteger('id_profesional');
-            $table->foreign('id_profesional')->references('id')->on('profesionales');
+            $table->unsignedBigInteger('nombre_profesional');
+            $table->foreign('nombre_profesional')->references('nombre_profesional')->on('profesionales');
             $table->timestamps();
         });
     }

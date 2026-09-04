@@ -24,11 +24,10 @@ class ServiciosController extends Controller
         return view('Servicios.index', compact('servicios'));
     }
 
-    public function create()
+   public function create()
     {
-    $profesionales = profesionales::all();
-
-    return view('servicios.create', compact('profesionales'));
+        $servicios = $this->ServiciosService->listartodo();
+        return view('Servicios.create', compact('servicios'));
     }
 
     /**

@@ -8,10 +8,10 @@ class servicios extends Model
 {
     protected $table = "usuarios";
     
-    protected $fillable = ['codigo_servicio','nombre_servicio','grupo_servicio','id_profesional'];
+    protected $fillable = ['codigo_servicio','nombre_servicio','grupo_servicio','nombre_profesional'];
 
-    public function profesional()
+    public function profesionales()
 {
-    return $this->belongsTo(profesionales::class);
+    return $this->belongsTo(profesionales::class, 'id_profesional');
 }
 }
