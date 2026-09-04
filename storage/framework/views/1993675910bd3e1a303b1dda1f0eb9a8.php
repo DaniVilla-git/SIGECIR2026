@@ -1,8 +1,4 @@
-{{--
-    Sidebar principal.
-    Usa la variable de ruta actual (Route::currentRouteName() o request()->routeIs())
-    para resaltar el enlace activo.
---}}
+
 <aside
     x-cloak
     :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
@@ -11,64 +7,54 @@
 >
     <div class="h-full flex flex-col">
 
-        {{-- Logo --}}
+        
         <div class="flex items-center gap-3 h-16 px-6 border-b border-slate-800">
             <div class="w-9 h-9 rounded-lg bg-primary-600 flex items-center justify-center text-white font-bold">
                 A
             </div>
-            <span class="text-white font-semibold text-lg tracking-tight">{{ config('app.name', 'AdminPanel') }}</span>
+            <span class="text-white font-semibold text-lg tracking-tight"><?php echo e(config('app.name', 'AdminPanel')); ?></span>
         </div>
 
-        {{-- Navegación --}}
+        
         <nav class="flex-1 overflow-y-auto px-3 py-6 space-y-1" aria-label="Navegación lateral">
 
-            @php
+            <?php
                 $links = [
                     ['label' => 'Dashboard',   'route' => 'dashboard.index',  'icon' => 'home'],
-<<<<<<< HEAD
-                    ['label' => 'Profesionales', 'route' => 'profesionales.index', 'icon' => 'cog'],
-                    ['label' => 'Horario Profesional','route' => 'horario_profesional.index','icon' => 'clock'],
-=======
                     ['label' => 'Usuarios',    'route' => 'usuarios.index',      'icon' => 'users'],
                     ['label' => 'Servicios', 'route' => 'servicios.index', 'icon' => 'cogs'],
->>>>>>> origin/prueba
                     ['label' => 'Perfiles/Roles', 'route' => 'roles.index',   'icon' => 'shield'],
                     ['label' => 'Categorías',  'route' => 'categories.index', 'icon' => 'tag'],
                     ['label' => 'Productos',   'route' => 'producto.index',   'icon' => 'box'],
                     ['label' => 'Reportes',    'route' => 'reports.index',    'icon' => 'chart'],
                     ['label' => 'Configuración', 'route' => 'settings.index', 'icon' => 'cog'],
-<<<<<<< HEAD
-
-
-=======
->>>>>>> origin/prueba
                 ];
-            @endphp
+            ?>
 
-            @foreach ($links as $link)
-                @php
+            <?php $__currentLoopData = $links; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $link): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php
                     $active = Route::has($link['route']) && request()->routeIs(explode('.', $link['route'])[0] . '.*');
-                @endphp
+                ?>
                 <a
-                    href="{{ Route::has($link['route']) ? route($link['route']) : '#' }}"
-                    @if($active) aria-current="page" @endif
+                    href="<?php echo e(Route::has($link['route']) ? route($link['route']) : '#'); ?>"
+                    <?php if($active): ?> aria-current="page" <?php endif; ?>
                     class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                        {{ $active
+                        <?php echo e($active
                             ? 'bg-primary-600 text-white shadow-sm'
-                            : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}"
+                            : 'text-slate-300 hover:bg-slate-800 hover:text-white'); ?>"
                 >
                     <span class="w-5 h-5 flex-shrink-0" aria-hidden="true">
-                        @include('layouts.partials.icons', ['icon' => $link['icon']])
+                        <?php echo $__env->make('layouts.partials.icons', ['icon' => $link['icon']], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                     </span>
-                    <span>{{ $link['label'] }}</span>
+                    <span><?php echo e($link['label']); ?></span>
                 </a>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </nav>
 
-        {{-- Cerrar sesión --}}
+        
         <div class="px-3 py-4 border-t border-slate-800">
-            <form method="POST" action="{{ Route::has('logout') ? route('logout') : '#' }}">
-                @csrf
+            <form method="POST" action="<?php echo e(Route::has('logout') ? route('logout') : '#'); ?>">
+                <?php echo csrf_field(); ?>
                 <button
                     type="submit"
                     class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -83,3 +69,4 @@
         </div>
     </div>
 </aside>
+<?php /**PATH D:\SIGECIR2026\resources\views/layouts/partials/sidebar.blade.php ENDPATH**/ ?>
