@@ -67,12 +67,11 @@ class UsuariosController extends Controller
     }
     
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(int $id)
     {
         $this->UsuarioService->eliminar($id);
         return redirect()->route('usuarios.index');
+        
     }
 }

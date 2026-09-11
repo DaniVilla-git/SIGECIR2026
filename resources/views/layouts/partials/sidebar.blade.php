@@ -26,7 +26,7 @@
                 $links = [
                     ['label' => 'Dashboard',   'route' => 'dashboard.index',  'icon' => 'home'],
                     ['label' => 'Usuarios',    'route' => 'usuarios.index',      'icon' => 'users'],
-                    ['label' => 'Servicios', 'route' => 'servicios.index', 'icon' => 'cogs'],
+                    ['label' => 'Notificaciones',    'route' => 'notificaciones.index',      'icon' => 'bell'],
                     ['label' => 'Perfiles/Roles', 'route' => 'roles.index',   'icon' => 'shield'],
                     ['label' => 'Categorías',  'route' => 'categories.index', 'icon' => 'tag'],
                     ['label' => 'Productos',   'route' => 'producto.index',   'icon' => 'box'],

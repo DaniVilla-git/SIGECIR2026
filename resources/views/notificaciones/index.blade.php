@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('titulo')
-    Servicios
+    Notificacion
 @endsection
 
 @section('content')
@@ -11,13 +11,13 @@
             <div class="flex justify-between items-center mb-6">
 
                 <h2 class="text-3xl font-bold text-gray-700">
-                    Listado de Servicios
+                    Registrar notificacion
                 </h2>
 
-                <a href="{{ route('servicios.create') }}"
+                <a href="{{ route('notificaciones.create') }}"
                 class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
 
-                    Nuevo Servicio
+                    Nueva notificacion
 
                 </a>
 
@@ -55,19 +55,23 @@
                         </th>
 
                         <th class="border px-4 py-2">
-                            Codigo Servicio
+                            Titulo notificacion
                         </th>
 
                         <th class="border px-4 py-2">
-                            Nombre Servicio
+                            Mensaje notificacion
                         </th>
 
                          <th class="border px-4 py-2">
-                            Grupo servicio
+                            Tipo notificacion
                         </th>
 
                          <th class="border px-4 py-2">
-                            Nombre Profesional
+                            Fecha notificacion
+                        </th>
+
+                        <th class="border px-4 py-2">
+                            Id Usuario
                         </th>
 
                         
@@ -77,18 +81,20 @@
 
                 <tbody>
 
-                @foreach ($servicios as $servicios)
+                @foreach ($notificaciones as $notificaciones)
                     <tr class="text-center hover:bg-gray-50">
-                        <td class="border px-4 py-2">{{ $servicios->id}}</td>
-                        <td class="border px-4 py-2">{{ $servicios->codigo_servicio}}</td>
-                        <td class="border px-4 py-2">{{ $servicios->nombre_servicio}}</td>
-                        <td class="border px-4 py-2">{{ $servicios->grupo_servicio}}</td>
-                        <td class="border px-4 py-2">{{ $servicios->profesionales->id_profesional}}</td>
+                        <td class="border px-4 py-2">{{ $notificaciones->id}}</td>
+                        <td class="border px-4 py-2">{{ $notificaciones->titulo_notificacion}}</td>
+                        <td class="border px-4 py-2">{{ $notificaciones->mensaje_notificacion}}</td>
+                        <td class="border px-4 py-2">{{ $notificaciones->tipo_notificacion}}</td>
+                        <td class="border px-4 py-2">{{ $notificaciones->fecha_notificacion}}</td>
+                        <td class="border px-4 py-2">{{ $notificaciones->id_usuario}}</td>
+                        
                         <td class="border px-4 py-2">
 
 
-                            <a href="{{ ROUTE('servicios.edit',$servicios->id)}}"class="bg-blue-400 hover:bg-blue-600 text-white rounded px-2 py-2">Editar</a>
-                            <form action="{{ ROUTE('servicios.destroy',$servicios->id)}}" method="post">
+                            <a href="{{ ROUTE('notificaciones.edit',$notificaciones->id)}}"class="bg-blue-400 hover:bg-blue-600 text-white rounded px-2 py-2">Editar</a>
+                            <form action="{{ ROUTE('notificaciones.destroy',$notificaciones->id)}}" method="post">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="bg-red-400 hover:bg-red-600 text-white rounded px-2 py-2">Eliminar</button>                         

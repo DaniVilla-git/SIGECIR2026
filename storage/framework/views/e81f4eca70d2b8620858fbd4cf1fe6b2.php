@@ -1,5 +1,6 @@
+
 <?php $__env->startSection('titulo'); ?>
-    Servicios
+    Notificacion
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -10,13 +11,13 @@
             <div class="flex justify-between items-center mb-6">
 
                 <h2 class="text-3xl font-bold text-gray-700">
-                    Listado de Servicios
+                    Registrar notificacion
                 </h2>
 
-                <a href="<?php echo e(route('servicios.create')); ?>"
+                <a href="<?php echo e(route('notificaciones.create')); ?>"
                 class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
 
-                    Nuevo Servicio
+                    Nueva notificacion
 
                 </a>
 
@@ -57,19 +58,23 @@
                         </th>
 
                         <th class="border px-4 py-2">
-                            Codigo Servicio
+                            Titulo notificacion
                         </th>
 
                         <th class="border px-4 py-2">
-                            Nombre Servicio
+                            Mensaje notificacion
                         </th>
 
                          <th class="border px-4 py-2">
-                            Grupo servicio
+                            Tipo notificacion
                         </th>
 
                          <th class="border px-4 py-2">
-                            Nombre Profesional
+                            Fecha notificacion
+                        </th>
+
+                        <th class="border px-4 py-2">
+                            Id Usuario
                         </th>
 
                         
@@ -79,18 +84,20 @@
 
                 <tbody>
 
-                <?php $__currentLoopData = $servicios; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $servicios): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php $__currentLoopData = $notificaciones; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notificaciones): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <tr class="text-center hover:bg-gray-50">
-                        <td class="border px-4 py-2"><?php echo e($servicios->id); ?></td>
-                        <td class="border px-4 py-2"><?php echo e($servicios->codigo_servicio); ?></td>
-                        <td class="border px-4 py-2"><?php echo e($servicios->nombre_servicio); ?></td>
-                        <td class="border px-4 py-2"><?php echo e($servicios->grupo_servicio); ?></td>
-                        <td class="border px-4 py-2"><?php echo e($servicios->profesionales->id_profesional); ?></td>
+                        <td class="border px-4 py-2"><?php echo e($notificaciones->id); ?></td>
+                        <td class="border px-4 py-2"><?php echo e($notificaciones->titulo_notificacion); ?></td>
+                        <td class="border px-4 py-2"><?php echo e($notificaciones->mensaje_notificacion); ?></td>
+                        <td class="border px-4 py-2"><?php echo e($notificaciones->tipo_notificacion); ?></td>
+                        <td class="border px-4 py-2"><?php echo e($notificaciones->fecha_notificacion); ?></td>
+                        <td class="border px-4 py-2"><?php echo e($notificaciones->id_usuario); ?></td>
+                        
                         <td class="border px-4 py-2">
 
 
-                            <a href="<?php echo e(ROUTE('servicios.edit',$servicios->id)); ?>"class="bg-blue-400 hover:bg-blue-600 text-white rounded px-2 py-2">Editar</a>
-                            <form action="<?php echo e(ROUTE('servicios.destroy',$servicios->id)); ?>" method="post">
+                            <a href="<?php echo e(ROUTE('notificaciones.edit',$notificaciones->id)); ?>"class="bg-blue-400 hover:bg-blue-600 text-white rounded px-2 py-2">Editar</a>
+                            <form action="<?php echo e(ROUTE('notificaciones.destroy',$notificaciones->id)); ?>" method="post">
                                 <?php echo csrf_field(); ?>
                                 <?php echo method_field('DELETE'); ?>
                                 <button type="submit" class="bg-red-400 hover:bg-red-600 text-white rounded px-2 py-2">Eliminar</button>                         
@@ -108,4 +115,4 @@
 
     </div>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\SIGECIR2026\resources\views/Servicios/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\SIGECIR2026\resources\views/notificaciones/index.blade.php ENDPATH**/ ?>
