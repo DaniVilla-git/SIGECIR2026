@@ -15,7 +15,7 @@
                 </h1>
 
                 <p class="text-gray-500 mt-1">
-                    Administra los profesionales registrados en el sistema.
+                    Administra los profesionales
                 </p>
 
                 <a href="{{ route('profesionales.create') }}"

@@ -82,12 +82,13 @@
                 <tbody>
 
                 @foreach ($horario_profesional as $horario_profesional)
-                    <tr class="hover:bg-indigo-50 transition duration-200">
+                    <tr class="text-center hover:bg-gray-50">
                         <td class="border px-4 py-2">{{ $horario_profesional->id}}</td>
                         <td class="border px-4 py-2">{{ $horario_profesional->dia_semana}}</td>
                         <td class="border px-4 py-2">{{ $horario_profesional->hora_inicio}}</td>
                         <td class="border px-4 py-2">{{ $horario_profesional->hora_fin}}</td>
                         <td class="border px-4 py-2">{{ $horario_profesional->profesionales->nombre_profesional}}</td>
+
                         <td class="border px-4 py-2">
                             <div class="flex items-center justify-center gap-3">
                                 <a href="{{ route('horario_profesional.edit',$horario_profesional->id) }}" class="text-blue-600 hover:text-blue-900 p-1"title="Editar">

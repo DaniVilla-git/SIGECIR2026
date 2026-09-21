@@ -15,7 +15,7 @@
                 </h2>
                 
                 <p class="text-gray-500 mt-1">
-                    Administra los Servicios registrados en el sistema.
+                    Administra los Servicios 
                 </p>
 
                 <a href="{{ route('servicios.create') }}"
@@ -92,7 +92,6 @@
                         <td class="border px-4 py-2">{{ $servicios->nombre_servicio}}</td>
                         <td class="border px-4 py-2">{{ $servicios->grupo_servicio}}</td>
                         <td class="border px-4 py-2">{{ $servicios->profesionales->nombre_profesional}}</td>
-
 
                         <td class="border px-4 py-2">
                             <div class="flex items-center justify-center gap-3">
