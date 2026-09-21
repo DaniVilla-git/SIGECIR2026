@@ -35,6 +35,6 @@
 
         public function actualizar(int $id, array $datos)
         {
-            $this->Horario_profesionalRepository->actualizar($id,$datos);
+            $this->Horario_profesionalRepository->actualizar($id, $datos);
         }
     }

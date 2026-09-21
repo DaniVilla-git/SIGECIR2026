@@ -1,26 +1,28 @@
 @extends('layouts.app')
 @section('titulo')
-    Profesionales
+    Servicios
 @endsection
 
 @section('content')
     <div class="container mx-auto mt-10">
 
-        <div class="bg-white shadow-xl rounded-2xl border border-gray-100 p-6">
+        <div class="bg-white shadow-lg rounded-lg p-6">
 
             <div class="flex justify-between items-center mb-6">
 
-                <h1 class="text-3xl font-bold text-gray-800">
-                    Listado de Horario Profesionales
-                </h1>
-
+                <h2 class="text-3xl font-bold text-gray-700">
+                    Listado de Servicios
+                </h2>
+                
                 <p class="text-gray-500 mt-1">
-                    Administra los Horarios de profesionales.
+                    Administra los Servicios registrados en el sistema.
                 </p>
 
-                <a href="{{ route('horario_profesional.create') }}"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-3 rounded-xl shadow-md transition">
-                    Nuevo Horario
+                <a href="{{ route('servicios.create') }}"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+
+                    Nuevo Servicio
+
                 </a>
 
             </div>
@@ -48,7 +50,7 @@
 
             <table class="min-w-full border border-gray-300">
 
-                <thead class="bg-gray-300">
+                <thead class="bg-gray-200">
 
                     <tr>
 
@@ -57,15 +59,15 @@
                         </th>
 
                         <th class="border px-4 py-2">
-                            Dia Semana
+                            Codigo Servicio
                         </th>
 
                         <th class="border px-4 py-2">
-                            Hora Inicio
+                            Nombre Servicio
                         </th>
 
                         <th class="border px-4 py-2">
-                            Hora Fin
+                            Grupo servicio
                         </th>
 
                         <th class="border px-4 py-2">
@@ -73,31 +75,35 @@
                         </th>
 
                         <th class="border px-4 py-2">
-                            Acción
+                            Accion
                         </th>
+
+                        
                     </tr>
 
                 </thead>
 
                 <tbody>
 
-                @foreach ($horario_profesional as $horario_profesional)
-                    <tr class="hover:bg-indigo-50 transition duration-200">
-                        <td class="border px-4 py-2">{{ $horario_profesional->id}}</td>
-                        <td class="border px-4 py-2">{{ $horario_profesional->dia_semana}}</td>
-                        <td class="border px-4 py-2">{{ $horario_profesional->hora_inicio}}</td>
-                        <td class="border px-4 py-2">{{ $horario_profesional->hora_fin}}</td>
-                        <td class="border px-4 py-2">{{ $horario_profesional->profesionales->nombre_profesional}}</td>
+                @foreach ($servicios as $servicios)
+                    <tr class="text-center hover:bg-gray-50">
+                        <td class="border px-4 py-2">{{ $servicios->id}}</td>
+                        <td class="border px-4 py-2">{{ $servicios->codigo_servicio}}</td>
+                        <td class="border px-4 py-2">{{ $servicios->nombre_servicio}}</td>
+                        <td class="border px-4 py-2">{{ $servicios->grupo_servicio}}</td>
+                        <td class="border px-4 py-2">{{ $servicios->profesionales->nombre_profesional}}</td>
+
+
                         <td class="border px-4 py-2">
                             <div class="flex items-center justify-center gap-3">
-                                <a href="{{ route('horario_profesional.edit',$horario_profesional->id) }}" class="text-blue-600 hover:text-blue-900 p-1"title="Editar">
+                                <a href="{{ route('servicios.edit',$servicios->id) }}" class="text-blue-600 hover:text-blue-900 p-1"title="Editar">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                     </svg>
                                 </a>
 
                                 <!-- Botón Eliminar -->
-                                <form action="{{ route('horario_profesional.destroy', $horario_profesional->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este Horario?');">
+                                <form action="{{ route('servicios.destroy', $servicios->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este Servicio?');">
                                     @csrf
                                     @method('DELETE')
 
@@ -111,8 +117,12 @@
                         </td>
                     </tr>
                 @endforeach  
+
                 </tbody>
+                
             </table>
+
         </div>
+
     </div>
 @endsection

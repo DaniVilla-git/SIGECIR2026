@@ -28,9 +28,13 @@
     public function actualizar(int $id, array $datos)
     {
         $horario_profesional = horarios_profesional::findOrFail($id);
-        $horario_profesional->update($datos);
+        $horario_profesional->dia_semana = $datos['dia_semana'];
+        $horario_profesional->hora_inicio = $datos['hora_inicio'];
+        $horario_profesional->hora_fin = $datos['hora_fin'];
+        $horario_profesional->id_profesional = $datos['id_profesional'];
+        $horario_profesional->save();
     }
- 
+
 
 
 
