@@ -51,12 +51,30 @@
                            class="w-full border rounded px-3 py-2">
                 </div>
 
+                
+
                 <div class="mb-5">
-                    <label class="block mb-2 font-semibold">Id Usuario</label>
-                    <input type="text" name="id_usuario"
-                           class="w-full border rounded px-3 py-2">
+                        <label class="block mb-2 font-semibold">Usuario</label>
+
+                        <select name="id_usuario" id="id_usuario"
+                            class="w-full border rounded px-3 py-2">
+
+                        <option value="">Seleccione un usuario</option>
+
+                         @foreach($usuarios as $usuario)
+                            <option value="{{ $usuario->id }}">
+                                {{ $usuario->numero_documento }} -
+                                {{ $usuario->primer_nombre }}
+                                {{ $usuario->segundo_nombre }}
+                                {{ $usuario->primer_apellido }}
+                                {{ $usuario->segundo_apellido }}
+                            </option>
+                        @endforeach
+
+                        </select>
                 </div>
 
+                
                 <div class="text-center">
                     <button type="submit"
                             class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
@@ -70,4 +88,4 @@
 
     </div>
 @endsection
-```
+

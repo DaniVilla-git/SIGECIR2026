@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\notificaciones;
+use App\Models\usuarios;
 use App\Services\notificacionesService;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,9 @@ class NotificacionesController extends Controller
     
     public function create()
     {
-        return view('notificaciones.create');
+    $usuarios = usuarios::all();
+
+    return view('notificaciones.create', compact('usuarios'));
     }
 
     

@@ -55,6 +55,10 @@
                         </th>
 
                         <th class="border px-4 py-2">
+                            Número documento
+                        </th>
+
+                        <th class="border px-4 py-2">
                             Primer Nombre
                         </th>
 
@@ -94,6 +98,10 @@
                             Usuario Registra 
                         </th>
 
+                        <th class="border px-4 py-2">
+                            Acciones
+                        </th>
+
                     </tr>
 
                 </thead>
@@ -103,6 +111,7 @@
                 @foreach ($usuarios as $usuarios)
                     <tr class="text-center hover:bg-gray-50">
                         <td class="border px-4 py-2">{{ $usuarios->id}}</td>
+                        <td class="border px-4 py-2">{{ $usuarios->numero_documento}}</td>
                         <td class="border px-4 py-2">{{ $usuarios->primer_nombre}}</td>
                         <td class="border px-4 py-2">{{ $usuarios->segundo_nombre}}</td>
                         <td class="border px-4 py-2">{{ $usuarios->primer_apellido}}</td>
