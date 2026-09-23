@@ -28,8 +28,8 @@
             @endif
 
 
-            <form action="{{ route('profesionales.store')}}" method="post">
-                @csrf
+            <form action="{{ route('profesionales.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
 
                 <div class="mb-5">
                     <label for="" class="block mb-2 font-semibold">Nombre Profesional</label>
@@ -57,8 +57,8 @@
                 </div>
 
                 <div class="mb-5">
-                    <label for="" class="block mb-2 font-semibold">Firma</label>
-                    <input type="text" name="firma" class="w-full border rounded px-3 py-2">
+                    <label>Firma digital</label>
+                    <input type="file" name="firma" accept="image/png,image/jpeg">
                 </div>
 
                 <div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProfesionalRequest;
 use App\Models\profesionales;
 use App\Services\ProfesionalService;
 use Illuminate\Http\Request;
@@ -29,9 +30,13 @@ class ProfesionalesController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(ProfesionalRequest $request)
     {
-        $this->profesionalservice->guardar($request->all());
+        $datos = $request->all();
+        if ($request->hasFile('firma')) {
+            $datos['firma'] = $request->file('firma')->store('firmas', 'public');
+        }
+        $this->profesionalservice->guardar($datos);
         return redirect()->route('profesionales.index');
     }
 

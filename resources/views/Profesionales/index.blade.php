@@ -97,7 +97,15 @@
                         <td class="border px-4 py-2">{{ $profesional->especialidad}}</td>
                         <td class="border px-4 py-2">{{ $profesional->consultorio}}</td>
                         <td class="border px-4 py-2">{{ $profesional->correo}}</td>
-                        <td class="border px-4 py-2">{{ $profesional->firma}}</td>
+                        <td>
+                            @if($profesional->firma)
+                                <img src="{{ asset('storage/' . $profesional->firma) }}"
+                                    alt="Firma digital"
+                                    width="100">
+                            @else
+                                Sin firma
+                            @endif
+                        </td>
 
                         <td class="border px-4 py-2">
                             <div class="flex items-center justify-center gap-3">

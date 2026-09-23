@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('especialidad');
             $table->string('consultorio');
             $table->string('correo');
-            $table->string('firma');
+            $table->string('firma')->nullable();
             $table->timestamps();
         });
     }
