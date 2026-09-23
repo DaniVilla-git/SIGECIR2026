@@ -13,13 +13,10 @@
                 <h2 class="text-3xl font-bold text-gray-700">
                     Listado de Servicios
                 </h2>
-<<<<<<< HEAD
-=======
                 
                 <p class="text-gray-500 mt-1">
                     Administra los Servicios 
                 </p>
->>>>>>> Dev2-A
 
                 <a href="{{ route('servicios.create') }}"
                 class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
@@ -69,14 +66,6 @@
                             Nombre Servicio
                         </th>
 
-<<<<<<< HEAD
-                         <th class="border px-4 py-2">
-                            Grupo servicio
-                        </th>
-
-                         <th class="border px-4 py-2">
-                            Id profesional
-=======
                         <th class="border px-4 py-2">
                             Grupo servicio
                         </th>
@@ -87,7 +76,6 @@
 
                         <th class="border px-4 py-2">
                             Accion
->>>>>>> Dev2-A
                         </th>
 
                         
@@ -103,19 +91,6 @@
                         <td class="border px-4 py-2">{{ $servicios->codigo_servicio}}</td>
                         <td class="border px-4 py-2">{{ $servicios->nombre_servicio}}</td>
                         <td class="border px-4 py-2">{{ $servicios->grupo_servicio}}</td>
-<<<<<<< HEAD
-                        <td class="border px-4 py-2">{{ $servicios->id_profesional}}</td>
-                        <td class="border px-4 py-2">
-
-
-                            <a href="{{ ROUTE('servicios.edit',$servicios->id)}}"class="bg-blue-400 hover:bg-blue-600 text-white rounded px-2 py-2">Editar</a>
-                            <form action="{{ ROUTE('servicios.destroy',$servicios->id)}}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="bg-red-400 hover:bg-red-600 text-white rounded px-2 py-2">Eliminar</button>                         
-                            </form>
-
-=======
                         <td class="border px-4 py-2">{{ $servicios->profesionales->nombre_profesional}}</td>
 
                         <td class="border px-4 py-2">
@@ -138,7 +113,6 @@
                                     </button>
                                 </form>
                             </div>
->>>>>>> Dev2-A
                         </td>
                     </tr>
                 @endforeach  
