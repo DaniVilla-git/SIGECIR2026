@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Horario_profesionalRequest;
 use App\Models\horarios_profesional;
+<<<<<<< HEAD
+use App\Services\Horario_profesionalService;
+=======
 use App\Services\horario_profesionalService;
 use App\Services\ProfesionalService;
+>>>>>>> Dev2-A
 use Illuminate\Http\Request;
 
 class HorariosProfesionalController extends Controller

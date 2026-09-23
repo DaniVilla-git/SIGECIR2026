@@ -18,16 +18,35 @@
 
                     <div class="mb-5">
                         <label for="" class="block mb-2 font-semibold">Codigo Servicio</label>
+<<<<<<< HEAD
+                        <input type="text" name="primer_nombre" value="{{ $servicios->codigo_servicio}}" class="w-full border rounded px-3 py-2">
+=======
                         <input type="text" name="codigo_servicio" value="{{ $servicios->codigo_servicio}}" class="w-full border rounded px-3 py-2">
+>>>>>>> Dev2-A
                     </div>
 
                     <div class="mb-5">
                         <label for="" class="block mb-2 font-semibold">Nombre Servicio</label>
+<<<<<<< HEAD
+                        <input type="text" name="segundo_nombre" value="{{ $servicios->nombre_servicio}}" class="w-full border rounded px-3 py-2">
+=======
                         <input type="text" name="nombre_servicio" value="{{ $servicios->nombre_servicio}}" class="w-full border rounded px-3 py-2">
+>>>>>>> Dev2-A
                     </div>
 
                     <div class="mb-5">
                         <label for="" class="block mb-2 font-semibold">Grupo Servicio</label>
+<<<<<<< HEAD
+                        <input type="text" name="primer_apellido" value="{{ $servicios->grupo_servicio}}" class="w-full border rounded px-3 py-2">
+                    </div>
+
+                    <div class="mb-5">
+                        <label for="" class="block mb-2 font-semibold">Id profesional</label>
+                        <input type="text" name="segundo_apellido" value="{{ $servicios->id_profesional}}" class="w-full border rounded px-3 py-2">
+                    </div>
+
+                                       
+=======
                         <input type="text" name="grupo_servicio" value="{{ $servicios->grupo_servicio}}" class="w-full border rounded px-3 py-2">
                     </div>
 
@@ -44,6 +63,7 @@
                             @endforeach
                         </select>
                     </div>                                      
+>>>>>>> Dev2-A
                 <div>
                     <button type="submit" class="bg-green-500 hover:bg-green-600 text-white rounded px-5 py-2">Guardar</button>
                 </div>

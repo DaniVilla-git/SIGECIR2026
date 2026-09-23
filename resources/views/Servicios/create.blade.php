@@ -43,6 +43,28 @@
                     <input type="text" name="grupo_servicio" class="w-full border rounded px-3 py-2">
                 </div>
 
+<<<<<<< HEAD
+                <div class="mb-5">
+                    <label for="id_profesional">Profesional</label>
+
+                    <select name="id_profesional" id="id_profesional"
+                        class="w-full border border-gray-300 rounded-lg p-3">
+
+                        <option value="">Seleccione un profesional</option>
+
+                        @foreach ($profesionales as $profesionales)
+                            <option value="{{ $profesionales->id }}">
+                                {{ $profesionales->nombre }}
+                             </option>
+                        @endforeach
+
+</select>
+                    
+                </div>
+
+                 
+
+=======
 
                 <div class="mb-5">
                     <label for="" class="block mb-2 font-semibold">
@@ -58,6 +80,7 @@
 
                     </select>
                 </div>
+>>>>>>> Dev2-A
                 <div class="mb-5">
                     <button type="submit" class="bg-green-500 hover:bg-green-600 text-white rounded px-5 py-2">Guardar</button>
                 </div>
