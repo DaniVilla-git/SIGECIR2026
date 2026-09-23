@@ -28,6 +28,30 @@
             @csrf
 
                 <div class="mb-5">
+                <label for="id_usuario" class="block mb-2 font-semibold">
+                    Usuario
+                </label>
+
+                <select name="id_usuario"
+                        id="id_usuario"
+                        class="w-full border rounded px-3 py-2">
+
+                    <option value="">Seleccione un usuario</option>
+
+                    @foreach($usuarios as $usuario)
+                        <option value="{{ $usuario->id }}">
+                            {{ $usuario->numero_documento }} -
+                            {{ $usuario->primer_nombre }}
+                            {{ $usuario->segundo_nombre }}
+                            {{ $usuario->primer_apellido }}
+                            {{ $usuario->segundo_apellido }}
+                        </option>
+                    @endforeach
+
+                     </select>
+                 </div>
+
+                <div class="mb-5">
                     <label for="" class="block mb-2 font-semibold">
                         Nombre del Documento
                     </label>

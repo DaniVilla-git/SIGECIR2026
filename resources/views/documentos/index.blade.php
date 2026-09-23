@@ -90,11 +90,34 @@
 
                             <td class="border border-gray-300 px-4 py-2">
 
-                                <a href="{{ asset('storage/' . $documento->ruta_documento) }}"
-                                   target="_blank"
-                                   class="text-blue-600 hover:underline">
-                                    Ver documento
-                                </a>
+                                <div class="flex gap-2">
+
+                                    <a href="{{ asset('storage/' . $documento->ruta_documento) }}"
+                                    target="_blank"
+                                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
+                                        Ver
+                                    </a>
+
+                                    <a href="{{ route('documentos.edit', $documento->id) }}"
+                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded">
+                                        Editar
+                                    </a>
+
+                                    <form action="{{ route('documentos.destroy', $documento->id) }}"
+                                        method="POST"
+                                        onsubmit="return confirm('¿Está seguro de eliminar este documento?');">
+
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit"
+                                                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+                                            Eliminar
+                                        </button>
+
+                                    </form>
+
+                                </div>
 
                             </td>
 

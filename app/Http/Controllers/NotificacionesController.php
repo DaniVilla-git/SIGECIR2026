@@ -56,7 +56,7 @@ class NotificacionesController extends Controller
     
     public function destroy(notificaciones $notificaciones)
     {
-        $this->notificacionesService->eliminar($id); 
+        $this->notificacionesService->eliminar($notificaciones->id);
         return redirect()->route('notificaciones.index') ->with('success', 'Notificación eliminada correctamente');
     }
 }

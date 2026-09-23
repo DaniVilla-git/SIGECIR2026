@@ -24,12 +24,37 @@
                 </div>
             @endif
 
-            <form action="{{ route('documentos.update', $documento->id) }}"
+            <form action="{{ route('documentos.update', ['documento' => $documento->id]) }}"
                   method="post"
                   enctype="multipart/form-data">
 
                 @csrf
                 @method('PUT')
+
+                <div class="mb-5">
+                    <label for="id_usuario" class="block mb-2 font-semibold">
+                        Usuario
+                    </label>
+
+                    <select name="id_usuario"
+                            id="id_usuario"
+                            class="w-full border rounded px-3 py-2">
+
+                        @foreach(\App\Models\usuarios::all() as $usuario)
+                            <option value="{{ $usuario->id }}"
+                                {{ $documento->id_usuario == $usuario->id ? 'selected' : '' }}>
+
+                                {{ $usuario->numero_documento }} -
+                                {{ $usuario->primer_nombre }}
+                                {{ $usuario->segundo_nombre }}
+                                {{ $usuario->primer_apellido }}
+                                {{ $usuario->segundo_apellido }}
+
+                            </option>
+                        @endforeach
+
+                    </select>
+                </div>
 
                 <div class="mb-5">
                     <label for="" class="block mb-2 font-semibold">
