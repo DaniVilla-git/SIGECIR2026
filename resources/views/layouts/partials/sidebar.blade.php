@@ -24,16 +24,17 @@
 
             @php
                 $links = [
-                    ['label' => 'Dashboard',   'route' => 'dashboard.index',  'icon' => 'home'],
+                    ['label' => 'Dashboard', 'route' => 'dashboard.index', 'icon' => 'home'],
+                    ['label' => 'Usuarios', 'route' => 'usuarios.index', 'icon' => 'users'],
                     ['label' => 'Profesionales', 'route' => 'profesionales.index', 'icon' => 'users'],
-                    ['label' => 'Horario Profesional','route' => 'horario_profesional.index','icon' => 'calendar'],
-                    ['label' => 'Servicios', 'route' => 'servicios.index',   'icon' => 'shield'],
-                    ['label' => 'Categorías',  'route' => 'categories.index', 'icon' => 'tag'],
-                    ['label' => 'Productos',   'route' => 'producto.index',   'icon' => 'box'],
-                    ['label' => 'Reportes',    'route' => 'reports.index',    'icon' => 'chart'],
+                    ['label' => 'Horario Profesional', 'route' => 'horario_profesional.index', 'icon' => 'calendar'],
+                    ['label' => 'Servicios', 'route' => 'servicios.index', 'icon' => 'shield'],
+                    ['label' => 'Notificaciones', 'route' => 'notificaciones.index', 'icon' => 'bell'],
+                    ['label' => 'Documentos', 'route' => 'documentos.index', 'icon' => 'file-text'],
+                    ['label' => 'Categorías', 'route' => 'categories.index', 'icon' => 'tag'],
+                    ['label' => 'Productos', 'route' => 'producto.index', 'icon' => 'box'],
+                    ['label' => 'Reportes', 'route' => 'reports.index', 'icon' => 'chart'],
                     ['label' => 'Configuración', 'route' => 'settings.index', 'icon' => 'cog'],
-
-
                 ];
             @endphp
 
