@@ -7,6 +7,7 @@ use App\Http\Controllers\NotificacionesController;
 use App\Http\Controllers\ServiciosController;
 use App\Http\Controllers\ProfesionalesController;
 use App\Http\Controllers\HorariosProfesionalController;
+use App\Http\Controllers\MensajesController;
 use App\Http\Controllers\UsuariosController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,7 @@ Route::resource('profesionales', ProfesionalesController::class);
 Route::resource('horario_profesional', HorariosProfesionalController::class);
 Route::resource('servicios', ServiciosController::class);
 Route::resource('citas', CitasController::class);
+Route::resource('mensajes', MensajesController::class);
 
 
 
