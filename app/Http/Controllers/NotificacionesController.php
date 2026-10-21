@@ -30,8 +30,13 @@ class NotificacionesController extends Controller
     
     public function store(Request $request)
     {
-        $this->notificacionesService->guardar($request->all()); 
-        return redirect()->route('notificaciones.index') ->with('success', 'Notificación creada correctamente');
+        $datos = $request->all();
+
+        $this->notificacionesService->guardar($datos);
+
+        return redirect()
+            ->route('notificaciones.index')
+            ->with('success', 'Notificación guardada correctamente.');
     }
 
     
@@ -41,22 +46,22 @@ class NotificacionesController extends Controller
     }
 
     
-    public function edit(notificaciones $notificaciones)
+    public function edit(int $id)
     {
         $notificaciones = $this->notificacionesService->edit($id); 
         return view('notificaciones.update', compact('notificaciones'));
     }
 
     
-    public function update(Request $request, notificaciones $notificaciones)
+    public function update(int $id, Request $request)
     {
         $this->notificacionesService->actualizar($id, $request->all()); return redirect()->route('notificaciones.index') ->with('success', 'Notificación actualizada correctamente');
     }
 
     
-    public function destroy(notificaciones $notificaciones)
+    public function destroy(int $id)
     {
-        $this->notificacionesService->eliminar($notificaciones->id);
+        $this->notificacionesService->eliminar($id);
         return redirect()->route('notificaciones.index') ->with('success', 'Notificación eliminada correctamente');
     }
 }

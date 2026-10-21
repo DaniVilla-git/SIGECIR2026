@@ -12,9 +12,8 @@ class UsuariosController extends Controller
 
     public function __construct(UsuarioService $UsuarioService){
         $this->UsuarioService = $UsuarioService;
-   
+
     }
-           
     public function index()
     {
         $usuarios = $this->UsuarioService->listarTodo();
@@ -52,8 +51,8 @@ class UsuariosController extends Controller
     public function edit(int $id)
 
     {
-        $usuario = $this->UsuarioService->edit($id);
-        return view('Usuarios.update', compact('usuario'));
+        $usuarios = $this->UsuarioService->edit($id);
+        return view('Usuarios.update', compact('usuarios'));
     }
 
     /**
@@ -62,7 +61,7 @@ class UsuariosController extends Controller
     public function update($id, Request $request)
     
     {
-        $usuario = $this->UsuarioService->actualizar($id, $request->all());
+        $usuarios = $this->UsuarioService->actualizar($id, $request->all());
         return redirect()->route('usuarios.index')->with('se creo el Usuario');
     }
     

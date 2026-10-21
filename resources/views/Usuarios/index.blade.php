@@ -43,102 +43,114 @@
                     {{ session('eliminar') }}
                 </div>
             @endif
+            <div class="overflow-x-auto">
+                <table class="min-w-full border border-gray-300">
 
-            <table class="min-w-full border border-gray-300">
+                    <thead class="bg-gray-200">
 
-                <thead class="bg-gray-200">
+                        <tr>
 
-                    <tr>
+                            <th class="border px-4 py-2">
+                                ID
+                            </th>
 
-                        <th class="border px-4 py-2">
-                            ID
-                        </th>
+                            <th class="border px-4 py-2">
+                                Número documento
+                            </th>
 
-                        <th class="border px-4 py-2">
-                            Número documento
-                        </th>
+                            <th class="border px-4 py-2">
+                                Primer Nombre
+                            </th>
 
-                        <th class="border px-4 py-2">
-                            Primer Nombre
-                        </th>
+                            <th class="border px-4 py-2">
+                                Segundo Nombre
+                            </th>
 
-                        <th class="border px-4 py-2">
-                            Segundo Nombre
-                        </th>
+                            <th class="border px-4 py-2">
+                                Primer Apellido
+                            </th>
 
-                         <th class="border px-4 py-2">
-                            Primer Apellido
-                        </th>
+                            <th class="border px-4 py-2">
+                                Segundo Apellido
+                            </th>
 
-                         <th class="border px-4 py-2">
-                            Segundo Apellido
-                        </th>
+                            <th class="border px-4 py-2">
+                                Telefono
+                            </th>
 
-                        <th class="border px-4 py-2">
-                            Telefono
-                        </th>
+                            <th class="border px-4 py-2">
+                                Correo electronico
+                            </th>
 
-                        <th class="border px-4 py-2">
-                            Correo electronico
-                        </th>
+                            <th class="border px-4 py-2">
+                                EPS
+                            </th>
 
-                         <th class="border px-4 py-2">
-                            EPS
-                        </th>
+                            <th class="border px-4 py-2">
+                                Regimen
+                            </th>
 
-                         <th class="border px-4 py-2">
-                            Regimen
-                        </th>
+                            <th class="border px-4 py-2">
+                                Fecha Registro
+                            </th>
 
-                         <th class="border px-4 py-2">
-                            Fecha Registro
-                        </th>
+                            <th class="border px-4 py-2">
+                                Usuario Registra 
+                            </th>
 
-                         <th class="border px-4 py-2">
-                            Usuario Registra 
-                        </th>
+                            <th class="border px-4 py-2">
+                                Acciones
+                            </th>
 
-                        <th class="border px-4 py-2">
-                            Acciones
-                        </th>
+                        </tr>
 
-                    </tr>
+                    </thead>
 
-                </thead>
+                    <tbody>
 
-                <tbody>
+                    @foreach ($usuarios as $usuarios)
+                        <tr class="text-center hover:bg-gray-50">
+                            <td class="border px-4 py-2">{{ $usuarios->id}}</td>
+                            <td class="border px-4 py-2">{{ $usuarios->numero_documento}}</td>
+                            <td class="border px-4 py-2">{{ $usuarios->primer_nombre}}</td>
+                            <td class="border px-4 py-2">{{ $usuarios->segundo_nombre}}</td>
+                            <td class="border px-4 py-2">{{ $usuarios->primer_apellido}}</td>
+                            <td class="border px-4 py-2">{{ $usuarios->segundo_apellido}}</td>
+                            <td class="border px-4 py-2">{{ $usuarios->telefono_usuario}}</td>
+                            <td class="border px-4 py-2">{{ $usuarios->correo_usuario}}</td>
+                            <td class="border px-4 py-2">{{ $usuarios->eps_usuario}}</td>
+                            <td class="border px-4 py-2">{{ $usuarios->regimen_usuario}}</td>
+                            <td class="border px-4 py-2">{{ $usuarios->fecha_registro}}</td>
+                            <td class="border px-4 py-2">{{ $usuarios->usuario_registro}}</td>
 
-                @foreach ($usuarios as $usuarios)
-                    <tr class="text-center hover:bg-gray-50">
-                        <td class="border px-4 py-2">{{ $usuarios->id}}</td>
-                        <td class="border px-4 py-2">{{ $usuarios->numero_documento}}</td>
-                        <td class="border px-4 py-2">{{ $usuarios->primer_nombre}}</td>
-                        <td class="border px-4 py-2">{{ $usuarios->segundo_nombre}}</td>
-                        <td class="border px-4 py-2">{{ $usuarios->primer_apellido}}</td>
-                        <td class="border px-4 py-2">{{ $usuarios->segundo_apellido}}</td>
-                        <td class="border px-4 py-2">{{ $usuarios->telefono_usuario}}</td>
-                        <td class="border px-4 py-2">{{ $usuarios->correo_usuario}}</td>
-                        <td class="border px-4 py-2">{{ $usuarios->eps_usuario}}</td>
-                        <td class="border px-4 py-2">{{ $usuarios->regimen_usuario}}</td>
-                        <td class="border px-4 py-2">{{ $usuarios->fecha_registro}}</td>
-                        <td class="border px-4 py-2">{{ $usuarios->usuario_registro}}</td>
-                        <td class="border px-4 py-2">
+                                <td class="border px-4 py-2">
+                                    <div class="flex items-center justify-center gap-3">
+                                        <a href="{{ route('usuarios.edit',$usuarios->id) }}" class="text-blue-600 hover:text-blue-900 p-1"title="Editar">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
+                                        </a>
 
+                                        <!-- Botón Eliminar -->
+                                        <form action="{{ route('usuarios.destroy', $usuarios->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este Usuario?');">
+                                            @csrf
+                                            @method('DELETE')
 
-                            <a href="{{ ROUTE('usuarios.edit',$usuarios->id)}}"class="bg-blue-400 hover:bg-blue-600 text-white rounded px-2 py-2">Editar</a>
-                            <form action="{{ ROUTE('usuarios.destroy',$usuarios->id)}}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="bg-red-400 hover:bg-red-600 text-white rounded px-2 py-2">Eliminar</button>                         
-                            </form>
+                                            <button type="submit" class="text-red-600 hover:text-red-900 p-1" title="Eliminar">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 01-1 1v3M4 7h16"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                        </tr>
+                    @endforeach  
 
-                        </td>
-                    </tr>
-                @endforeach  
-
-                </tbody>
-                
-            </table>
+                    </tbody>
+                    
+                </table>
+            </div>
 
         </div>
 

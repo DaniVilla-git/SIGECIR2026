@@ -74,6 +74,10 @@
                             Id Usuario
                         </th>
 
+                        <th class="border px-4 py-2">
+                            Accion
+                        </th>
+
                         
                     </tr>
 

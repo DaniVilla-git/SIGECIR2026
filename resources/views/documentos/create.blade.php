@@ -1,4 +1,3 @@
-```blade
 @extends('layouts.app')
 
 @section('titulo')
@@ -6,40 +5,46 @@
 @endsection
 
 @section('content')
-    <div class="container mx-auto mt-10">
+<div class="container mx-auto mt-10 px-4">
 
-        <div class="max-w-xl mx-auto bg-white shadow-lg rounded-lg p-8">
+    <div class="max-w-xl mx-auto bg-white shadow-lg rounded-lg p-8">
 
-            <h2 class="text-3xl font-bold text-center mb-6">
-                Cargar Documento
-            </h2>
+        <h2 class="text-3xl font-bold text-center mb-6">
+            Cargar Documento
+        </h2>
 
-            @if($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-5">
-                    <ul>
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+        {{-- Mostrar errores --}}
+        @if ($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-5">
+                <p class="font-bold mb-2">Revisa los siguientes errores:</p>
+                <ul class="list-disc pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-            <form action="{{ route('documentos.store') }}" method="post" enctype="multipart/form-data">
+        {{-- Un solo formulario --}}
+        <form action="{{ route('documentos.store') }}"
+              method="POST"
+              enctype="multipart/form-data">
+
             @csrf
 
-                <div class="mb-5">
+            {{-- Usuario --}}
+            <div class="mb-5">
                 <label for="id_usuario" class="block mb-2 font-semibold">
                     Usuario
                 </label>
 
-                <select name="id_usuario"
-                        id="id_usuario"
-                        class="w-full border rounded px-3 py-2">
-
+                <select name="id_usuario" id="id_usuario"
+                        class="w-full border rounded px-3 py-2" required>
                     <option value="">Seleccione un usuario</option>
 
-                    @foreach($usuarios as $usuario)
-                        <option value="{{ $usuario->id }}">
+                    @foreach ($usuarios as $usuario)
+                        <option value="{{ $usuario->id }}"
+                            {{ old('id_usuario') == $usuario->id ? 'selected' : '' }}>
                             {{ $usuario->numero_documento }} -
                             {{ $usuario->primer_nombre }}
                             {{ $usuario->segundo_nombre }}
@@ -47,95 +52,109 @@
                             {{ $usuario->segundo_apellido }}
                         </option>
                     @endforeach
+                </select>
+            </div>
 
-                     </select>
-                 </div>
+            {{-- Nombre --}}
+            <div class="mb-5">
+                <label for="nombre_documento" class="block mb-2 font-semibold">
+                    Nombre del Documento
+                </label>
 
-                <div class="mb-5">
-                    <label for="" class="block mb-2 font-semibold">
-                        Nombre del Documento
-                    </label>
+                <input type="text"
+                       name="nombre_documento"
+                       id="nombre_documento"
+                       value="{{ old('nombre_documento') }}"
+                       class="w-full border rounded px-3 py-2"
+                       placeholder="Ej: Orden de fisioterapia"
+                       required>
+            </div>
 
-                    <input type="text"
-                           name="nombre_documento"
-                           class="w-full border rounded px-3 py-2"
-                           placeholder="Ej: Orden de fisioterapia">
-                </div>
+            {{-- Tipo --}}
+            <div class="mb-5">
+                <label for="tipo_documento" class="block mb-2 font-semibold">
+                    Tipo de Documento
+                </label>
 
-                <div class="mb-5">
-                    <label for="" class="block mb-2 font-semibold">
-                        Tipo de Documento
-                    </label>
+                <select name="tipo_documento" id="tipo_documento"
+                        class="w-full border rounded px-3 py-2" required>
+                    <option value="">Seleccione un tipo</option>
+                    <option value="Orden" {{ old('tipo_documento') == 'Orden' ? 'selected' : '' }}>Orden</option>
+                    <option value="Historia Clínica" {{ old('tipo_documento') == 'Historia Clínica' ? 'selected' : '' }}>Historia Clínica</option>
+                    <option value="Documento de identidad" {{ old('tipo_documento') == 'Documento de identidad' ? 'selected' : '' }}>Documento de identidad</option>
+                    <option value="Otro" {{ old('tipo_documento') == 'Otro' ? 'selected' : '' }}>Otro</option>
+                </select>
+            </div>
 
-                    <select name="tipo_documento"
-                            class="w-full border rounded px-3 py-2">
+            {{-- Archivo --}}
+            <div class="mb-5">
+                <label for="ruta_documento" class="block mb-2 font-semibold">
+                    Archivo del Documento (PDF o imagen)
+                </label>
 
-                        <option value="">Seleccione un tipo</option>
-                        <option value="Orden">Orden</option>
-                        <option value="Historia Clínica">Historia Clínica</option>
-                        <option value="Documento de identidad">Documento de identidad</option>
-                        <option value="Otro">Otro</option>
+                <input type="file"
+                    name="ruta_documento"
+                    id="ruta_documento"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    class="w-full border rounded px-3 py-2"
+                    required>
 
-                    </select>
-                </div>
+                <p class="text-sm text-gray-500 mt-1">
+                    Formatos permitidos: PDF, JPG, JPEG y PNG. Máximo 10 MB.
+                </p>
+            </div>
 
-                <div class="mb-5">
-                    <label for="" class="block mb-2 font-semibold">
-                        Seleccionar Documento
-                    </label>
+            {{-- Fecha --}}
+            <div class="mb-5">
+                <label for="fecha_documento" class="block mb-2 font-semibold">
+                    Fecha del Documento
+                </label>
 
-                    <input type="file"
-                           name="ruta_documento"
-                           class="w-full border rounded px-3 py-2">
-                </div>
+                <input type="date"
+                    name="fecha_documento"
+                    id="fecha_documento"
+                    value="{{ old('fecha_documento') }}"
+                    class="w-full border rounded px-3 py-2"
+                    required>
+            </div>
 
-                <div class="mb-5">
-                    <label for="" class="block mb-2 font-semibold">
-                        Fecha del Documento
-                    </label>
+            {{-- Estado --}}
+            <div class="mb-5">
+                <label for="estado_documento" class="block mb-2 font-semibold">
+                    Estado del Documento
+                </label>
 
-                    <input type="date"
-                           name="fecha_documento"
-                           class="w-full border rounded px-3 py-2">
-                </div>
+                <select name="estado_documento" id="estado_documento"
+                        class="w-full border rounded px-3 py-2" required>
+                    <option value="Pendiente" {{ old('estado_documento', 'Pendiente') == 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
+                    <option value="Revisado" {{ old('estado_documento') == 'Revisado' ? 'selected' : '' }}>Revisado</option>
+                    <option value="Aprobado" {{ old('estado_documento') == 'Aprobado' ? 'selected' : '' }}>Aprobado</option>
+                </select>
+            </div>
 
-                <div class="mb-5">
-                    <label for="" class="block mb-2 font-semibold">
-                        Estado del Documento
-                    </label>
+            {{-- Observación --}}
+            <div class="mb-5">
+                <label for="observacion_documento" class="block mb-2 font-semibold">
+                    Observación
+                </label>
 
-                    <select name="estado_documento"
-                            class="w-full border rounded px-3 py-2">
+                <textarea name="observacion_documento"
+                        id="observacion_documento"
+                        class="w-full border rounded px-3 py-2"
+                        rows="4"
+                        placeholder="Escriba una observación si es necesario">{{ old('observacion_documento') }}</textarea>
+            </div>
 
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Revisado">Revisado</option>
-                        <option value="Aprobado">Aprobado</option>
+            {{-- Botón --}}
+            <div class="flex justify-center">
+                <button type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded">
+                    Guardar Documento
+                </button>
+            </div>
 
-                    </select>
-                </div>
-
-                <div class="mb-5">
-                    <label for="" class="block mb-2 font-semibold">
-                        Observación
-                    </label>
-
-                    <textarea name="observacion_documento"
-                              class="w-full border rounded px-3 py-2"
-                              rows="4"
-                              placeholder="Escriba una observación si es necesario"></textarea>
-                </div>
-
-                <div class="mb-5">
-                    <button type="submit"
-                            class="bg-green-500 hover:bg-green-600 text-white rounded px-5 py-2">
-                        Guardar
-                    </button>
-                </div>
-
-            </form>
-
-        </div>
+        </form>
 
     </div>
+</div>
 @endsection
-```

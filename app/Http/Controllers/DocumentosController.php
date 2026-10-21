@@ -23,7 +23,7 @@ class DocumentosController extends Controller
         return view('documentos.index', compact('documentos'));
     }
 
-   public function create()
+    public function create()
     {
     $usuarios = usuarios::all();
 

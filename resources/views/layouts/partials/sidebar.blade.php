@@ -1,78 +1,129 @@
 {{--
-    Sidebar principal.
-    Usa la variable de ruta actual (Route::currentRouteName() o request()->routeIs())
-    para resaltar el enlace activo.
+    Menú lateral principal de SIGECIR - RENUEVA IPS.
+    Conserva las rutas existentes y resalta el módulo activo.
 --}}
+
 <aside
     x-cloak
     :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-    class="fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-slate-300 transform transition-transform duration-200 ease-in-out lg:translate-x-0"
-    aria-label="Menú principal"
->
+    class="fixed inset-y-0 left-0 z-40 w-64 bg-primary-700 text-slate-200 transform transition-transform duration-200 ease-in-out"
+    aria-label="Menú principal de SIGECIR">
     <div class="h-full flex flex-col">
 
-        {{-- Logo --}}
-        <div class="flex items-center gap-3 h-16 px-6 border-b border-slate-800">
-            <div class="w-9 h-9 rounded-lg bg-primary-600 flex items-center justify-center text-white font-bold">
-                A
+        {{-- Logo e identidad institucional --}}
+        <div class="flex items-center gap-3 h-20 px-5 border-b border-white/10">
+
+
+
+            <div class="min-w-0">
+                <p class="text-white font-extrabold text-lg tracking-wide">
+                    SIGECIR
+                </p>
+
+                <p class="text-xs text-primary-200 truncate">
+                    RENUEVA IPS
+                </p>
             </div>
-            <span class="text-white font-semibold text-lg tracking-tight">{{ config('app.name', 'AdminPanel') }}</span>
         </div>
 
-        {{-- Navegación --}}
-        <nav class="flex-1 overflow-y-auto px-3 py-6 space-y-1" aria-label="Navegación lateral">
+        {{-- Texto de navegación --}}
+        <div class="px-6 pt-6 pb-2">
+            <p class="text-xs font-semibold uppercase tracking-widest text-primary-200">
+                Menú principal
+            </p>
+        </div>
 
+        {{-- Navegación lateral --}}
+        <nav
+            class="flex-1 overflow-y-auto px-3 py-2 space-y-1"
+            aria-label="Navegación lateral"
+        >
             @php
                 $links = [
-                    ['label' => 'Dashboard', 'route' => 'dashboard.index', 'icon' => 'home'],
-                    ['label' => 'Usuarios', 'route' => 'usuarios.index', 'icon' => 'users'],
-                    ['label' => 'Profesionales', 'route' => 'profesionales.index', 'icon' => 'users'],
-                    ['label' => 'Horario Profesional', 'route' => 'horario_profesional.index', 'icon' => 'calendar'],
-                    ['label' => 'Servicios', 'route' => 'servicios.index', 'icon' => 'shield'],
-                    ['label' => 'Notificaciones', 'route' => 'notificaciones.index', 'icon' => 'bell'],
-                    ['label' => 'Documentos', 'route' => 'documentos.index', 'icon' => 'file-text'],
-                    ['label' => 'Categorías', 'route' => 'categories.index', 'icon' => 'tag'],
-                    ['label' => 'Productos', 'route' => 'producto.index', 'icon' => 'box'],
-                    ['label' => 'Reportes', 'route' => 'reports.index', 'icon' => 'chart'],
-                    ['label' => 'Configuración', 'route' => 'settings.index', 'icon' => 'cog'],
+                    ['label' => 'Inicio','route' => 'dashboard.index','icon' => 'home',],
+                    ['label' => 'Usuarios','route' => 'usuarios.index','icon' => 'usuario',],
+                    ['label' => 'Profesionales','route' => 'profesionales.index','icon' => 'profesional',],
+                    ['label' => 'Horarios','route' => 'horario_profesional.index','icon' => 'horario',],
+                    ['label' => 'Servicios','route' => 'servicios.index','icon' => 'servicios',],
+                    ['label' => 'Citas','route' => 'citas.index','icon' => 'cita',],
+                    ['label' => 'Notificaciones','route' => 'notificaciones.index','icon' => 'notificacion',],
+                    ['label' => 'Documentos','route' => 'documentos.index','icon' => 'documento',],
+                    ['label' => 'Mensaje','route' => 'mensajes.index','icon' => 'mensaje',],
                 ];
             @endphp
 
             @foreach ($links as $link)
                 @php
-                    $active = Route::has($link['route']) && request()->routeIs(explode('.', $link['route'])[0] . '.*');
+                    $routePrefix = explode('.', $link['route'])[0];
+
+                    $active = Route::has($link['route'])
+                        && (
+                            request()->routeIs($routePrefix . '.*')
+                            || request()->routeIs($link['route'])
+                        );
                 @endphp
-                <a
-                    href="{{ Route::has($link['route']) ? route($link['route']) : '#' }}"
-                    @if($active) aria-current="page" @endif
-                    class="group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                        {{ $active
-                            ? 'bg-primary-600 text-white shadow-sm'
-                            : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}"
-                >
-                    <span class="w-5 h-5 flex-shrink-0" aria-hidden="true">
-                        @include('layouts.partials.icons', ['icon' => $link['icon']])
-                    </span>
-                    <span>{{ $link['label'] }}</span>
-                </a>
+
+                @if (Route::has($link['route']))
+                    <a
+                        href="{{ route($link['route']) }}"
+                        @if ($active) aria-current="page" @endif
+                        @if ($active) @click="sidebarOpen = false" @endif
+                        class="group flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all duration-200
+                            {{ $active
+                                ? 'bg-white text-primary-900 shadow-sm'
+                                : 'text-slate-200 hover:bg-white/10 hover:text-white' }}">
+                        <span
+                            class="w-5 h-5 flex-shrink-0
+                                {{ $active ? 'text-primary-600' : 'text-primary-200 group-hover:text-turquoise' }}"
+                            aria-hidden="true">
+                            @include('layouts.partials.icons', [
+                                'icon' => $link['icon']
+                            ])
+                        </span>
+
+                        <span class="flex-1">
+                            {{ $link['label'] }}
+                        </span>
+
+                        @if ($active)
+                            <span class="w-2 h-2 rounded-full bg-turquoise"></span>
+                        @endif
+                    </a>
+                @endif
             @endforeach
         </nav>
 
-        {{-- Cerrar sesión --}}
-        <div class="px-3 py-4 border-t border-slate-800">
-            <form method="POST" action="{{ Route::has('logout') ? route('logout') : '#' }}">
-                @csrf
-                <button
-                    type="submit"
-                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    aria-label="Cerrar sesión"
-                >
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    Cerrar sesión
-                </button>
-            </form>
+        {{-- Identidad institucional inferior --}}
+        <div class="px-4 py-4 border-t border-white/10">
+            {{-- Cerrar sesión --}}
+            @if (Route::has('logout'))
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <button
+                        type="submit"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-200 hover:bg-red-500/15 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-turquoise"
+                        aria-label="Cerrar sesión"
+                    >
+                        <svg
+                            class="w-5 h-5 flex-shrink-0"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                            />
+                        </svg>
+
+                        <span>Cerrar sesión</span>
+                    </button>
+                </form>
+            @endif
         </div>
     </div>
 </aside>

@@ -13,7 +13,7 @@ public function listarTodo()
 }
 
 public function guardar(array $datos){
-    notificaciones::create($datos);
+    return notificaciones::create($datos);
 }
 
 public function eliminar(int $id){
