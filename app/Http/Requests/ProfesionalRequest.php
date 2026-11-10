@@ -26,7 +26,9 @@ class ProfesionalRequest extends FormRequest
             'nombre_profesional' => 'required|string|max:255',
             'apellido_profesional' => 'required|string|max:255',
             'especialidad' => 'required|string|max:255',
-            'correo' => 'required|string|max:255',
+            'consultorio' => 'required|string|max:255',
+            'correo' => 'required|email|max:255|unique:profesionales,correo|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
             'firma' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];
     }

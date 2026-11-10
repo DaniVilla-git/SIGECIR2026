@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -12,6 +11,17 @@ use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\ProfesionalesController;
 use App\Http\Controllers\HorariosProfesionalController;
 use App\Http\Controllers\Paciente\PortalPacienteController;
+use App\Http\Controllers\Seguridad\AuthController;
+
+
+Route::view('/', 'welcome')->name('inicio');
+
+// INICIO DE SESIÓN
+Route::get('/login', [AuthController::class, 'showLoginForm'])
+    ->name('login');
+
+Route::post('/login', [AuthController::class, 'login'])
+    ->name('login.procesar');
 
 
 /*
@@ -29,7 +39,24 @@ Route::post('/citas/{id}/confirmar-correo', [CitasController::class, 'confirmarD
     ->name('citas.confirmar.procesar');
 
 
+/*
+|--------------------------------------------------------------------------
+| RUTAS GENERALES
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware('web')->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | CIERRE DE SESIÓN PARA TODOS LOS ROLES
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->middleware('auth')
+        ->name('logout');
+
 
     /*
     |--------------------------------------------------------------------------
@@ -37,7 +64,7 @@ Route::middleware('web')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware('auth')
+    Route::middleware(['auth', 'role:Paciente'])
         ->prefix('paciente')
         ->name('paciente.')
         ->group(function () {
@@ -102,7 +129,6 @@ Route::middleware('web')->group(function () {
             Route::get('/admin', function () {
                 return view('Admin.index');
             })->name('admin.index');
-
         });
 
 
@@ -112,7 +138,7 @@ Route::middleware('web')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    // Vista de inicio de sesión profesional
+    // Inicio de sesión profesional
     Route::get('/vista-login-profesional', function () {
         return view('Profesionales.login');
     })->name('profesionales.login');
@@ -144,7 +170,6 @@ Route::middleware('web')->group(function () {
         Route::get('/perfil-profesional', function () {
             return view('Profesionales.perfil');
         })->name('profesionales.perfil');
-
     });
 
 });

@@ -32,7 +32,7 @@ class ProfesionalesController extends Controller
 
     public function store(ProfesionalRequest $request)
     {
-        $datos = $request->all();
+        $datos = $request->validated();
 
         if ($request->hasFile('firma')) {
 
@@ -48,7 +48,9 @@ class ProfesionalesController extends Controller
 
         $this->profesionalservice->guardar($datos);
 
-        return redirect()->route('profesionales.index');
+        return redirect()
+            ->route('profesionales.index')
+            ->with('success', 'Profesional y cuenta de acceso creados correctamente.');
     }
 
 

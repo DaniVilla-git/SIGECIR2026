@@ -624,10 +624,13 @@
 
         <p class="titulo-menu">Cuenta</p>
 
-        <a href="{{ url('/') }}" class="enlace-menu">
-            <i class="fa-solid fa-right-from-bracket icono-menu"></i>
-            <span>Cerrar sesión</span>
-        </a>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+
+            <button type="submit">
+                Cerrar sesión
+            </button>
+        </form>
 
         <div class="nota-menu">
             <strong>SIGECIR2026</strong><br>

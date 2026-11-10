@@ -93,6 +93,35 @@
                         class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                     >
                 </div>
+                <div>
+                    <label class="block mb-2 text-sm font-semibold text-gray-700">
+                        Contraseña de acceso
+                    </label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        required
+                        minlength="8"
+                        class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none"
+                        placeholder="Mínimo 8 caracteres"
+                    >
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm font-semibold text-gray-700">
+                        Confirmar contraseña
+                    </label>
+
+                    <input
+                        type="password"
+                        name="password_confirmation"
+                        required
+                        minlength="8"
+                        class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none"
+                        placeholder="Repita la contraseña"
+                    >
+                </div>
 
                 <div class="md:col-span-2">
                     <label class="block mb-2 text-sm font-semibold text-gray-700">

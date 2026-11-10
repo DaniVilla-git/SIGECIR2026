@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+
 class AuthController extends Controller
 {
     public function __construct(private AuthService $authService)
@@ -19,6 +20,7 @@ class AuthController extends Controller
         return view('seguridad.login');
     }
 
+    
     public function login(Request $request): RedirectResponse
     {
         $credenciales = $request->validate([
@@ -42,11 +44,34 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        if ($request->user()->hasRole('Paciente')) {
+        $usuario = $request->user();
+
+        // Acceso del paciente
+        if ($usuario->hasRole('Paciente')) {
             return redirect()->route('paciente.inicio');
         }
-        return redirect()->intended(route('dashboard.index'));
+
+        // Acceso del profesional
+        if ($usuario->hasRole('profesional')) {
+            return redirect()->route('profesionales.dashboard');
+        }
+
+        // Acceso del administrador
+        if ($usuario->hasRole(config('seguridad.rol_admin'))) {
+            return redirect()->route('dashboard.index');
+        }
+
+        // Cuentas sin un rol autorizado
+        $this->authService->cerrarSesion();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')->withErrors([
+            'identificador' => 'Tu cuenta no tiene un rol autorizado para ingresar.'
+        ]);
     }
+
 
     public function logout(Request $request): RedirectResponse
     {

@@ -1,513 +1,587 @@
-
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi perfil </title>
+
+    <title>Mi perfil | SIGECIR - RENUEVA IPS</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <style>
-        :root {
-            --verde: #20A447;
-            --verde-oscuro: #188638;
-            --verde-claro: #EAF7EE;
-            --fondo: #F5F7F8;
-            --texto: #243447;
-            --gris: #64748B;
-            --borde: #E2E8F0;
-            --blanco: #FFFFFF;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: var(--fondo);
-            color: var(--texto);
+            font-family: 'Inter', sans-serif;
         }
 
-        .contenedor {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* MENÚ LATERAL */
-
-        .menu {
-            width: 250px;
-            background: var(--blanco);
-            border-right: 1px solid var(--borde);
-            padding: 28px 18px;
-            flex-shrink: 0;
-        }
-
-        .marca {
-            text-align: center;
-            padding-bottom: 28px;
-            border-bottom: 1px solid var(--borde);
-        }
-
-        .marca img {
-            width: 76px;
-            height: 76px;
-            object-fit: contain;
-            margin-bottom: 8px;
-        }
-
-        .marca h2 {
-            font-size: 21px;
-            color: #17324D;
-        }
-
-        .marca p {
-            color: var(--gris);
-            font-size: 12px;
-            margin-top: 7px;
-        }
-
-        .titulo-menu {
-            color: #94A3B8;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin: 28px 10px 12px;
-            text-transform: uppercase;
+        .institucional {
+            background: linear-gradient(135deg, #063d69, #0875bd);
         }
 
         .enlace-menu {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 13px 14px;
-            margin-bottom: 7px;
-            border-radius: 9px;
-            color: #52677C;
-            text-decoration: none;
-            font-size: 14px;
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
 
         .enlace-menu:hover,
         .enlace-menu.activo {
-            background: var(--verde-claro);
-            color: var(--verde-oscuro);
+            background: #eaf7ee;
+            color: #188638;
+        }
+
+        .enlace-menu.activo {
             font-weight: 700;
+            border-left: 4px solid #20A447;
         }
 
-        .icono-menu {
-            width: 22px;
-            min-width: 22px;
-            text-align: center;
-            font-size: 17px;
-            color: var(--verde);
+        .tarjeta {
+            transition: all 0.2s ease;
         }
 
-        .nota-menu {
-            margin-top: 35px;
-            padding: 15px;
-            background: #F8FAFC;
-            border-radius: 10px;
-            font-size: 12px;
-            line-height: 1.7;
-            color: var(--gris);
+        .tarjeta:hover {
+            box-shadow: 0 10px 25px rgba(6, 61, 105, 0.08);
         }
 
-        /* CONTENIDO */
-
-        .principal {
-            flex: 1;
-            min-width: 0;
-            padding: 30px;
-        }
-
-        .barra-superior {
-            margin-bottom: 28px;
-        }
-
-        .barra-superior h1 {
-            font-size: 26px;
-            margin-bottom: 7px;
-        }
-
-        .barra-superior p {
-            font-size: 14px;
-            color: var(--gris);
-        }
-
-        /* TARJETA PRINCIPAL */
-
-        .perfil-principal {
-            background: var(--blanco);
-            border: 1px solid var(--borde);
-            border-radius: 14px;
-            padding: 25px;
-            display: flex;
-            align-items: center;
-            gap: 22px;
-            margin-bottom: 24px;
-        }
-
-        .avatar {
-            width: 105px;
-            height: 105px;
-            min-width: 105px;
-            border-radius: 50%;
-            background: var(--verde-claro);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--verde-oscuro);
-            font-size: 43px;
-        }
-
-        .datos-principales {
-            flex: 1;
-        }
-
-        .datos-principales h2 {
-            font-size: 23px;
-            margin-bottom: 7px;
-        }
-
-        .datos-principales p {
-            color: var(--gris);
-            font-size: 14px;
-            margin-bottom: 12px;
-        }
-
-        .estado-activo {
-            display: inline-block;
-            background: var(--verde-claro);
-            color: var(--verde-oscuro);
-            padding: 7px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .estado-activo i {
-            margin-right: 5px;
-        }
-
-        .etiqueta-demo {
-            color: #92400E;
-            background: #FEF3C7;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* SECCIONES */
-
-        .seccion {
-            background: var(--blanco);
-            border: 1px solid var(--borde);
-            border-radius: 13px;
-            padding: 23px;
-            margin-bottom: 22px;
-        }
-
-        .titulo-seccion {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-bottom: 17px;
-            border-bottom: 1px solid var(--borde);
-            margin-bottom: 20px;
-        }
-
-        .titulo-seccion i {
-            color: var(--verde);
-            font-size: 18px;
-        }
-
-        .titulo-seccion h2 {
-            font-size: 17px;
-        }
-
-        .rejilla {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 22px;
-        }
-
-        .dato label {
-            display: block;
-            color: var(--gris);
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .dato p {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--texto);
-            padding-bottom: 10px;
-            border-bottom: 1px solid #F1F5F9;
-            min-height: 34px;
-        }
-
-        .dato p i {
-            color: var(--verde);
-            margin-right: 7px;
-        }
-
-        .aviso {
-            background: #F8FAFC;
-            border-left: 4px solid var(--verde);
-            padding: 15px;
-            border-radius: 7px;
-            color: var(--gris);
-            font-size: 13px;
-            line-height: 1.7;
-        }
-
-        .pie {
-            text-align: center;
-            padding: 25px 10px 5px;
-            color: #94A3B8;
-            font-size: 12px;
-        }
-
-        @media (max-width: 760px) {
-            .contenedor {
-                display: block;
-            }
-
-            .menu {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid var(--borde);
-            }
-
-            .principal {
-                padding: 20px 14px;
-            }
-
-            .perfil-principal {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .rejilla {
-                grid-template-columns: 1fr;
-            }
+        [x-cloak] {
+            display: none !important;
         }
     </style>
 </head>
 
-<body>
+<body class="bg-slate-100 text-gray-800">
 
-<div class="contenedor">
+<div class="min-h-screen flex flex-col md:flex-row">
 
-    <!-- MENÚ LATERAL -->
+    {{-- MENÚ LATERAL --}}
+    <aside class="w-full md:w-64 bg-white border-r border-gray-200
+                  flex-shrink-0">
 
-    <aside class="menu">
+        {{-- LOGOTIPO --}}
+        <div class="px-6 py-7 border-b border-gray-100 text-center">
 
-        <div class="marca">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo SIGECIR">
-            <h2>SIGECIR</h2>
-            <p>Portal de profesionales</p>
+            <img src="{{ asset('images/logo.png') }}"
+                alt="Logo SIGECIR"
+                class="w-20 h-20 object-contain mx-auto mb-3">
+
+            <h2 class="text-2xl font-extrabold text-[#063d69]">
+                SIGECIR
+            </h2>
+
+            <p class="text-xs text-gray-500 mt-1">
+                Portal de profesionales
+            </p>
+
+            <div class="w-16 h-1 bg-[#20A447] rounded-full mx-auto mt-4"></div>
+
         </div>
 
-        <p class="titulo-menu">Menú principal</p>
+        {{-- NAVEGACIÓN --}}
+        <div class="p-4">
 
-        <a href="{{ route('profesionales.dashboard') }}" class="enlace-menu">
-            <i class="fa-solid fa-house icono-menu"></i>
-            Inicio
-        </a>
+            <p class="text-xs font-bold text-gray-400 uppercase
+                      tracking-wider px-3 mb-3 mt-3">
+                Menú principal
+            </p>
 
-        <a href="{{ route('profesionales.agenda') }}" class="enlace-menu">
-            <i class="fa-solid fa-calendar-days icono-menu"></i>
-            Mi agenda
-        </a>
+            <nav class="space-y-1">
 
-        <a href="{{ route('profesionales.pacientes') }}" class="enlace-menu">
-            <i class="fa-solid fa-users icono-menu"></i>
-            Mis pacientes
-        </a>
+                <a href="{{ route('profesionales.dashboard') }}"
+                    class="enlace-menu flex items-center gap-3 px-4 py-3
+                    rounded-lg text-sm text-gray-600">
 
-        <a href="{{ route('profesionales.notificaciones') }}" class="enlace-menu">
-            <i class="fa-solid fa-bell icono-menu"></i>
-            Notificaciones
-        </a>
+                    <i class="fa-solid fa-house w-5 text-center text-[#0875bd]"></i>
+                    Inicio
 
-        <a href="{{ route('profesionales.horario') }}" class="enlace-menu">
-            <i class="fa-solid fa-clock icono-menu"></i>
-            Mi horario
-        </a>
+                </a>
 
-        <a href="{{ route('profesionales.perfil') }}" class="enlace-menu activo">
-            <i class="fa-solid fa-circle-user icono-menu"></i>
-            Mi perfil
-        </a>
+                <a href="{{ route('profesionales.agenda') }}"
+                    class="enlace-menu flex items-center gap-3 px-4 py-3
+                    rounded-lg text-sm text-gray-600">
 
-        <p class="titulo-menu">Cuenta</p>
+                    <i class="fa-solid fa-calendar-days w-5 text-center text-[#0875bd]"></i>
+                    Mi agenda
 
-        <a href="{{ url('/') }}" class="enlace-menu">
-            <i class="fa-solid fa-right-from-bracket icono-menu"></i>
-            Cerrar sesión
-        </a>
+                </a>
 
-        <div class="nota-menu">
-            <strong>SIGECIR2026</strong><br>
-            Sistema de Gestión de Citas para Renueva IPS.
+                <a href="{{ route('profesionales.pacientes') }}"
+                    class="enlace-menu flex items-center gap-3 px-4 py-3
+                    rounded-lg text-sm text-gray-600">
+
+                    <i class="fa-solid fa-users w-5 text-center text-[#0875bd]"></i>
+                    Mis pacientes
+
+                </a>
+
+                <a href="{{ route('profesionales.notificaciones') }}"
+                    class="enlace-menu flex items-center gap-3 px-4 py-3
+                    rounded-lg text-sm text-gray-600">
+
+                    <i class="fa-solid fa-bell w-5 text-center text-[#0875bd]"></i>
+                    Notificaciones
+
+                </a>
+
+                <a href="{{ route('profesionales.horario') }}"
+                    class="enlace-menu flex items-center gap-3 px-4 py-3
+                    rounded-lg text-sm text-gray-600">
+
+                    <i class="fa-solid fa-clock w-5 text-center text-[#0875bd]"></i>
+                    Mi horario
+
+                </a>
+
+                <a href="{{ route('profesionales.perfil') }}"
+                    class="enlace-menu activo flex items-center gap-3
+                    px-4 py-3 rounded-lg text-sm">
+
+                    <i class="fa-solid fa-circle-user w-5 text-center"></i>
+                    Mi perfil
+
+                </a>
+
+            </nav>
+
+            {{-- CUENTA --}}
+            <p class="text-xs font-bold text-gray-400 uppercase
+                      tracking-wider px-3 mb-3 mt-8">
+                Cuenta
+            </p>
+
+            <a href="{{ url('/') }}"
+                class="enlace-menu flex items-center gap-3 px-4 py-3
+                rounded-lg text-sm text-gray-600">
+
+                <i class="fa-solid fa-right-from-bracket w-5 text-center text-red-500"></i>
+                Cerrar sesión
+
+            </a>
+
+            {{-- INFORMACIÓN DEL SISTEMA --}}
+            <div class="mt-8 p-4 bg-slate-50 border border-gray-100 rounded-xl">
+
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-circle-info text-[#0875bd]"></i>
+
+                    <span class="text-xs font-bold text-[#063d69]">
+                        SIGECIR
+                    </span>
+                </div>
+
+                <p class="text-xs text-gray-500 leading-relaxed">
+                    Sistema de Gestión de Citas de RENUEVA IPS.
+                </p>
+
+                <p class="text-xs text-gray-400 mt-2">
+                    Versión 2026
+                </p>
+
+            </div>
+
         </div>
 
     </aside>
 
-    <!-- CONTENIDO PRINCIPAL -->
 
-    <main class="principal">
+    {{-- CONTENIDO PRINCIPAL --}}
+    <main class="flex-1 min-w-0 p-4 md:p-8">
 
-        <header class="barra-superior">
-            <h1>Mi perfil</h1>
-            <p>Consulta tu información personal y profesional.</p>
-        </header>
+        <div class="max-w-7xl mx-auto">
 
-        <!-- INFORMACIÓN PRINCIPAL -->
+            {{-- ENCABEZADO --}}
+            <header class="mb-8">
 
-        <section class="perfil-principal">
+                <div class="flex flex-wrap items-center justify-between gap-4">
 
-            <div class="avatar">
-                <i class="fa-solid fa-user-doctor"></i>
-            </div>
+                    <div>
 
-            <div class="datos-principales">
-                <h2>María Fernanda López</h2>
-                <p>Psicóloga · Consultorio 2</p>
+                        <h1 class="text-2xl md:text-3xl font-extrabold
+                                   text-[#063d69]">
+                            Mi perfil
+                        </h1>
 
-                <span class="estado-activo">
-                    <i class="fa-solid fa-circle-check"></i>
-                    Profesional activo
-                </span>
-            </div>
+                        <p class="text-sm text-gray-500 mt-2">
+                            Consulta tu información personal y profesional.
+                        </p>
 
-            <span class="etiqueta-demo">
-                Información de ejemplo
-            </span>
+                    </div>
 
-        </section>
+                    <div class="flex items-center gap-2 text-sm
+                                bg-white px-4 py-2 rounded-xl
+                                border border-gray-200 shadow-sm">
 
-        <!-- INFORMACIÓN PERSONAL -->
+                        <i class="fa-solid fa-user-doctor text-[#20A447]"></i>
 
-        <section class="seccion">
+                        <span class="font-semibold text-gray-600">
+                            Portal de profesionales
+                        </span>
 
-            <div class="titulo-seccion">
-                <i class="fa-solid fa-user"></i>
-                <h2>Información personal</h2>
-            </div>
+                    </div>
 
-            <div class="rejilla">
-
-                <div class="dato">
-                    <label>Nombres</label>
-                    <p>María Fernanda</p>
                 </div>
 
-                <div class="dato">
-                    <label>Apellidos</label>
-                    <p>López Ramírez</p>
+            </header>
+
+
+            {{-- PERFIL PRINCIPAL --}}
+            <section class="tarjeta bg-white rounded-2xl shadow-sm
+                            border border-gray-200 p-6 mb-6">
+
+                <div class="flex flex-col sm:flex-row sm:items-center
+                            gap-6">
+
+                    {{-- AVATAR --}}
+                    <div class="w-24 h-24 min-w-24 rounded-2xl
+                                institucional flex items-center
+                                justify-center shadow-md">
+
+                        <i class="fa-solid fa-user-doctor
+                                  text-white text-4xl"></i>
+
+                    </div>
+
+                    {{-- DATOS PRINCIPALES --}}
+                    <div class="flex-1">
+
+                        <h2 class="text-2xl font-bold text-[#063d69]">
+
+                            {{ auth()->user()->nombre ?? auth()->user()->name ?? 'Profesional' }}
+
+                        </h2>
+
+                        <p class="text-gray-500 text-sm mt-2">
+                            Profesional de RENUEVA IPS
+                        </p>
+
+                        <div class="mt-3">
+
+                            <span class="inline-flex items-center gap-2
+                                         px-3 py-1.5 rounded-full
+                                         bg-green-50 text-green-700
+                                         text-xs font-bold border border-green-200">
+
+                                <i class="fa-solid fa-circle-check"></i>
+                                Cuenta activa
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    {{-- IDENTIFICADOR --}}
+                    <div class="bg-slate-50 border border-gray-100
+                                rounded-xl px-5 py-4">
+
+                        <p class="text-xs text-gray-400 font-semibold uppercase">
+                            Correo de acceso
+                        </p>
+
+                        <p class="text-sm font-semibold text-[#063d69] mt-2">
+                            {{ auth()->user()->email ?? 'No registrado' }}
+                        </p>
+
+                    </div>
+
                 </div>
 
-                <div class="dato">
-                    <label>Documento de identidad</label>
-                    <p>Por registrar</p>
+            </section>
+
+
+            {{-- INFORMACIÓN PERSONAL --}}
+            <section class="tarjeta bg-white rounded-2xl shadow-sm
+                            border border-gray-200 p-6 mb-6">
+
+                <div class="flex items-center gap-3 border-b
+                            border-gray-100 pb-4 mb-6">
+
+                    <div class="w-10 h-10 rounded-xl bg-blue-50
+                                flex items-center justify-center">
+
+                        <i class="fa-solid fa-user text-[#0875bd]"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h2 class="font-bold text-lg text-[#063d69]">
+                            Información personal
+                        </h2>
+
+                        <p class="text-xs text-gray-400">
+                            Datos generales del profesional.
+                        </p>
+
+                    </div>
+
                 </div>
 
-                <div class="dato">
-                    <label>Teléfono</label>
-                    <p><i class="fa-solid fa-phone"></i> Por registrar</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <div>
+                        <label class="block text-xs font-semibold
+                                      text-gray-400 mb-2">
+                            Nombres
+                        </label>
+
+                        <p class="text-sm font-semibold text-gray-700
+                                  border-b border-gray-100 pb-3">
+
+                            {{ auth()->user()->nombre ?? auth()->user()->name ?? 'No registrado' }}
+
+                        </p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold
+                                      text-gray-400 mb-2">
+                            Apellidos
+                        </label>
+
+                        <p class="text-sm font-semibold text-gray-700
+                                  border-b border-gray-100 pb-3">
+
+                            {{ auth()->user()->apellido ?? 'No registrado' }}
+
+                        </p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold
+                                      text-gray-400 mb-2">
+                            Documento de identidad
+                        </label>
+
+                        <p class="text-sm font-semibold text-gray-700
+                                  border-b border-gray-100 pb-3">
+
+                            {{ auth()->user()->numero_documento ?? 'No registrado' }}
+
+                        </p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold
+                                      text-gray-400 mb-2">
+                            Teléfono
+                        </label>
+
+                        <p class="text-sm font-semibold text-gray-700
+                                  border-b border-gray-100 pb-3">
+
+                            {{ auth()->user()->telefono ?? 'No registrado' }}
+
+                        </p>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold
+                                      text-gray-400 mb-2">
+                            Correo electrónico
+                        </label>
+
+                        <p class="text-sm font-semibold text-gray-700
+                                  border-b border-gray-100 pb-3">
+
+                            {{ auth()->user()->email ?? 'No registrado' }}
+
+                        </p>
+                    </div>
+
                 </div>
 
-                <div class="dato">
-                    <label>Correo electrónico</label>
-                    <p><i class="fa-solid fa-envelope"></i> profesional@renuevaips.com</p>
+            </section>
+
+
+            {{-- INFORMACIÓN PROFESIONAL --}}
+            <section class="tarjeta bg-white rounded-2xl shadow-sm
+                            border border-gray-200 p-6 mb-6">
+
+                <div class="flex items-center gap-3 border-b
+                            border-gray-100 pb-4 mb-6">
+
+                    <div class="w-10 h-10 rounded-xl bg-green-50
+                                flex items-center justify-center">
+
+                        <i class="fa-solid fa-briefcase text-[#20A447]"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h2 class="font-bold text-lg text-[#063d69]">
+                            Información profesional
+                        </h2>
+
+                        <p class="text-xs text-gray-400">
+                            Información relacionada con tu actividad profesional.
+                        </p>
+
+                    </div>
+
                 </div>
 
-            </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        </section>
+                    <div>
+                        <label class="block text-xs font-semibold
+                                      text-gray-400 mb-2">
+                            Especialidad
+                        </label>
 
-        <!-- INFORMACIÓN PROFESIONAL -->
+                        <p class="text-sm font-semibold text-gray-700
+                                  border-b border-gray-100 pb-3">
 
-        <section class="seccion">
+                            {{ auth()->user()->especialidad ?? 'No registrada' }}
 
-            <div class="titulo-seccion">
-                <i class="fa-solid fa-briefcase"></i>
-                <h2>Información profesional</h2>
-            </div>
+                        </p>
+                    </div>
 
-            <div class="rejilla">
+                    <div>
+                        <label class="block text-xs font-semibold
+                                      text-gray-400 mb-2">
+                            Consultorio asignado
+                        </label>
 
-                <div class="dato">
-                    <label>Especialidad</label>
-                    <p>Psicología</p>
+                        <p class="text-sm font-semibold text-gray-700
+                                  border-b border-gray-100 pb-3">
+
+                            {{ auth()->user()->consultorio ?? 'No asignado' }}
+
+                        </p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold
+                                      text-gray-400 mb-2">
+                            Institución
+                        </label>
+
+                        <p class="text-sm font-semibold text-gray-700
+                                  border-b border-gray-100 pb-3">
+                            RENUEVA IPS
+                        </p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold
+                                      text-gray-400 mb-2">
+                            Estado de la cuenta
+                        </label>
+
+                        <p class="text-sm font-semibold text-green-600
+                                  border-b border-gray-100 pb-3">
+
+                            <i class="fa-solid fa-circle-check mr-1"></i>
+                            Activo
+
+                        </p>
+                    </div>
+
                 </div>
 
-                <div class="dato">
-                    <label>Consultorio asignado</label>
-                    <p>Consultorio 2</p>
+            </section>
+
+
+            {{-- SEGURIDAD --}}
+            <section class="tarjeta bg-white rounded-2xl shadow-sm
+                            border border-gray-200 p-6 mb-6">
+
+                <div class="flex items-center gap-3 border-b
+                            border-gray-100 pb-4 mb-6">
+
+                    <div class="w-10 h-10 rounded-xl bg-cyan-50
+                                flex items-center justify-center">
+
+                        <i class="fa-solid fa-shield-halved text-[#0875bd]"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h2 class="font-bold text-lg text-[#063d69]">
+                            Seguridad de la cuenta
+                        </h2>
+
+                        <p class="text-xs text-gray-400">
+                            Información de acceso al sistema.
+                        </p>
+
+                    </div>
+
                 </div>
 
-                <div class="dato">
-                    <label>Institución</label>
-                    <p>Renueva IPS</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <div>
+                        <label class="block text-xs font-semibold
+                                      text-gray-400 mb-2">
+                            Usuario de acceso
+                        </label>
+
+                        <p class="text-sm font-semibold text-gray-700
+                                  border-b border-gray-100 pb-3">
+
+                            {{ auth()->user()->email ?? 'No registrado' }}
+
+                        </p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold
+                                      text-gray-400 mb-2">
+                            Contraseña
+                        </label>
+
+                        <p class="text-sm font-semibold text-gray-700
+                                  border-b border-gray-100 pb-3">
+
+                            ••••••••••••••
+
+                        </p>
+                    </div>
+
                 </div>
 
-                <div class="dato">
-                    <label>Estado</label>
-                    <p><i class="fa-solid fa-circle-check"></i> Activo</p>
+                <div class="mt-6 p-4 rounded-xl bg-blue-50
+                            border border-blue-100">
+
+                    <div class="flex items-start gap-3">
+
+                        <i class="fa-solid fa-circle-info
+                                  text-[#0875bd] mt-1"></i>
+
+                        <p class="text-sm text-gray-600 leading-relaxed">
+
+                            Los datos de acceso son administrados mediante
+                            el sistema de usuarios de SIGECIR. Si necesitas
+                            actualizar tu información, puedes solicitar
+                            el cambio al administrador.
+
+                        </p>
+
+                    </div>
+
                 </div>
 
-            </div>
+            </section>
 
-        </section>
 
-        <!-- SEGURIDAD -->
+            {{-- PIE --}}
+            <footer class="text-center py-6">
 
-        <section class="seccion">
+                <p class="text-xs text-gray-400">
+                    SIGECIR 2026 · RENUEVA IPS
+                </p>
 
-            <div class="titulo-seccion">
-                <i class="fa-solid fa-shield-halved"></i>
-                <h2>Seguridad de la cuenta</h2>
-            </div>
+                <p class="text-xs text-gray-400 mt-1">
+                    Sistema de Gestión de Citas
+                </p>
 
-            <div class="rejilla">
+            </footer>
 
-                <div class="dato">
-                    <label>Usuario de acceso</label>
-                    <p>profesional@renuevaips.com</p>
-                </div>
-
-                <div class="dato">
-                    <label>Contraseña</label>
-                    <p>••••••••••••</p>
-                </div>
-
-            </div>
-
-            <div class="aviso" style="margin-top:20px;">
-                <i class="fa-solid fa-circle-info"></i>
-                Los datos de acceso son administrados mediante el sistema
-                de usuarios de SIGECIR. Si necesitas actualizar tu información,
-                puedes solicitar el cambio al administrador.
-            </div>
-
-        </section>
-
-        <footer class="pie">
-            SIGECIR2026 · Renueva IPS · Portal de profesionales
-        </footer>
+        </div>
 
     </main>
 

@@ -91,9 +91,9 @@
                 @endif
 
 
-                <form action="{{ route('login.store') }}"
-                      method="POST"
-                      class="space-y-5">
+                <form action="{{ route('login.procesar') }}"
+                        method="POST"
+                        class="space-y-5">
 
                     @csrf
 

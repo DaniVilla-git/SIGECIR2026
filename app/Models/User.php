@@ -32,4 +32,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function profesional()
+    {
+        return $this->hasOne(profesionales::class, 'id_user');
+    }
 }

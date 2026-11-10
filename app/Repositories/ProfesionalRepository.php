@@ -5,31 +5,31 @@
 
     class ProfesionalRepository{
 
-    public function listartodo()
-    {
-        return profesionales::all();
-    }  
+        public function listartodo()
+        {
+            return profesionales::all();
+        }  
 
-    public function guardar(array $datos)
-    {
-        profesionales::create($datos);
-    }
+        public function guardar(array $datos)
+        {
+            return profesionales::create($datos);
+        }
 
-    public function eliminar(int $id)
-    {
-        profesionales::destroy($id);
-    }
- 
-    public function edit(int $id)
-    {
-        return profesionales::findOrFail($id);
-    }
+        public function eliminar(int $id)
+        {
+            profesionales::destroy($id);
+        }
+    
+        public function edit(int $id)
+        {
+            return profesionales::findOrFail($id);
+        }
 
-    public function actualizar(int $id, array $datos)
-    {
-        $profesional = profesionales::findOrFail($id);
-        $profesional->update($datos);
-    }
+        public function actualizar(int $id, array $datos)
+        {
+            $profesional = profesionales::findOrFail($id);
+            $profesional->update($datos);
+        }
  
 
 
