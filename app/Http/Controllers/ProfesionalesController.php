@@ -33,10 +33,21 @@ class ProfesionalesController extends Controller
     public function store(ProfesionalRequest $request)
     {
         $datos = $request->all();
+
         if ($request->hasFile('firma')) {
-            $datos['firma'] = $request->file('firma')->store('firmas', 'public');
+
+            $nombreFirma = time() . '_' . $request->file('firma')->getClientOriginalName();
+
+            $request->file('firma')->move(
+                public_path('firmas'),
+                $nombreFirma
+            );
+
+            $datos['firma'] = 'firmas/' . $nombreFirma;
         }
+
         $this->profesionalservice->guardar($datos);
+
         return redirect()->route('profesionales.index');
     }
 

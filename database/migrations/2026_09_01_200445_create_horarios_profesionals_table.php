@@ -18,7 +18,10 @@ return new class extends Migration
             $table->time('hora_inicio');
             $table->time('hora_fin');
             $table->unsignedBigInteger('id_profesional');
-            $table->foreign('id_profesional')->references('id')->on('profesionales');
+            $table->foreign('id_profesional')
+                ->references('id')
+                ->on('profesionales');
+
             $table->timestamps();
         });
     }

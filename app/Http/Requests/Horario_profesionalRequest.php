@@ -2,24 +2,15 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class Horario_profesionalRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -29,4 +20,20 @@ class Horario_profesionalRequest extends FormRequest
             'id_profesional' => 'required|exists:profesionales,id',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'dia_semana.required' => 'Debe seleccionar una fecha.',
+            'dia_semana.date' => 'La fecha seleccionada no es válida.',
+            'hora_inicio.required' => 'Debe seleccionar la hora de inicio.',
+            'hora_inicio.date_format' => 'La hora de inicio no tiene un formato válido.',
+            'hora_fin.required' => 'Debe seleccionar la hora de finalización.',
+            'hora_fin.date_format' => 'La hora de finalización no tiene un formato válido.',
+            'hora_fin.after' => 'La hora de finalización debe ser posterior a la hora de inicio.',
+            'id_profesional.required' => 'Debe seleccionar un profesional.',
+            'id_profesional.exists' => 'El profesional seleccionado no existe.',
+        ];
+    }
 }
+

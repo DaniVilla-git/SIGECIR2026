@@ -61,4 +61,21 @@ class ServiciosController extends Controller
         $this->ServiciosService->eliminar($id);
         return redirect()->route('servicios.index');
     }
+
+    public function obtenerProfesional($id)
+    {
+        $servicio = \App\Models\servicios::with('profesionales')
+            ->findOrFail($id);
+
+        return response()->json([
+            'id_profesional' => $servicio->profesionales?->id,
+
+            'profesional' => $servicio->profesionales
+                ? $servicio->profesionales->nombre_profesional . ' ' .
+                $servicio->profesionales->apellido_profesional
+                : '',
+
+            'consultorio' => $servicio->profesionales?->consultorio ?? ''
+        ]);
+    }
 }
