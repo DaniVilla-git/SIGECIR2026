@@ -153,7 +153,7 @@
 
                                         <div class="flex items-center justify-center gap-2 font-semibold text-slate-700">
                                             <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-[#0875bd]">
-                                                <i class="fa-solid fa-user-doctor"></i>
+                                                @include('layouts.partials.icons', ['icon' => 'miperfil'])
                                             </span>
 
                                             {{ $horario->profesionales->nombre_profesional ?? 'Sin profesional asignado' }}

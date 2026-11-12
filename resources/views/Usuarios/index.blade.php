@@ -207,26 +207,32 @@
                                             <a href="{{ route('usuarios.edit', $usuario->id) }}"
                                                 class="rounded-lg bg-blue-50 p-2.5 text-[#0875bd] transition hover:bg-blue-100 hover:text-[#063d69]"
                                                 title="Editar usuario">
+
                                                 @include('layouts.partials.icons', ['icon' => 'editar'])
-                                            
 
                                             </a>
 
-                                            {{-- ELIMINAR --}}
-                                            <form action="{{ route('usuarios.destroy', $usuario->id) }}"
-                                                method="POST"
-                                                onsubmit="return confirm('¿Estás seguro de eliminar este usuario?');">
+                                            {{-- ELIMINAR: SOLO ADMINISTRADOR --}}
+                                            @if(auth()->check() && auth()->user()->hasRole('administrador'))
 
-                                                @csrf
-                                                @method('DELETE')
+                                                <form action="{{ route('usuarios.destroy', $usuario->id) }}"
+                                                    method="POST"
+                                                    onsubmit="return confirm('¿Estás seguro de eliminar este usuario? Si tiene información relacionada, no podrá eliminarse.');">
 
-                                                <button type="submit"
-                                                    class="rounded-lg bg-rose-50 p-2.5 text-rose-600 transition hover:bg-rose-100 hover:text-rose-800"
-                                                    title="Eliminar usuario">
-                                                    @include('layouts.partials.icons', ['icon' => 'eliminar'])
+                                                    @csrf
+                                                    @method('DELETE')
 
-                                                </button>
-                                            </form>
+                                                    <button type="submit"
+                                                        class="rounded-lg bg-rose-50 p-2.5 text-rose-600 transition hover:bg-rose-100 hover:text-rose-800"
+                                                        title="Eliminar usuario">
+
+                                                        @include('layouts.partials.icons', ['icon' => 'eliminar'])
+
+                                                    </button>
+
+                                                </form>
+
+                                            @endif
 
                                         </div>
 

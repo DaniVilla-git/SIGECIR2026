@@ -115,11 +115,11 @@ Route::middleware('web')->group(function () {
             |--------------------------------------------------------------------------
             */
 
-            Route::get('/perfil/editar', [PacientePerfilController::class, 'edit'])
-                ->name('perfil.edit');
+            Route::get('/mis-datos', [PortalPacienteController::class, 'editarPerfil'])
+                ->name('paciente.perfil.edit');
 
-            Route::put('/perfil/actualizar', [PacientePerfilController::class, 'update'])
-                ->name('perfil.update');
+            Route::put('/mis-datos', [PortalPacienteController::class, 'actualizarPerfil'])
+                ->name('paciente.perfil.update');
 
         });
 

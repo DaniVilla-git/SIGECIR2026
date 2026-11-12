@@ -8,6 +8,7 @@ use App\Models\profesionales;
 use App\Models\horarios_profesional;
 use App\Models\documentos;
 use App\Services\ProfesionalService;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -74,8 +75,28 @@ class ProfesionalesController extends Controller
 
     public function destroy(int $id)
     {
-        $this->profesionalservice->eliminar($id);
-        return redirect()->route('profesionales.index');
+        try {
+
+            $this->profesionalservice->eliminar($id);
+
+            return redirect()
+                ->route('profesionales.index')
+                ->with('success', 'Profesional eliminado correctamente.');
+
+        } catch (QueryException $e) {
+
+            $codigoError = $e->errorInfo[1] ?? null;
+
+            // Error cuando existen registros relacionados
+            if (in_array($codigoError, [1451, 1217])) {
+
+                return redirect()
+                    ->route('profesionales.index')
+                    ->with('error', 'No se puede eliminar este profesional porque tiene citas, horarios u otra información relacionada en el sistema.');
+            }
+
+            throw $e;
+        }
     }
 
     // DASHBOARD DEL PROFESIONAL

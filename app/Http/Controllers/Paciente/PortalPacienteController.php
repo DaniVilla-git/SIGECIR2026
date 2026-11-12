@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\citas;
 use App\Models\servicios;
 use App\Models\documentos;
+use App\Models\usuarios;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,6 @@ class PortalPacienteController extends Controller
         return view('paciente.inicio');
     }
 
-    // CONSULTAR MIS CITAS
     // CONSULTAR MIS CITAS
     public function misCitas(Request $request)
     {
@@ -181,10 +181,8 @@ class PortalPacienteController extends Controller
         // GUARDAR LA CITA Y LA ORDEN MÉDICA
         DB::transaction(function () use ($cita, $request, $idUsuario) {
 
-            // GUARDAR PRIMERO LA CITA
             $cita->save();
 
-            // COMPROBAR SI SE ADJUNTÓ UNA ORDEN MÉDICA
             if ($request->hasFile('orden_medica')) {
 
                 $archivo = $request->file('orden_medica');
@@ -207,14 +205,14 @@ class PortalPacienteController extends Controller
             }
 
         });
-        
 
         // REDIRECCIONAR A MIS CITAS
         return redirect()
             ->route('paciente.mis-citas')
             ->with('success', 'Tu solicitud de cita fue registrada correctamente. Está pendiente de aprobación.');
     }
-        // VISUALIZAR DOCUMENTO DEL PACIENTE
+
+    // VISUALIZAR DOCUMENTO DEL PACIENTE
     public function verDocumento(Request $request, $id)
     {
         abort_unless($request->user()->hasRole('Paciente'), 403);
@@ -237,4 +235,62 @@ class PortalPacienteController extends Controller
 
         return response()->file($ruta);
     }
+
+    // MOSTRAR FORMULARIO DE MIS DATOS
+    public function editarPerfil(Request $request)
+    {
+        abort_unless($request->user()->hasRole('Paciente'), 403);
+
+        $idUsuario = $request->user()->id_usuario;
+
+        if (!$idUsuario) {
+            abort(403, 'La cuenta no tiene un paciente asociado.');
+        }
+
+        $paciente = usuarios::findOrFail($idUsuario);
+
+        return view('Paciente.editar-perfil', compact('paciente'));
+    }
+
+    // ACTUALIZAR CORREO Y TELÉFONO
+    // ACTUALIZAR CORREO Y TELÉFONO
+    public function actualizarPerfil(Request $request)
+    {
+        abort_unless($request->user()->hasRole('Paciente'), 403);
+
+        $idUsuario = $request->user()->id_usuario;
+
+        if (!$idUsuario) {
+            abort(403, 'La cuenta no tiene un paciente asociado.');
+        }
+
+        $paciente = usuarios::findOrFail($idUsuario);
+
+        $datos = $request->validate([
+            'correo_usuario' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('usuarios', 'correo_usuario')
+                    ->ignore($paciente->id, 'id')
+            ],
+
+            'telefono_usuario' => [
+                'required',
+                'string',
+                'max:20'
+            ],
+        ]);
+
+        // ACTUALIZAR SOLAMENTE CORREO Y TELÉFONO
+        $paciente->correo_usuario = $datos['correo_usuario'];
+        $paciente->telefono_usuario = $datos['telefono_usuario'];
+
+        $paciente->save();
+
+        return redirect()
+            ->route('paciente.paciente.perfil.edit')
+            ->with('success', 'Tus datos de contacto fueron actualizados correctamente.');
+    }
 }
+

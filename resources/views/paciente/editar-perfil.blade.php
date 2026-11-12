@@ -14,7 +14,7 @@
         <div class="flex items-center gap-4 mb-8 border-b border-slate-200 pb-6">
 
             <div class="bg-[#e6f7fc] text-[#0875bd] rounded-xl p-4">
-                <i class="fas fa-user-edit text-3xl"></i>
+                @include('layouts.partials.icons', ['icon' => 'miperfil'])
             </div>
 
             <div>
@@ -22,9 +22,7 @@
                     Mis datos personales
                 </h1>
 
-                <p class="text-slate-500">
-                    RENUEVA IPS
-                </p>
+                <p class="text-slate-500">RENUEVA IPS</p>
 
                 <p class="text-sm text-slate-400 mt-1">
                     Consulta tu información y actualiza tus datos de contacto.
@@ -54,7 +52,7 @@
 
         @if(isset($paciente) && $paciente)
 
-            <form action="{{ route('paciente.perfil.update') }}" method="POST">
+            <form action="{{ route('paciente.paciente.perfil.update') }}" method="POST">
 
                 @csrf
                 @method('PUT')
@@ -67,59 +65,77 @@
                         Información personal
                     </h2>
 
+                    <p class="text-sm text-slate-500 mb-4">
+                        Esta información es de solo lectura y no puede modificarse.
+                    </p>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                        {{-- NOMBRES --}}
+                        {{-- PRIMER NOMBRE --}}
                         <div>
                             <label class="block text-slate-700 font-semibold mb-2">
-                                Nombres
+                                Primer nombre
                             </label>
 
                             <input
                                 type="text"
-                                value="{{ $paciente->nombre_usuario ?? '' }}"
+                                value="{{ $paciente->primer_nombre }}"
                                 readonly
                                 class="w-full border border-slate-200 bg-slate-100 text-slate-600 rounded-lg px-4 py-3 cursor-not-allowed"
                             >
                         </div>
 
-                        {{-- APELLIDOS --}}
+                        {{-- SEGUNDO NOMBRE --}}
                         <div>
                             <label class="block text-slate-700 font-semibold mb-2">
-                                Apellidos
+                                Segundo nombre
                             </label>
 
                             <input
                                 type="text"
-                                value="{{ $paciente->apellido_usuario ?? '' }}"
+                                value="{{ $paciente->segundo_nombre }}"
                                 readonly
                                 class="w-full border border-slate-200 bg-slate-100 text-slate-600 rounded-lg px-4 py-3 cursor-not-allowed"
                             >
                         </div>
 
-                        {{-- TIPO DE DOCUMENTO --}}
+                        {{-- PRIMER APELLIDO --}}
                         <div>
                             <label class="block text-slate-700 font-semibold mb-2">
-                                Tipo de documento
+                                Primer apellido
                             </label>
 
                             <input
                                 type="text"
-                                value="{{ $paciente->tipo_documento ?? '' }}"
+                                value="{{ $paciente->primer_apellido }}"
                                 readonly
                                 class="w-full border border-slate-200 bg-slate-100 text-slate-600 rounded-lg px-4 py-3 cursor-not-allowed"
                             >
                         </div>
 
-                        {{-- NÚMERO DE DOCUMENTO --}}
+                        {{-- SEGUNDO APELLIDO --}}
                         <div>
                             <label class="block text-slate-700 font-semibold mb-2">
-                                Número de documento
+                                Segundo apellido
                             </label>
 
                             <input
                                 type="text"
-                                value="{{ $paciente->numero_documento ?? '' }}"
+                                value="{{ $paciente->segundo_apellido }}"
+                                readonly
+                                class="w-full border border-slate-200 bg-slate-100 text-slate-600 rounded-lg px-4 py-3 cursor-not-allowed"
+                            >
+                        </div>
+
+                        {{-- DOCUMENTO DE IDENTIDAD --}}
+                        <div>
+                            <label class="block text-slate-700 font-semibold mb-2">
+                                Documento de identidad
+                            </label>
+
+                            <input
+                                type="text"
+                                value="{{ $paciente->documento_identidad }}"
                                 readonly
                                 class="w-full border border-slate-200 bg-slate-100 text-slate-600 rounded-lg px-4 py-3 cursor-not-allowed"
                             >
@@ -136,6 +152,10 @@
                         <i class="fas fa-address-book mr-2 text-[#0875bd]"></i>
                         Datos de contacto
                     </h2>
+
+                    <p class="text-sm text-slate-500 mb-4">
+                        Puedes actualizar tu correo electrónico y número de teléfono.
+                    </p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
@@ -160,7 +180,7 @@
 
                             <p class="text-xs text-green-600 mt-2">
                                 <i class="fas fa-pen mr-1"></i>
-                                Puedes editar este dato.
+                                Campo editable.
                             </p>
                         </div>
 
@@ -185,7 +205,7 @@
 
                             <p class="text-xs text-green-600 mt-2">
                                 <i class="fas fa-pen mr-1"></i>
-                                Puedes editar este dato.
+                                Campo editable.
                             </p>
                         </div>
 

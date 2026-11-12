@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\usuarios;
 use App\Services\UsuarioService;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class UsuariosController extends Controller
@@ -73,8 +74,18 @@ class UsuariosController extends Controller
     
     public function destroy(int $id)
     {
-        $this->UsuarioService->eliminar($id);
-        return redirect()->route('usuarios.index');
-        
+        try {
+
+            $this->UsuarioService->eliminar($id);
+
+            return redirect()->route('usuarios.index')
+                ->with('success', 'Usuario eliminado correctamente.');
+
+        } catch (QueryException $e) {
+
+            return redirect()->route('usuarios.index')
+                ->with('error', 'No se puede eliminar este usuario porque tiene información relacionada en el sistema.');
+
+        }
     }
 }

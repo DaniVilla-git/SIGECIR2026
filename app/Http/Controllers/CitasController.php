@@ -6,6 +6,7 @@ use App\Models\citas;
 use App\Models\usuarios;
 use App\Models\profesionales;
 use App\Models\servicios;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
@@ -381,9 +382,11 @@ class CitasController extends Controller
 
 
     // ELIMINAR CITA
+    // ELIMINAR CITA
     public function destroy($id)
     {
         try {
+
             $cita = citas::findOrFail($id);
 
             $cita->delete();
@@ -392,11 +395,18 @@ class CitasController extends Controller
                 ->route('citas.index')
                 ->with('success', 'Cita eliminada correctamente.');
 
-        } catch (\Exception $e) {
+        } catch (QueryException $e) {
 
-            return redirect()
-                ->route('citas.index')
-                ->with('error', 'No se pudo eliminar la cita: ' . $e->getMessage());
+            $codigoError = $e->errorInfo[1] ?? null;
+
+            if (in_array($codigoError, [1451, 1217])) {
+
+                return redirect()
+                    ->route('citas.index')
+                    ->with('error', 'No se puede eliminar esta cita porque tiene documentos u otra información relacionada en el sistema.');
+            }
+
+            throw $e;
         }
     }
 

@@ -154,7 +154,7 @@
 
 
             {{-- EDITAR DATOS --}}
-            <a href="{{ route('paciente.perfil.edit') }}"
+            <a href="{{ url('/paciente/mis-datos') }}"
                class="group bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
 
                 <div class="h-2" style="background: #33C4D0;"></div>

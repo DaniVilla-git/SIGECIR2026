@@ -342,7 +342,7 @@
                         <td colspan="4" class="px-5 py-12 text-center">
 
                             <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
-                                <i class="fa-regular fa-calendar text-2xl"></i>
+                                @include('layouts.partials.icons', ['icon' => 'cita'])
                             </div>
 
                             <p class="text-sm font-semibold text-slate-600">

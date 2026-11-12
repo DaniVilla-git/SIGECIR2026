@@ -162,7 +162,7 @@
                                                     <div class="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3 shadow-sm">
 
                                                         <div class="bg-cyan-100 text-cyan-700 rounded-lg p-3">
-                                                            <i class="fas fa-file-pdf text-xl"></i>
+                                                            @include('layouts.partials.icons', ['icon' => 'verdocumento'])
                                                         </div>
 
                                                         <div>
@@ -178,7 +178,7 @@
                                                             target="_blank"
                                                             class="inline-flex items-center gap-2 mt-2 text-sky-700 hover:text-sky-900 font-semibold text-sm">
 
-                                                                <i class="fas fa-eye"></i>
+                                                                @include('layouts.partials.icons', ['icon' => 'eye'])
                                                                 Visualizar documento
 
                                                             </a>

@@ -164,7 +164,7 @@
                                 <td class="px-5 py-4 text-gray-700">
                                     <div class="flex items-center justify-center gap-2">
                                         <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-[#0875bd]">
-                                            <i class="fa-solid fa-user-doctor"></i>
+                                            @include('layouts.partials.icons', ['icon' => 'miperfil'])
                                         </span>
 
                                         {{ $nombreProfesional }}

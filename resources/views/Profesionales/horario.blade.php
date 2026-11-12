@@ -70,8 +70,8 @@
         </div>
     </header>
 
-    {{-- TARJETAS DE RESUMEN --}}
-    <section class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+    
+    <section class="mx-auto grid max-w-4xl grid-cols-1 gap-5 sm:grid-cols-2">
 
         {{-- DÍAS DE ATENCIÓN --}}
         <article class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-lg transition hover:-translate-y-1 hover:shadow-xl">
