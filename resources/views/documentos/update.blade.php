@@ -176,11 +176,19 @@
                               rows="4">{{ $documento->observacion_documento }}</textarea>
                 </div>
 
-                <div>
+                {{-- BOTONES --}}
+                <div class="flex flex-wrap gap-3 mt-8">
+
                     <button type="submit"
-                            class="bg-green-500 hover:bg-green-600 text-white rounded px-5 py-2">
-                        Guardar
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg">
+                        Actualizar Documento
                     </button>
+
+                    <a href="{{ route('citas.index') }}"
+                    class="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-3 rounded-lg">
+                        Cancelar
+                    </a>
+
                 </div>
 
             </form>

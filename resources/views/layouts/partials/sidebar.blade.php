@@ -1,142 +1,139 @@
-{{--
-    Menú lateral principal de SIGECIR - RENUEVA IPS.
-    Diseño moderno y combinado con el panel administrativo.
---}}
+{{-- BARRA LATERAL ADMINISTRADOR - SIGECIR --}}
 
 <aside
     x-cloak
     :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-    class="fixed inset-y-0 left-0 z-40 flex w-64 transform flex-col overflow-hidden bg-gradient-to-b from-[#063d69] via-[#075587] to-[#063d69] text-slate-200 shadow-2xl transition-transform duration-300 ease-in-out"
-    aria-label="Menú principal de SIGECIR">
+    class="fixed inset-y-0 left-0 z-40 flex w-64 flex-col
+    bg-white border-r border-slate-200 shadow-lg
+    transform transition-transform duration-300 ease-in-out"
+    aria-label="Menú principal del administrador">
 
     <div class="flex h-full flex-col">
 
-        {{-- ENCABEZADO E IDENTIDAD --}}
-        <div class="relative overflow-hidden border-b border-white/10 px-5 py-6">
+        {{-- LOGO Y ENCABEZADO --}}
+        <div class="px-5 pt-7 pb-5">
 
-            <div class="absolute -right-8 -top-10 h-32 w-32 rounded-full border-[18px] border-white/5"></div>
-
-            <div class="relative z-10 flex items-center gap-3">
-                <div class="min-w-0">
-                    <p class="text-xl font-extrabold tracking-widest text-white">
-                        SIGECIR
-                    </p>
-
-                    <p class="mt-1 text-xs font-medium tracking-wide text-cyan-200">
-                        RENUEVA IPS
-                    </p>
-
-                    <div class="mt-2 flex items-center gap-1.5">
-                        <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-                        <span class="text-[10px] font-medium uppercase tracking-wider text-blue-100">
-                            Sistema administrativo
-                        </span>
-                    </div>
-                </div>
-
+            <div class="flex justify-center mb-4">
+                <img
+                    src="{{ asset('images/LogoSIGECIR.png') }}"
+                    alt="Logo SIGECIR"
+                    class="h-16 w-auto object-contain"
+                >
             </div>
+
+            <div class="text-center">
+                <h2 class="text-base font-extrabold text-[#063d69] tracking-wide">
+                    SIGECIR
+                </h2>
+
+                <p class="mt-1 text-[11px] font-medium text-slate-500">
+                    Panel de administración
+                </p>
+            </div>
+
         </div>
 
+        {{-- SEPARADOR --}}
+        <div class="mx-4 border-t border-slate-200"></div>
 
-        {{-- TÍTULO DE NAVEGACIÓN --}}
-        <div class="px-5 pb-3 pt-7">
-            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-cyan-200/80">
-                <i class="fa-solid fa-grip-lines-vertical mr-2"></i>
-                Menú principal
+        {{-- TÍTULO DEL MENÚ --}}
+        <div class="px-5 pt-5 pb-3">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-[#0875bd]">
+                MENÚ PRINCIPAL
             </p>
         </div>
 
-
-        {{-- ENLACES --}}
-        <nav
-            class="flex-1 space-y-1 overflow-y-auto overflow-x-hidden px-3 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            aria-label="Navegación lateral">
+        {{-- ENLACES ADMINISTRATIVOS --}}
+        <nav class="flex-1 overflow-y-auto px-3 space-y-1">
 
             @php
                 $links = [
-                    
-                    ['label' => 'Inicio', 'route' => 'dashboard.index', 'icon' => 'home'],
-
-                    ['label' => 'Usuarios', 'route' => 'usuarios.index', 'icon' => 'usuario'],
-
-                    ['label' => 'Profesionales', 'route' => 'profesionales.index', 'icon' => 'profesional'],
-
-                    ['label' => 'Horarios', 'route' => 'horario_profesional.index', 'icon' => 'horario'],
-
-                    ['label' => 'Servicios', 'route' => 'servicios.index', 'icon' => 'servicios'],
-
-                    ['label' => 'Citas', 'route' => 'citas.index', 'icon' => 'cita'],
-
-                    ['label' => 'Notificaciones', 'route' => 'notificaciones.index', 'icon' => 'notificacion'],
-
-                    ['label' => 'Documentos', 'route' => 'documentos.index', 'icon' => 'documento'],
-
-                    ['label' => 'Mensajes', 'route' => 'mensajes.index', 'icon' => 'mensaje'],
-
                     [
-                        'label' => 'Gestión de usuarios',
-                        'route' => 'seguridad.permisos.index',
-                        'icon' => 'users',
-                        'can' => 'gestionar seguridad',
+                        'label' => 'Inicio',
+                        'route' => 'dashboard.index',
+                        'pattern' => 'dashboard.*',
+                        'icon' => 'home'
+                    ],
+                    [
+                        'label' => 'Usuarios',
+                        'route' => 'usuarios.index',
+                        'pattern' => 'usuarios.*',
+                        'icon' => 'usuario'
+                    ],
+                    [
+                        'label' => 'Profesionales',
+                        'route' => 'profesionales.index',
+                        'pattern' => 'profesionales.*',
+                        'icon' => 'profesional'
+                    ],
+                    [
+                        'label' => 'Servicios',
+                        'route' => 'servicios.index',
+                        'pattern' => 'servicios.*',
+                        'icon' => 'servicios'
+                    ],
+                    [
+                        'label' => 'Citas',
+                        'route' => 'citas.index',
+                        'pattern' => 'citas.*',
+                        'icon' => 'cita'
+                    ],
+                    [
+                        'label' => 'Horarios profesionales',
+                        'route' => 'horario_profesional.index',
+                        'pattern' => 'horario_profesional.*',
+                        'icon' => 'horario'
+                    ],
+                    [
+                        'label' => 'Documentos',
+                        'route' => 'documentos.index',
+                        'pattern' => 'documentos.*',
+                        'icon' => 'documento'
+                    ],
+                    [
+                        'label' => 'Notificaciones',
+                        'route' => 'notificaciones.index',
+                        'pattern' => 'notificaciones.*',
+                        'icon' => 'notificacion'
+                    ],
+                    [
+                        'label' => 'Mensajes',
+                        'route' => 'mensajes.index',
+                        'pattern' => 'mensajes.*',
+                        'icon' => 'mensaje'
                     ],
                 ];
             @endphp
 
-
             @foreach ($links as $link)
 
                 @php
-                    $routePrefix = explode('.', $link['route'])[0];
-
-                    $active = Route::has($link['route'])
-                        && (
-                            request()->routeIs($routePrefix . '.*')
-                            || request()->routeIs($link['route'])
-                        );
-
-                    $tienePermiso = !isset($link['can'])
-                        || auth()->user()?->can($link['can']);
+                    $active = request()->routeIs($link['pattern']);
                 @endphp
 
-                @if (Route::has($link['route']) && $tienePermiso)
+                @if (Route::has($link['route']))
 
                     <a
                         href="{{ route($link['route']) }}"
-                        @if ($active) aria-current="page" @endif
+                        @if($active) aria-current="page" @endif
                         @click="sidebarOpen = false"
-                        class="group relative flex items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200
+                        class="flex items-center gap-3 rounded-xl px-3 py-2.5
+                        text-xs transition-all duration-200
+
                         {{ $active
-                            ? 'bg-white text-[#063d69] shadow-lg'
-                            : 'text-blue-100 hover:bg-white/10 hover:translate-x-1 hover:text-white' }}">
+                            ? 'bg-[#e6f7fc] text-[#063d69] font-bold shadow-sm border-l-4 border-[#0875bd]'
+                            : 'text-slate-600 hover:bg-[#e6f7fc] hover:text-[#0875bd]'
+                        }}">
 
-                        {{-- Indicador lateral --}}
-                        @if ($active)
-                            <span class="absolute inset-y-2 left-0 w-1 rounded-r-full bg-[#20a4a7]"></span>
-                        @endif
-
-                        {{-- Icono --}}
-                        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg
-                            {{ $active
-                                ? 'bg-blue-100 text-[#0875bd]'
-                                : 'bg-white/10 text-cyan-200 group-hover:bg-white/20 group-hover:text-white' }}">
-
-                            @include('layouts.partials.icons', [
-                                'icon' => $link['icon']
-                            ])
-
+                        {{-- ICONO --}}
+                        <span class="flex w-5 items-center justify-center text-[#0875bd]">
+                            @include('layouts.partials.icons', ['icon' => $link['icon']])
                         </span>
 
-                        {{-- Nombre --}}
-                        <span class="flex-1">
+                        {{-- TEXTO --}}
+                        <span>
                             {{ $link['label'] }}
                         </span>
-
-                        {{-- Indicador activo --}}
-                        @if ($active)
-                            <i class="fa-solid fa-chevron-right text-xs text-[#20a4a7]"></i>
-                        @else
-                            <i class="fa-solid fa-angle-right text-[10px] text-white/30 opacity-0 transition group-hover:translate-x-1 group-hover:opacity-100"></i>
-                        @endif
 
                     </a>
 
@@ -146,14 +143,16 @@
 
         </nav>
 
+        {{-- CUENTA --}}
+        <div class="px-5 pt-4 pb-3">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-[#0875bd]">
+                CUENTA
+            </p>
+        </div>
 
-        {{-- PIE DEL MENÚ --}}
-        <div class="border-t border-white/10 bg-black/10 px-4 py-4">
+        {{-- CERRAR SESIÓN --}}
+        <div class="px-3 pb-3">
 
-            
-
-
-            {{-- CERRAR SESIÓN --}}
             @if (Route::has('logout'))
 
                 <form method="POST" action="{{ route('logout') }}">
@@ -161,13 +160,18 @@
 
                     <button
                         type="submit"
-                        class="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-red-200 transition-all duration-200 hover:bg-red-500/20 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-300">
+                        class="flex w-full items-center gap-3 rounded-xl
+                        px-3 py-2.5 text-xs text-slate-600
+                        hover:bg-[#e6f7fc] hover:text-[#063d69]
+                        transition-all duration-200">
 
-                        @include('layouts.partials.icons', [
-                        'icon' => 'cerrar sesion'
-                    ])
+                        <span class="flex w-5 items-center justify-center text-[#0875bd]">
+                            @include('layouts.partials.icons', ['icon' => 'cerrar sesion'])
+                        </span>
 
-                        <span>Cerrar sesión</span>
+                        <span>
+                            Cerrar sesión
+                        </span>
 
                     </button>
 
@@ -175,9 +179,22 @@
 
             @endif
 
-            <p class="mt-4 text-center text-[10px] tracking-wide text-blue-200/60">
-                SIGECIR · RENUEVA IPS
-            </p>
+        </div>
+
+        {{-- INFORMACIÓN --}}
+        <div class="px-3 pb-5 pt-2">
+
+            <div class="rounded-xl bg-[#e6f7fc] border border-[#c8eaf4] px-3 py-3">
+
+                <p class="text-[10px] font-extrabold text-[#063d69]">
+                    SIGECIR 2026
+                </p>
+
+                <p class="mt-1 text-[10px] leading-4 text-[#0875bd]">
+                    Sistema de Gestión de Citas para RENUEVA IPS.
+                </p>
+
+            </div>
 
         </div>
 

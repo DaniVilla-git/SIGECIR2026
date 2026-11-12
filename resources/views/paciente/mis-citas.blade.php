@@ -138,6 +138,69 @@
                                     </span>
 
                                 </td>
+                                {{-- DOCUMENTOS ADJUNTOS --}}
+                                <tr class="bg-sky-50/50">
+
+                                    <td colspan="6" class="px-6 py-5">
+
+                                        <div class="flex items-center gap-2 mb-3">
+
+                                            <i class="fas fa-file-medical text-sky-700 text-lg"></i>
+
+                                            <h3 class="font-bold text-slate-700">
+                                                Documentos adjuntos
+                                            </h3>
+
+                                        </div>
+
+                                        @if($cita->documentos->isNotEmpty())
+
+                                            <div class="flex flex-wrap gap-3">
+
+                                                @foreach($cita->documentos as $documento)
+
+                                                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3 shadow-sm">
+
+                                                        <div class="bg-cyan-100 text-cyan-700 rounded-lg p-3">
+                                                            <i class="fas fa-file-pdf text-xl"></i>
+                                                        </div>
+
+                                                        <div>
+                                                            <p class="font-semibold text-slate-800">
+                                                                {{ $documento->nombre_documento }}
+                                                            </p>
+
+                                                            <p class="text-xs text-slate-500">
+                                                                {{ $documento->tipo_documento }}
+                                                            </p>
+
+                                                            <a href="{{ route('paciente.documentos.ver', $documento->id) }}"
+                                                            target="_blank"
+                                                            class="inline-flex items-center gap-2 mt-2 text-sky-700 hover:text-sky-900 font-semibold text-sm">
+
+                                                                <i class="fas fa-eye"></i>
+                                                                Visualizar documento
+
+                                                            </a>
+                                                        </div>
+
+                                                    </div>
+
+                                                @endforeach
+
+                                            </div>
+
+                                        @else
+
+                                            <p class="text-sm text-slate-500">
+                                                Esta cita no tiene documentos adjuntos.
+                                            </p>
+
+                                        @endif
+
+                                    </td>
+
+                                </tr>
 
                             </tr>
 

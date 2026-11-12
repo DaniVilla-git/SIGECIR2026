@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('titulo')
@@ -7,7 +6,7 @@
 
 @section('content')
 
-<div class="container mx-auto mt-10 px-4">
+<div class="container mx-auto mt-10 px-4 pb-10">
 
     <div class="max-w-2xl mx-auto bg-white shadow-xl rounded-2xl border border-gray-200 p-8">
 
@@ -29,7 +28,7 @@
             </h2>
 
             <p class="text-gray-500 mt-2">
-                Actualiza la información de la notificación.
+                Actualiza la información y el destinatario de la notificación.
             </p>
         </div>
 
@@ -118,32 +117,70 @@
                 @enderror
             </div>
 
+            {{-- TIPO DE DESTINATARIO --}}
+            @php
+                $esProfesional = $notificaciones->profesionales->isNotEmpty();
+
+                $tipoSeleccionado = old(
+                    'destinatario_tipo',
+                    $esProfesional ? 'profesional' : 'usuario'
+                );
+
+                $profesionalSeleccionado = old(
+                    'id_profesional',
+                    $esProfesional ? $notificaciones->profesionales->first()->id : ''
+                );
+
+                $usuarioSeleccionado = old(
+                    'id_usuario',
+                    $notificaciones->id_usuario
+                );
+            @endphp
+
+            <div class="mb-5">
+                <label for="destinatario_tipo"
+                       class="block mb-2 text-sm font-semibold text-gray-700">
+                    Tipo de destinatario
+                </label>
+
+                <select id="destinatario_tipo"
+                        name="destinatario_tipo"
+                        required
+                        onchange="cambiarDestinatario()"
+                        class="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+
+                    <option value="usuario" {{ $tipoSeleccionado == 'usuario' ? 'selected' : '' }}>
+                        Usuario
+                    </option>
+
+                    <option value="profesional" {{ $tipoSeleccionado == 'profesional' ? 'selected' : '' }}>
+                        Profesional
+                    </option>
+
+                </select>
+
+                @error('destinatario_tipo')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+
             {{-- SELECCIONAR USUARIO --}}
-            <div class="mb-7">
+            <div class="mb-7" id="contenedor_usuario">
 
                 <label for="id_usuario"
-                    class="block mb-2 text-sm font-semibold text-gray-700">
+                       class="block mb-2 text-sm font-semibold text-gray-700">
                     Seleccionar usuario
                 </label>
 
-                @php
-                    $usuarioSeleccionado = old('id_usuario') ?: $notificaciones->id_usuario;
-                @endphp
-
                 <select id="id_usuario"
                         name="id_usuario"
-                        required
                         class="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
 
-                    <option value="" disabled
-                        {{ !$usuarioSeleccionado ? 'selected' : '' }}>
-                        Seleccione un usuario
-                    </option>
+                    <option value="">Seleccione un usuario</option>
 
                     @foreach($usuarios as $usuario)
-
-                        <option value="{{ $usuario->id_usuario }}"
-                            {{ $usuarioSeleccionado == $usuario->id_usuario ? 'selected' : '' }}>
+                        <option value="{{ $usuario->id }}"
+                            {{ $usuarioSeleccionado == $usuario->id ? 'selected' : '' }}>
 
                             {{ trim(
                                 $usuario->primer_nombre . ' ' .
@@ -153,15 +190,44 @@
                             ) }}
 
                         </option>
-
                     @endforeach
 
                 </select>
 
                 @error('id_usuario')
-                    <p class="text-red-500 text-sm mt-1">
-                        Debes seleccionar un usuario.
-                    </p>
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
+
+            </div>
+
+            {{-- SELECCIONAR PROFESIONAL --}}
+            <div class="mb-7" id="contenedor_profesional">
+
+                <label for="id_profesional"
+                       class="block mb-2 text-sm font-semibold text-gray-700">
+                    Seleccionar profesional
+                </label>
+
+                <select id="id_profesional"
+                        name="id_profesional"
+                        class="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+
+                    <option value="">Seleccione un profesional</option>
+
+                    @foreach($profesionales as $profesional)
+                        <option value="{{ $profesional->id }}"
+                            {{ $profesionalSeleccionado == $profesional->id ? 'selected' : '' }}>
+
+                            {{ $profesional->nombre_profesional }}
+                            {{ $profesional->apellido_profesional }}
+
+                        </option>
+                    @endforeach
+
+                </select>
+
+                @error('id_profesional')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
 
             </div>
@@ -186,5 +252,41 @@
     </div>
 
 </div>
+
+{{-- SCRIPT PARA CAMBIAR DESTINATARIO --}}
+<script>
+    function cambiarDestinatario() {
+
+        const tipo = document.getElementById('destinatario_tipo').value;
+
+        const contenedorUsuario = document.getElementById('contenedor_usuario');
+        const contenedorProfesional = document.getElementById('contenedor_profesional');
+
+        const usuario = document.getElementById('id_usuario');
+        const profesional = document.getElementById('id_profesional');
+
+        if (tipo === 'usuario') {
+
+            contenedorUsuario.style.display = 'block';
+            contenedorProfesional.style.display = 'none';
+
+            usuario.required = true;
+            profesional.required = false;
+            profesional.value = '';
+
+        } else {
+
+            contenedorUsuario.style.display = 'none';
+            contenedorProfesional.style.display = 'block';
+
+            usuario.required = false;
+            profesional.required = true;
+            usuario.value = '';
+
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', cambiarDestinatario);
+</script>
 
 @endsection

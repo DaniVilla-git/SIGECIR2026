@@ -1,903 +1,361 @@
+@extends('profesionales.layouts.appProfesional')
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@section('title', 'Notificaciones')
 
-    <title>Notificaciones</title>
+@section('content')
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+@php
+    $totalNotificaciones = $notificaciones->count();
 
-    <style>
-        :root {
-            --verde: #20A447;
-            --verde-oscuro: #188638;
-            --verde-claro: #EAF7EE;
-            --fondo: #F5F7F8;
-            --texto: #243447;
-            --gris: #64748B;
-            --borde: #E2E8F0;
-            --blanco: #FFFFFF;
-        }
+    $totalNoLeidas = $notificaciones->filter(function ($notificacion) {
+        return !$notificacion->pivot->leida;
+    })->count();
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    $totalLeidas = $totalNotificaciones - $totalNoLeidas;
 
-        body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: var(--fondo);
-            color: var(--texto);
-        }
+    $tiposNotificacion = $notificaciones
+        ->pluck('tipo_notificacion')
+        ->unique()
+        ->filter();
+@endphp
 
-        .contenedor {
-            display: flex;
-            min-height: 100vh;
-        }
+<div class="container mx-auto mt-8 space-y-6 px-4 pb-10">
 
-        /* MENÚ LATERAL */
-
-        .menu {
-            width: 250px;
-            background: var(--blanco);
-            border-right: 1px solid var(--borde);
-            padding: 28px 18px;
-            flex-shrink: 0;
-        }
-
-        .marca {
-            text-align: center;
-            padding-bottom: 28px;
-            border-bottom: 1px solid var(--borde);
-        }
-
-        .marca img {
-            width: 76px;
-            height: 76px;
-            object-fit: contain;
-            margin-bottom: 8px;
-        }
-
-        .marca h2 {
-            font-size: 21px;
-            color: #17324D;
-        }
-
-        .marca p {
-            color: var(--gris);
-            font-size: 12px;
-            margin-top: 7px;
-        }
-
-        .titulo-menu {
-            color: #94A3B8;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin: 28px 10px 12px;
-            text-transform: uppercase;
-        }
-
-        .enlace-menu {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 13px 14px;
-            margin-bottom: 7px;
-            border-radius: 9px;
-            color: #52677C;
-            text-decoration: none;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-
-        .enlace-menu:hover,
-        .enlace-menu.activo {
-            background: var(--verde-claro);
-            color: var(--verde-oscuro);
-            font-weight: 700;
-        }
-
-        .icono-menu {
-            width: 22px;
-            min-width: 22px;
-            text-align: center;
-            font-size: 17px;
-            color: var(--verde);
-        }
-
-        .nota-menu {
-            margin-top: 35px;
-            padding: 15px;
-            background: #F8FAFC;
-            border-radius: 10px;
-            font-size: 12px;
-            line-height: 1.7;
-            color: var(--gris);
-        }
-
-        /* CONTENIDO PRINCIPAL */
-
-        .principal {
-            flex: 1;
-            min-width: 0;
-            padding: 30px;
-        }
-
-        .barra-superior {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 28px;
-        }
-
-        .barra-superior h1 {
-            font-size: 26px;
-            margin-bottom: 7px;
-        }
-
-        .barra-superior p {
-            font-size: 14px;
-            color: var(--gris);
-        }
-
-        .fecha {
-            padding: 12px 16px;
-            border: 1px solid var(--borde);
-            background: var(--blanco);
-            border-radius: 10px;
-            color: #475569;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        /* RESUMEN */
-
-        .resumen {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 18px;
-            margin-bottom: 25px;
-        }
-
-        .tarjeta {
-            background: var(--blanco);
-            border: 1px solid var(--borde);
-            border-radius: 13px;
-            padding: 21px;
-        }
-
-        .tarjeta-superior {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-
-        .tarjeta-superior p {
-            font-size: 13px;
-            color: var(--gris);
-        }
-
-        .icono-tarjeta {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 39px;
-            height: 39px;
-            border-radius: 10px;
-            background: var(--verde-claro);
-            color: var(--verde-oscuro);
-            font-size: 18px;
-        }
-
-        .tarjeta h3 {
-            font-size: 28px;
-            margin-bottom: 6px;
-        }
-
-        .tarjeta small {
-            color: var(--gris);
-            font-size: 12px;
-        }
-
-        /* SECCIÓN NOTIFICACIONES */
-
-        .seccion-notificaciones {
-            background: var(--blanco);
-            border: 1px solid var(--borde);
-            border-radius: 13px;
-            overflow: hidden;
-        }
-
-        .encabezado-seccion {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            padding: 22px;
-            border-bottom: 1px solid var(--borde);
-        }
-
-        .encabezado-seccion h2 {
-            font-size: 18px;
-            margin-bottom: 6px;
-        }
-
-        .encabezado-seccion p {
-            color: var(--gris);
-            font-size: 13px;
-        }
-
-        .boton {
-            background: var(--verde);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 11px 15px;
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .boton:hover {
-            background: var(--verde-oscuro);
-        }
-
-        /* FILTROS */
-
-        .filtros {
-            display: flex;
-            gap: 12px;
-            padding: 18px 22px;
-            border-bottom: 1px solid var(--borde);
-            flex-wrap: wrap;
-        }
-
-        .filtros select {
-            height: 40px;
-            min-width: 190px;
-            border: 1px solid var(--borde);
-            border-radius: 8px;
-            padding: 0 12px;
-            background: white;
-            color: var(--texto);
-            outline: none;
-            font-size: 13px;
-        }
-
-        /* TARJETAS DE NOTIFICACIÓN */
-
-        .lista-notificaciones {
-            padding: 10px 22px;
-        }
-
-        .notificacion {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            padding: 20px 10px;
-            border-bottom: 1px solid #F1F5F9;
-            transition: 0.2s;
-        }
-
-        .notificacion:last-child {
-            border-bottom: none;
-        }
-
-        .notificacion:hover {
-            background: #FAFCFB;
-        }
-
-        .icono-notificacion {
-            width: 45px;
-            height: 45px;
-            min-width: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            background: var(--verde-claro);
-            color: var(--verde-oscuro);
-            font-size: 19px;
-        }
-
-        .icono-notificacion.azul {
-            background: #EFF6FF;
-            color: #2563EB;
-        }
-
-        .icono-notificacion.rojo {
-            background: #FEF2F2;
-            color: #DC2626;
-        }
-
-        .contenido-notificacion {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .contenido-notificacion h3 {
-            font-size: 14px;
-            margin-bottom: 6px;
-            color: #334155;
-        }
-
-        .contenido-notificacion p {
-            font-size: 13px;
-            color: var(--gris);
-            line-height: 1.6;
-        }
-
-        .contenido-notificacion small {
-            display: block;
-            margin-top: 9px;
-            color: #94A3B8;
-            font-size: 11px;
-        }
-
-        .no-leida {
-            background: #F7FCF8;
-        }
-
-        .punto {
-            width: 9px;
-            height: 9px;
-            background: var(--verde);
-            border-radius: 50%;
-            margin-top: 7px;
-            flex-shrink: 0;
-        }
-
-        .leida {
-            background: #CBD5E1;
-        }
-
-        /* BOTÓN VER DETALLES */
-
-        .boton-detalles {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 8px 13px;
-            background: var(--verde-claro);
-            color: var(--verde-oscuro);
-            border: 1px solid #CDEBD5;
-            border-radius: 7px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .boton-detalles:hover {
-            background: #D8F0DF;
-        }
-
-        /* VENTANA DE DETALLES */
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.55);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal.mostrar {
-            display: flex;
-        }
-
-        .modal-contenido {
-            background: white;
-            width: 100%;
-            max-width: 520px;
-            max-height: 85vh;
-            overflow-y: auto;
-            border-radius: 14px;
-            padding: 25px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
-        }
-
-        .modal-encabezado {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid var(--borde);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        .modal-encabezado h2 {
-            font-size: 19px;
-        }
-
-        .cerrar-modal {
-            border: none;
-            background: transparent;
-            font-size: 23px;
-            color: var(--gris);
-            cursor: pointer;
-        }
-
-        .detalle-item {
-            margin-bottom: 16px;
-        }
-
-        .detalle-item strong {
-            display: block;
-            font-size: 12px;
-            color: var(--gris);
-            margin-bottom: 5px;
-        }
-
-        .detalle-item p {
-            font-size: 14px;
-            color: var(--texto);
-            line-height: 1.5;
-        }
-
-        .modal-pie {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        /* SIN NOTIFICACIONES */
-
-        .sin-datos {
-            padding: 35px;
-            text-align: center;
-            color: var(--gris);
-            font-size: 14px;
-            display: none;
-        }
-
-        .sin-datos i {
-            font-size: 25px;
-            margin-bottom: 10px;
-        }
-
-        .pie {
-            text-align: center;
-            padding: 25px 10px 5px;
-            color: #94A3B8;
-            font-size: 12px;
-        }
-
-        /* RESPONSIVE */
-
-        @media (max-width: 1000px) {
-            .resumen {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 760px) {
-            .contenedor {
-                display: block;
-            }
-
-            .menu {
-                width: 100%;
-                padding: 18px;
-                border-right: none;
-                border-bottom: 1px solid var(--borde);
-            }
-
-            .marca img {
-                width: 58px;
-                height: 58px;
-            }
-
-            .nota-menu {
-                display: none;
-            }
-
-            .principal {
-                padding: 20px 14px;
-            }
-
-            .barra-superior {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .encabezado-seccion {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .resumen {
-                gap: 12px;
-            }
-
-            .notificacion {
-                padding: 17px 5px;
-            }
-
-            .filtros select {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 430px) {
-            .resumen {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="contenedor">
-
-    <!-- MENÚ LATERAL -->
-
-    <aside class="menu">
-
-        <div class="marca">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo SIGECIR">
-            <h2>SIGECIR</h2>
-            <p>Portal de profesionales</p>
-        </div>
-
-        <p class="titulo-menu">Menú principal</p>
-
-        <a href="{{ route('profesionales.dashboard') }}" class="enlace-menu">
-            <i class="fa-solid fa-house icono-menu"></i>
-            <span>Inicio</span>
-        </a>
-
-        <a href="{{ route('profesionales.agenda') }}" class="enlace-menu">
-            <i class="fa-solid fa-calendar-days icono-menu"></i>
-            <span>Mi agenda</span>
-        </a>
-
-        <a href="{{ route('profesionales.pacientes') }}" class="enlace-menu">
-            <i class="fa-solid fa-users icono-menu"></i>
-            <span>Mis pacientes</span>
-        </a>
-
-        <a href="{{ route('profesionales.notificaciones') }}" class="enlace-menu activo">
-            <i class="fa-solid fa-bell icono-menu"></i>
-            <span>Notificaciones</span>
-        </a>
-
-        <a href="{{ route('profesionales.horario') }}" class="enlace-menu">
-            <i class="fa-solid fa-clock icono-menu"></i>
-            <span>Mi horario</span>
-        </a>
-
-        <a href="{{ route('profesionales.dashboard') }}#perfil" class="enlace-menu">
-            <i class="fa-solid fa-circle-user icono-menu"></i>
-            <span>Mi perfil</span>
-        </a>
-
-        <p class="titulo-menu">Cuenta</p>
-
-        <a href="{{ url('/') }}" class="enlace-menu">
-            <i class="fa-solid fa-right-from-bracket icono-menu"></i>
-            <span>Cerrar sesión</span>
-        </a>
-
-        <div class="nota-menu">
-            <strong>SIGECIR2026</strong><br>
-            Sistema de Gestión de Citas para Renueva IPS.
-        </div>
-
-    </aside>
-
-    <!-- CONTENIDO PRINCIPAL -->
-
-    <main class="principal">
-
-        <header class="barra-superior">
-
+    {{-- ENCABEZADO --}}
+    <header class="overflow-hidden rounded-2xl bg-gradient-to-r from-[#063d69] via-[#0875bd] to-[#20a4a7] px-6 py-7 text-white shadow-xl">
+        <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
-                <h1>Notificaciones</h1>
-                <p>Consulta los avisos y novedades de tu actividad profesional.</p>
+                <h1 class="text-2xl font-bold sm:text-3xl">
+                    <i class="fa-solid fa-bell mr-2"></i>
+                    Notificaciones
+                </h1>
+
+                <p class="mt-2 text-sm text-blue-100">
+                    Consulta los avisos y novedades de tu actividad profesional.
+                </p>
             </div>
 
-            <div class="fecha">
+            <div class="inline-flex w-fit items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white shadow-sm">
                 <i class="fa-regular fa-calendar"></i>
                 {{ now()->locale('es')->translatedFormat('l, d \d\e F \d\e Y') }}
             </div>
+        </div>
+    </header>
 
-        </header>
+    {{-- RESUMEN --}}
+    <section class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
 
-        <!-- RESUMEN -->
+        <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg transition hover:-translate-y-1 hover:shadow-xl">
+            <div class="mb-4 flex items-center justify-between">
+                <p class="text-sm font-semibold text-slate-500">
+                    Total de notificaciones
+                </p>
 
-        <section class="resumen">
-
-            <article class="tarjeta">
-
-                <div class="tarjeta-superior">
-                    <p>Total de notificaciones</p>
-
-                    <span class="icono-tarjeta">
-                        <i class="fa-solid fa-bell"></i>
-                    </span>
-                </div>
-
-                <h3 id="totalNotificaciones">4</h3>
-                <small>Avisos recibidos</small>
-
-            </article>
-
-            <article class="tarjeta">
-
-                <div class="tarjeta-superior">
-                    <p>No leídas</p>
-
-                    <span class="icono-tarjeta">
-                        <i class="fa-solid fa-envelope"></i>
-                    </span>
-                </div>
-
-                <h3 id="totalNoLeidas">3</h3>
-                <small>Pendientes por consultar</small>
-
-            </article>
-
-            <article class="tarjeta">
-
-                <div class="tarjeta-superior">
-                    <p>Leídas</p>
-
-                    <span class="icono-tarjeta">
-                        <i class="fa-solid fa-envelope-open"></i>
-                    </span>
-                </div>
-
-                <h3 id="totalLeidas">1</h3>
-                <small>Notificaciones consultadas</small>
-
-            </article>
-
-        </section>
-
-        <!-- LISTADO DE NOTIFICACIONES -->
-
-        <section class="seccion-notificaciones">
-
-            <div class="encabezado-seccion">
-
-                <div>
-                    <h2>Centro de notificaciones</h2>
-                    <p>Aquí puedes revisar los avisos relacionados con tus citas y actividades.</p>
-                </div>
-
-                <button type="button" class="boton" id="marcarTodas">
-                    <i class="fa-solid fa-check-double"></i>
-                    Marcar todas como leídas
-                </button>
-
+                <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-[#e6f7fc] text-lg text-[#0875bd]">
+                    <i class="fa-solid fa-bell"></i>
+                </span>
             </div>
 
-            <!-- FILTROS -->
+            <h3 class="text-3xl font-bold text-[#063d69]">
+                {{ $totalNotificaciones }}
+            </h3>
 
-            <div class="filtros">
+            <p class="mt-1 text-xs text-slate-400">
+                Avisos recibidos
+            </p>
+        </article>
 
-                <select id="filtroTipo">
+        <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg transition hover:-translate-y-1 hover:shadow-xl">
+            <div class="mb-4 flex items-center justify-between">
+                <p class="text-sm font-semibold text-slate-500">
+                    No leídas
+                </p>
+
+                <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-lg text-amber-600">
+                    <i class="fa-solid fa-envelope"></i>
+                </span>
+            </div>
+
+            <h3 class="text-3xl font-bold text-slate-800">
+                {{ $totalNoLeidas }}
+            </h3>
+
+            <p class="mt-1 text-xs text-slate-400">
+                Pendientes por consultar
+            </p>
+        </article>
+
+        <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg transition hover:-translate-y-1 hover:shadow-xl">
+            <div class="mb-4 flex items-center justify-between">
+                <p class="text-sm font-semibold text-slate-500">
+                    Leídas
+                </p>
+
+                <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-lg text-green-600">
+                    <i class="fa-solid fa-envelope-open"></i>
+                </span>
+            </div>
+
+            <h3 class="text-3xl font-bold text-slate-800">
+                {{ $totalLeidas }}
+            </h3>
+
+            <p class="mt-1 text-xs text-slate-400">
+                Notificaciones consultadas
+            </p>
+        </article>
+
+    </section>
+
+    {{-- CENTRO DE NOTIFICACIONES --}}
+    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+
+        {{-- ENCABEZADO --}}
+        <div class="flex flex-col justify-between gap-4 border-b border-slate-200 px-5 py-5 sm:flex-row sm:items-center sm:px-6">
+
+            <div>
+                <h2 class="text-lg font-bold text-[#063d69]">
+                    <i class="fa-solid fa-inbox mr-2 text-[#0875bd]"></i>
+                    Centro de notificaciones
+                </h2>
+
+                <p class="mt-1 text-sm text-slate-500">
+                    Revisa los avisos relacionados con tus citas y actividades.
+                </p>
+            </div>
+
+            <span class="inline-flex w-fit items-center gap-2 rounded-xl bg-[#e6f7fc] px-4 py-3 text-sm font-semibold text-[#0875bd]">
+                <i class="fa-solid fa-bell"></i>
+                {{ $totalNoLeidas }} pendientes
+            </span>
+
+        </div>
+
+        {{-- FILTROS --}}
+        <div class="grid grid-cols-1 gap-4 border-b border-slate-200 bg-slate-50 p-5 sm:grid-cols-2">
+
+            <div>
+                <label for="filtroTipo" class="mb-2 block text-sm font-semibold text-slate-600">
+                    Tipo de notificación
+                </label>
+
+                <select
+                    id="filtroTipo"
+                    class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-[#0875bd] focus:ring-2 focus:ring-[#0875bd]/20">
+
                     <option value="">Todos los tipos</option>
-                    <option value="Cita">Citas</option>
-                    <option value="Horario">Horarios</option>
-                    <option value="Recordatorio">Recordatorios</option>
-                    <option value="Cancelación">Cancelaciones</option>
-                </select>
 
-                <select id="filtroLectura">
+                    @foreach($tiposNotificacion as $tipo)
+                        <option value="{{ $tipo }}">
+                            {{ $tipo }}
+                        </option>
+                    @endforeach
+
+                </select>
+            </div>
+
+            <div>
+                <label for="filtroLectura" class="mb-2 block text-sm font-semibold text-slate-600">
+                    Estado de lectura
+                </label>
+
+                <select
+                    id="filtroLectura"
+                    class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-[#0875bd] focus:ring-2 focus:ring-[#0875bd]/20">
+
                     <option value="">Todas las notificaciones</option>
                     <option value="no-leida">No leídas</option>
                     <option value="leida">Leídas</option>
-                </select>
 
+                </select>
             </div>
 
-            <!-- NOTIFICACIONES -->
+        </div>
 
-            <div class="lista-notificaciones" id="listaNotificaciones">
+        {{-- LISTA DE NOTIFICACIONES --}}
+        <div id="listaNotificaciones" class="divide-y divide-slate-100 px-4 sm:px-6">
 
-                <!-- NUEVA CITA -->
+            @forelse($notificaciones as $notificacion)
 
-                <article class="notificacion no-leida"
-                         data-tipo="Cita"
-                         data-lectura="no-leida">
+                @php
+                    $leida = (bool) $notificacion->pivot->leida;
 
-                    <div class="icono-notificacion">
-                        <i class="fa-solid fa-calendar-plus"></i>
+                    $tipo = strtolower($notificacion->tipo_notificacion);
+
+                    $icono = 'fa-bell';
+                    $colorFondo = 'bg-[#e6f7fc]';
+                    $colorIcono = 'text-[#0875bd]';
+
+                    if (str_contains($tipo, 'cita')) {
+                        $icono = 'fa-calendar-check';
+                    } elseif (str_contains($tipo, 'horario')) {
+                        $icono = 'fa-clock';
+                        $colorFondo = 'bg-blue-100';
+                        $colorIcono = 'text-blue-600';
+                    } elseif (str_contains($tipo, 'recordatorio')) {
+                        $icono = 'fa-bell';
+                        $colorFondo = 'bg-amber-100';
+                        $colorIcono = 'text-amber-600';
+                    } elseif (str_contains($tipo, 'cancel')) {
+                        $icono = 'fa-calendar-xmark';
+                        $colorFondo = 'bg-red-100';
+                        $colorIcono = 'text-red-600';
+                    }
+                @endphp
+
+                <article
+                    class="notificacion -mx-2 flex items-start gap-4 rounded-xl px-3 py-5 transition hover:bg-[#e6f7fc]/60"
+                    data-tipo="{{ $notificacion->tipo_notificacion }}"
+                    data-lectura="{{ $leida ? 'leida' : 'no-leida' }}">
+
+                    {{-- ICONO --}}
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl {{ $colorFondo }} text-lg {{ $colorIcono }}">
+                        <i class="fa-solid {{ $icono }}"></i>
                     </div>
 
-                    <div class="contenido-notificacion">
+                    {{-- INFORMACIÓN --}}
+                    <div class="min-w-0 flex-1">
 
-                        <h3>Nueva cita asignada</h3>
+                        <div class="flex flex-wrap items-center gap-2">
 
-                        <p>
-                            Se te ha asignado una nueva cita para el paciente
-                            María Pérez. Consulta los detalles en tu agenda.
+                            <h3 class="font-bold text-slate-700">
+                                {{ $notificacion->titulo_notificacion }}
+                            </h3>
+
+                            @if(!$leida)
+                                <span class="etiqueta-no-leida rounded-full bg-blue-100 px-2.5 py-1 text-[10px] font-bold text-blue-700">
+                                    NUEVA
+                                </span>
+                            @endif
+
+                        </div>
+
+                        <p class="mt-1 whitespace-pre-line text-sm leading-6 text-slate-500">
+                            {{ $notificacion->mensaje_notificacion }}
                         </p>
 
-                        <small>Hoy · 8:00 a. m. · Citas</small>
+                        <small class="mt-2 block text-xs text-slate-400">
+                            {{ \Illuminate\Support\Carbon::parse($notificacion->fecha_notificacion)->locale('es')->translatedFormat('d \d\e F \d\e Y - h:i A') }}
+                            · {{ $notificacion->tipo_notificacion }}
+                        </small>
 
-                        <button type="button"
-                                class="boton-detalles"
-                                data-detalle="cita">
+                        <button
+                            type="button"
+                            class="boton-detalles mt-3 inline-flex items-center gap-2 rounded-lg border border-[#cceef8] bg-[#e6f7fc] px-3 py-2 text-xs font-semibold text-[#0860a5] transition hover:bg-[#cceef8]"
+                            data-titulo="{{ $notificacion->titulo_notificacion }}"
+                            data-mensaje="{{ $notificacion->mensaje_notificacion }}"
+                            data-tipo="{{ $notificacion->tipo_notificacion }}"
+                            data-fecha="{{ \Illuminate\Support\Carbon::parse($notificacion->fecha_notificacion)->locale('es')->translatedFormat('d \d\e F \d\e Y - h:i A') }}">
+
                             <i class="fa-solid fa-eye"></i>
                             Ver detalles
+
                         </button>
 
                     </div>
 
-                    <span class="punto"></span>
+                    {{-- INDICADOR --}}
+                    <span class="punto mt-2 h-2.5 w-2.5 shrink-0 rounded-full {{ $leida ? 'bg-slate-300' : 'bg-[#009fd4]' }}"></span>
 
                 </article>
 
-                <!-- ACTUALIZACIÓN DE HORARIO -->
+            @empty
 
-                <article class="notificacion no-leida"
-                         data-tipo="Horario"
-                         data-lectura="no-leida">
+                <div class="px-4 py-14 text-center">
+                    <i class="fa-regular fa-bell-slash text-4xl text-slate-300"></i>
 
-                    <div class="icono-notificacion azul">
-                        <i class="fa-solid fa-clock"></i>
-                    </div>
+                    <p class="mt-3 font-semibold text-slate-600">
+                        No tienes notificaciones.
+                    </p>
 
-                    <div class="contenido-notificacion">
-
-                        <h3>Actualización de horario</h3>
-
-                        <p>
-                            Se ha realizado una actualización en tu horario
-                            de atención. Revisa la información correspondiente.
-                        </p>
-
-                        <small>Ayer · 3:30 p. m. · Horarios</small>
-
-                        <button type="button"
-                                class="boton-detalles"
-                                data-detalle="horario">
-                            <i class="fa-solid fa-eye"></i>
-                            Ver detalles
-                        </button>
-
-                    </div>
-
-                    <span class="punto"></span>
-
-                </article>
-
-                <!-- RECORDATORIO -->
-
-                <article class="notificacion no-leida"
-                         data-tipo="Recordatorio"
-                         data-lectura="no-leida">
-
-                    <div class="icono-notificacion">
-                        <i class="fa-solid fa-bell"></i>
-                    </div>
-
-                    <div class="contenido-notificacion">
-
-                        <h3>Recordatorio de atención</h3>
-
-                        <p>
-                            Recuerda revisar las citas programadas
-                            para tu próxima jornada de atención.
-                        </p>
-
-                        <small>Ayer · 10:00 a. m. · Recordatorio</small>
-
-                        <button type="button"
-                                class="boton-detalles"
-                                data-detalle="recordatorio">
-                            <i class="fa-solid fa-eye"></i>
-                            Ver detalles
-                        </button>
-
-                    </div>
-
-                    <span class="punto"></span>
-
-                </article>
-
-                <!-- CITA CANCELADA -->
-
-                <article class="notificacion"
-                         data-tipo="Cancelación"
-                         data-lectura="leida">
-
-                    <div class="icono-notificacion rojo">
-                        <i class="fa-solid fa-calendar-xmark"></i>
-                    </div>
-
-                    <div class="contenido-notificacion">
-
-                        <h3>Cita cancelada</h3>
-
-                        <p>
-                            Se ha cancelado una cita que estaba programada
-                            en tu agenda. Consulta los cambios realizados.
-                        </p>
-
-                        <small>30 de octubre · 2:00 p. m. · Cancelaciones</small>
-
-                        <button type="button"
-                                class="boton-detalles"
-                                data-detalle="cancelacion">
-                            <i class="fa-solid fa-eye"></i>
-                            Ver detalles
-                        </button>
-
-                    </div>
-
-                    <span class="punto leida"></span>
-
-                </article>
-
-                <!-- MENSAJE CUANDO NO HAY RESULTADOS -->
-
-                <div class="sin-datos" id="sinNotificaciones">
-                    <i class="fa-regular fa-bell-slash"></i>
-                    <p>No hay notificaciones para mostrar.</p>
+                    <p class="mt-1 text-sm text-slate-400">
+                        Aquí aparecerán los avisos que te envíe la administración.
+                    </p>
                 </div>
 
+            @endforelse
+
+            {{-- SIN RESULTADOS DE FILTROS --}}
+            <div id="sinNotificaciones" class="hidden px-4 py-14 text-center">
+                <i class="fa-regular fa-bell-slash text-4xl text-slate-300"></i>
+
+                <p class="mt-3 font-semibold text-slate-600">
+                    No hay notificaciones para mostrar.
+                </p>
+
+                <p class="mt-1 text-sm text-slate-400">
+                    Intenta cambiar los filtros seleccionados.
+                </p>
             </div>
 
-        </section>
+        </div>
 
-        <footer class="pie">
-            SIGECIR2026 · Renueva IPS · Portal de profesionales
-        </footer>
+        <div class="border-t border-slate-200 bg-slate-50 px-5 py-3">
+            <p class="text-xs text-slate-500">
+                <i class="fa-solid fa-circle-info mr-1 text-[#009fd4]"></i>
+                Aquí se muestran las notificaciones enviadas a tu cuenta profesional.
+            </p>
+        </div>
 
-    </main>
+    </section>
+
+    <footer class="py-3 text-center text-xs text-slate-400">
+        SIGECIR2026 · Renueva IPS · Portal de profesionales
+    </footer>
 
 </div>
 
-<!-- VENTANA EMERGENTE DE DETALLES -->
+{{-- MODAL DE DETALLES --}}
+<div
+    id="modalDetalles"
+    class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/60 p-4">
 
-<div class="modal" id="modalDetalles">
+    <div class="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl">
 
-    <div class="modal-contenido">
+        <div class="flex items-center justify-between border-b border-slate-200 px-6 py-5">
 
-        <div class="modal-encabezado">
+            <div>
+                <h2 id="tituloDetalle" class="text-lg font-bold text-[#063d69]">
+                    Detalles de notificación
+                </h2>
 
-            <h2 id="tituloDetalle">Detalles de notificación</h2>
+                <p class="mt-1 text-xs text-slate-400">
+                    Información del aviso recibido
+                </p>
+            </div>
 
-            <button type="button"
-                    class="cerrar-modal"
-                    id="cerrarModal"
-                    aria-label="Cerrar ventana">
+            <button
+                type="button"
+                id="cerrarModal"
+                aria-label="Cerrar ventana"
+                class="flex h-9 w-9 items-center justify-center rounded-lg text-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
                 &times;
             </button>
 
         </div>
 
-        <div id="contenidoDetalle"></div>
+        <div id="contenidoDetalle" class="max-h-[60vh] space-y-5 overflow-y-auto px-6 py-6">
+        </div>
 
-        <div class="modal-pie">
+        <div class="flex justify-end border-t border-slate-200 bg-slate-50 px-6 py-4">
 
-            <button type="button" class="boton" id="cerrarBoton">
+            <button
+                type="button"
+                id="cerrarBoton"
+                class="rounded-xl bg-[#0875bd] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#063d69]">
                 Cerrar
             </button>
 
         </div>
 
     </div>
-
 </div>
 
-<!-- FUNCIONES DE NOTIFICACIONES -->
+@endsection
 
+@push('scripts')
 <script>
+document.addEventListener('DOMContentLoaded', function () {
 
     const notificaciones = document.querySelectorAll('.notificacion');
 
@@ -909,164 +367,7 @@
     const tituloDetalle = document.getElementById('tituloDetalle');
     const contenidoDetalle = document.getElementById('contenidoDetalle');
 
-    /* INFORMACIÓN DE EJEMPLO */
-
-    const detalles = {
-
-        cita: {
-            titulo: 'Detalles de la nueva cita',
-
-            contenido: `
-                <div class="detalle-item">
-                    <strong>Paciente</strong>
-                    <p>María Pérez</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Fecha de la cita</strong>
-                    <p>4 de noviembre de 2026</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Hora</strong>
-                    <p>8:00 a. m. - 8:30 a. m.</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Servicio</strong>
-                    <p>Consulta de fisioterapia</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Modalidad</strong>
-                    <p>Presencial</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Consultorio</strong>
-                    <p>Consultorio 2</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Estado</strong>
-                    <p>En espera</p>
-                </div>
-            `
-        },
-
-        horario: {
-            titulo: 'Detalles de actualización de horario',
-
-            contenido: `
-                <div class="detalle-item">
-                    <strong>Fecha de actualización</strong>
-                    <p>3 de noviembre de 2026</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Horario anterior</strong>
-                    <p>Martes: 2:00 p. m. - 6:00 p. m.</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Nuevo horario</strong>
-                    <p>Martes: 3:00 p. m. - 7:00 p. m.</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Información</strong>
-                    <p>El horario fue actualizado por el administrador.</p>
-                </div>
-            `
-        },
-
-        recordatorio: {
-            titulo: 'Detalles del recordatorio',
-
-            contenido: `
-                <div class="detalle-item">
-                    <strong>Próxima jornada</strong>
-                    <p>5 de noviembre de 2026</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Horario de atención</strong>
-                    <p>8:00 a. m. - 12:00 p. m.</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Citas programadas</strong>
-                    <p>4 citas pendientes de atención.</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Recomendación</strong>
-                    <p>Revisa tu agenda antes de iniciar la jornada.</p>
-                </div>
-            `
-        },
-
-        cancelacion: {
-            titulo: 'Detalles de la cita cancelada',
-
-            contenido: `
-                <div class="detalle-item">
-                    <strong>Paciente</strong>
-                    <p>Juan Rodríguez</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Fecha de la cita</strong>
-                    <p>30 de octubre de 2026</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Hora</strong>
-                    <p>2:00 p. m.</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Servicio</strong>
-                    <p>Consulta de fisioterapia</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Estado</strong>
-                    <p>Cancelada</p>
-                </div>
-
-                <div class="detalle-item">
-                    <strong>Motivo</strong>
-                    <p>No se ha registrado un motivo de cancelación.</p>
-                </div>
-            `
-        }
-
-    };
-
-    /* ACTUALIZAR CONTADORES */
-
-    function actualizarContadores() {
-
-        const total = notificaciones.length;
-
-        const noLeidas = document.querySelectorAll(
-            '.notificacion[data-lectura="no-leida"]'
-        ).length;
-
-        const leidas = document.querySelectorAll(
-            '.notificacion[data-lectura="leida"]'
-        ).length;
-
-        document.getElementById('totalNotificaciones').textContent = total;
-
-        document.getElementById('totalNoLeidas').textContent = noLeidas;
-
-        document.getElementById('totalLeidas').textContent = leidas;
-    }
-
-    /* FILTRAR NOTIFICACIONES */
-
+    // FILTRAR NOTIFICACIONES
     function filtrarNotificaciones() {
 
         const tipo = filtroTipo.value;
@@ -1074,109 +375,89 @@
 
         let visibles = 0;
 
-        notificaciones.forEach(notificacion => {
+        notificaciones.forEach(function (notificacion) {
 
             const tipoNotificacion = notificacion.dataset.tipo;
             const estadoLectura = notificacion.dataset.lectura;
 
             const coincideTipo = !tipo || tipoNotificacion === tipo;
-
             const coincideLectura = !lectura || estadoLectura === lectura;
 
             if (coincideTipo && coincideLectura) {
 
-                notificacion.style.display = 'flex';
+                notificacion.classList.remove('hidden');
+                notificacion.classList.add('flex');
 
                 visibles++;
 
             } else {
 
-                notificacion.style.display = 'none';
+                notificacion.classList.add('hidden');
+                notificacion.classList.remove('flex');
 
             }
 
         });
 
-        mensajeVacio.style.display = visibles === 0 ? 'block' : 'none';
+        mensajeVacio.classList.toggle(
+            'hidden',
+            visibles !== 0 || notificaciones.length === 0
+        );
     }
 
-    /* MARCAR UNA NOTIFICACIÓN COMO LEÍDA */
+    // ABRIR DETALLES
+    function abrirDetalles(boton) {
 
-    function marcarComoLeida(notificacion) {
+        tituloDetalle.textContent = boton.dataset.titulo;
 
-        notificacion.dataset.lectura = 'leida';
+        contenidoDetalle.replaceChildren();
 
-        notificacion.classList.remove('no-leida');
+        const campos = [
+            ['Título', boton.dataset.titulo],
+            ['Mensaje', boton.dataset.mensaje],
+            ['Tipo de notificación', boton.dataset.tipo],
+            ['Fecha de recepción', boton.dataset.fecha]
+        ];
 
-        const punto = notificacion.querySelector('.punto');
+        campos.forEach(function (campo) {
 
-        punto.classList.add('leida');
+            const contenedor = document.createElement('div');
+            const etiqueta = document.createElement('p');
+            const valor = document.createElement('p');
 
-        actualizarContadores();
+            contenedor.className = 'border-b border-slate-100 pb-4 last:border-0';
 
-        filtrarNotificaciones();
+            etiqueta.className = 'mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400';
+            etiqueta.textContent = campo[0];
+
+            valor.className = 'whitespace-pre-line text-sm leading-6 text-slate-700';
+            valor.textContent = campo[1];
+
+            contenedor.appendChild(etiqueta);
+            contenedor.appendChild(valor);
+
+            contenidoDetalle.appendChild(contenedor);
+
+        });
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
     }
 
-    /* ABRIR DETALLES */
+    // BOTONES VER DETALLES
+    document.querySelectorAll('.boton-detalles').forEach(function (boton) {
 
-    function abrirDetalles(tipo) {
-
-        const detalle = detalles[tipo];
-
-        if (!detalle) return;
-
-        tituloDetalle.textContent = detalle.titulo;
-
-        contenidoDetalle.innerHTML = detalle.contenido;
-
-        modal.classList.add('mostrar');
-    }
-
-    /* BOTONES VER DETALLES */
-
-    document.querySelectorAll('.boton-detalles').forEach(boton => {
-
-        boton.addEventListener('click', function(event) {
-
-            event.stopPropagation();
-
-            const notificacion = this.closest('.notificacion');
-
-            marcarComoLeida(notificacion);
-
-            abrirDetalles(this.dataset.detalle);
-
+        boton.addEventListener('click', function () {
+            abrirDetalles(this);
         });
 
     });
 
-    /* MARCAR TODAS COMO LEÍDAS */
-
-    document.getElementById('marcarTodas').addEventListener('click', () => {
-
-        notificaciones.forEach(notificacion => {
-
-            notificacion.dataset.lectura = 'leida';
-
-            notificacion.classList.remove('no-leida');
-
-            const punto = notificacion.querySelector('.punto');
-
-            punto.classList.add('leida');
-
-        });
-
-        actualizarContadores();
-
-        filtrarNotificaciones();
-
-    });
-
-    /* CERRAR VENTANA */
-
+    // CERRAR MODAL
     function cerrarModal() {
 
-        modal.classList.remove('mostrar');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
 
     }
 
@@ -1184,39 +465,27 @@
 
     document.getElementById('cerrarBoton').addEventListener('click', cerrarModal);
 
-    modal.addEventListener('click', function(event) {
+    modal.addEventListener('click', function (event) {
 
         if (event.target === modal) {
-
             cerrarModal();
-
         }
 
     });
 
-    /* CERRAR CON LA TECLA ESC */
-
-    document.addEventListener('keydown', function(event) {
+    document.addEventListener('keydown', function (event) {
 
         if (event.key === 'Escape') {
-
             cerrarModal();
-
         }
 
     });
 
-    /* EVENTOS DE LOS FILTROS */
-
+    // EVENTOS DE LOS FILTROS
     filtroTipo.addEventListener('change', filtrarNotificaciones);
 
     filtroLectura.addEventListener('change', filtrarNotificaciones);
 
-    /* INICIAR CONTADORES */
-
-    actualizarContadores();
-
+});
 </script>
-
-</body>
-</html>
+@endpush

@@ -1,428 +1,433 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi agenda</title>
+@extends('profesionales.layouts.appProfesional')
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+@section('title', 'Mi agenda')
 
-    <style>
-        :root {
-            --verde: #20A447;
-            --verde-oscuro: #188638;
-            --verde-claro: #EAF7EE;
-            --fondo: #F5F7F8;
-            --texto: #243447;
-            --gris: #64748B;
-            --borde: #E2E8F0;
-            --blanco: #FFFFFF;
-        }
+@section('content')
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<div class="container mx-auto mt-8 px-4 pb-10">
 
-        body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: var(--fondo);
-            color: var(--texto);
-        }
+    {{-- CONTENEDOR PRINCIPAL --}}
+    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
 
-        .contenedor {
-            display: flex;
-            min-height: 100vh;
-        }
+        {{-- ENCABEZADO --}}
+        <div class="relative overflow-hidden bg-gradient-to-r from-[#063d69] via-[#0875bd] to-[#20a4a7] px-6 py-8 md:px-8">
 
-        /* MENÚ LATERAL */
+            <div class="absolute -right-10 -top-16 h-52 w-52 rounded-full bg-white/10"></div>
+            <div class="absolute -bottom-20 right-40 h-48 w-48 rounded-full bg-white/10"></div>
 
-        .menu {
-            width: 250px;
-            background: var(--blanco);
-            border-right: 1px solid var(--borde);
-            padding: 28px 18px;
-            flex-shrink: 0;
-        }
+            <div class="relative flex flex-col justify-between gap-5 md:flex-row md:items-center">
 
-        .marca {
-            text-align: center;
-            padding-bottom: 28px;
-            border-bottom: 1px solid var(--borde);
-        }
+                <div>
+                    <div class="mb-3 flex items-center gap-2 text-sm font-medium text-blue-100">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <span>Gestión de citas</span>
+                    </div>
 
-        .marca img {
-            width: 76px;
-            height: 76px;
-            object-fit: contain;
-            margin-bottom: 8px;
-        }
+                    <h1 class="text-3xl font-extrabold tracking-tight text-white">
+                        Mi agenda
+                    </h1>
 
-        .marca h2 {
-            font-size: 21px;
-            color: #17324D;
-        }
+                    <p class="mt-2 max-w-xl text-sm text-blue-100">
+                        Consulta y organiza tus citas asignadas.
+                    </p>
+                </div>
 
-        .marca p {
-            color: var(--gris);
-            font-size: 12px;
-            margin-top: 7px;
-        }
+                <div class="inline-flex items-center gap-2 self-start rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#063d69] shadow-lg sm:self-auto">
+                    <i class="fa-regular fa-calendar text-[#0875bd]"></i>
 
-        .titulo-menu {
-            color: #94A3B8;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin: 28px 10px 12px;
-            text-transform: uppercase;
-        }
+                    <span>
+                        {{ now()->locale('es')->translatedFormat('l, d \d\e F \d\e Y') }}
+                    </span>
+                </div>
 
-        .enlace-menu {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 13px 14px;
-            margin-bottom: 7px;
-            border-radius: 9px;
-            color: #52677C;
-            text-decoration: none;
-            font-size: 14px;
-            transition: 0.2s;
-        }
+            </div>
+        </div>
 
-        .enlace-menu:hover,
-        .enlace-menu.activo {
-            background: var(--verde-claro);
-            color: var(--verde-oscuro);
-            font-weight: 700;
-        }
+        <div class="p-5 md:p-8">
 
-        .icono-menu {
-            width: 22px;
-            min-width: 22px;
-            text-align: center;
-            font-size: 17px;
-            color: var(--verde);
-        }
+            {{-- RESUMEN DE CITAS --}}
+            <section class="mb-7 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
 
-        .nota-menu {
-            margin-top: 35px;
-            padding: 15px;
-            background: #F8FAFC;
-            border-radius: 10px;
-            font-size: 12px;
-            line-height: 1.7;
-            color: var(--gris);
-        }
+                {{-- TOTAL --}}
+                <article class="rounded-xl border border-slate-200 bg-slate-50/80 p-5 transition duration-200 hover:-translate-y-1 hover:shadow-md">
 
-        /* CONTENIDO */
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-slate-500">
+                                Total de citas
+                            </p>
 
-        .principal {
-            flex: 1;
-            min-width: 0;
-            padding: 30px;
-        }
+                            <h2 id="totalCitas" class="mt-2 text-3xl font-extrabold text-[#063d69]">
+                                {{ $citas->count() }}
+                            </h2>
+                        </div>
 
-        .barra-superior {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 28px;
-        }
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-[#0875bd]">
+                            <i class="fa-solid fa-calendar-check text-xl"></i>
+                        </div>
+                    </div>
 
-        .barra-superior h1 {
-            font-size: 26px;
-            margin-bottom: 7px;
-        }
+                </article>
 
-        .barra-superior p {
-            font-size: 14px;
-            color: var(--gris);
-        }
+                {{-- PENDIENTES --}}
+                <article class="rounded-xl border border-slate-200 bg-slate-50/80 p-5 transition duration-200 hover:-translate-y-1 hover:shadow-md">
 
-        .fecha {
-            padding: 12px 16px;
-            border: 1px solid var(--borde);
-            background: var(--blanco);
-            border-radius: 10px;
-            color: #475569;
-            font-size: 13px;
-        }
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-slate-500">
+                                Pendientes
+                            </p>
 
-        /* RESUMEN */
+                            <h2 id="totalPendientes" class="mt-2 text-3xl font-extrabold text-amber-600">
+                                {{ $citas->filter(function ($cita) {
+                                    return in_array(mb_strtolower(trim($cita->estado_cita ?? '')), ['pendiente', 'en espera']);
+                                })->count() }}
+                            </h2>
+                        </div>
 
-        .resumen {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 18px;
-            margin-bottom: 25px;
-        }
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+                            <i class="fa-solid fa-clock text-xl"></i>
+                        </div>
+                    </div>
 
-        .tarjeta {
-            background: var(--blanco);
-            border: 1px solid var(--borde);
-            border-radius: 13px;
-            padding: 20px;
-        }
+                </article>
 
-        .tarjeta p {
-            color: var(--gris);
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
+                {{-- ATENDIDAS --}}
+                <article class="rounded-xl border border-slate-200 bg-slate-50/80 p-5 transition duration-200 hover:-translate-y-1 hover:shadow-md">
 
-        .tarjeta h2 {
-            font-size: 27px;
-        }
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-slate-500">
+                                Atendidas
+                            </p>
 
-        .tarjeta i {
-            color: var(--verde);
-            margin-right: 7px;
-        }
+                            <h2 id="totalAtendidas" class="mt-2 text-3xl font-extrabold text-green-600">
+                                {{ $citas->filter(function ($cita) {
+                                    return mb_strtolower(trim($cita->estado_cita ?? '')) === 'atendida';
+                                })->count() }}
+                            </h2>
+                        </div>
 
-        /* FILTROS */
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
+                            <i class="fa-solid fa-circle-check text-xl"></i>
+                        </div>
+                    </div>
 
-        .panel {
-            background: var(--blanco);
-            border: 1px solid var(--borde);
-            border-radius: 13px;
-            padding: 22px;
-            margin-bottom: 22px;
-        }
+                </article>
 
-        .panel h2 {
-            font-size: 18px;
-            margin-bottom: 18px;
-        }
+            </section>
 
-        .filtros {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr;
-            gap: 15px;
-        }
+            {{-- FILTROS --}}
+            <section class="mb-7 rounded-xl border border-slate-200 bg-slate-50/80 p-4 md:p-5">
 
-        .campo label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #475569;
-        }
+                <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
 
-        .campo input,
-        .campo select {
-            width: 100%;
-            padding: 11px 12px;
-            border: 1px solid var(--borde);
-            border-radius: 8px;
-            font-size: 13px;
-            outline: none;
-            background: white;
-        }
+                    <div>
+                        <h2 class="font-bold text-slate-800">
+                            Buscar y filtrar citas
+                        </h2>
 
-        .campo input:focus,
-        .campo select:focus {
-            border-color: var(--verde);
-        }
+                        <p class="mt-1 text-sm text-slate-500">
+                            Utiliza los filtros para encontrar una cita.
+                        </p>
+                    </div>
 
-        /* TABLA */
+                    <span class="rounded-lg bg-blue-100 px-3 py-1.5 text-xs font-bold text-[#0875bd]">
+                        <i class="fa-solid fa-filter mr-1"></i>
+                        Filtros de agenda
+                    </span>
 
-        .encabezado-tabla {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 18px;
-        }
+                </div>
 
-        .encabezado-tabla h2 {
-            font-size: 18px;
-        }
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
 
-        .boton {
-            background: var(--verde);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 11px 15px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-        }
+                    {{-- BUSCAR PACIENTE --}}
+                    <div>
+                        <label for="buscar" class="mb-2 block text-sm font-semibold text-slate-600">
+                            Buscar paciente
+                        </label>
 
-        .boton:hover {
-            background: var(--verde-oscuro);
-        }
+                        <div class="relative">
 
-        .tabla-contenedor {
-            overflow-x: auto;
-        }
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
+                            <input
+                                type="text"
+                                id="buscar"
+                                placeholder="Escribe el nombre del paciente..."
+                                class="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#009fd4] focus:ring-2 focus:ring-[#009fd4]/20">
 
-        thead {
-            background: #F8FAFC;
-        }
+                        </div>
+                    </div>
 
-        th {
-            color: #64748B;
-            font-size: 12px;
-            padding: 15px;
-            white-space: nowrap;
-        }
+                    {{-- FECHA --}}
+                    <div>
+                        <label for="fechaFiltro" class="mb-2 block text-sm font-semibold text-slate-600">
+                            Fecha
+                        </label>
 
-        td {
-            padding: 16px 15px;
-            border-top: 1px solid #F1F5F9;
-            font-size: 13px;
-            white-space: nowrap;
-        }
+                        <input
+                            type="date"
+                            id="fechaFiltro"
+                            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-700 outline-none transition focus:border-[#009fd4] focus:ring-2 focus:ring-[#009fd4]/20">
+                    </div>
 
-        .estado {
-            display: inline-block;
-            border-radius: 20px;
-            padding: 6px 10px;
-            font-size: 11px;
-            font-weight: 700;
-        }
+                    {{-- ESTADO --}}
+                    <div>
+                        <label for="estadoFiltro" class="mb-2 block text-sm font-semibold text-slate-600">
+                            Estado de la cita
+                        </label>
 
-        .programada {
-            background: #DBEAFE;
-            color: #1D4ED8;
-        }
+                        <select
+                            id="estadoFiltro"
+                            class="w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-700 outline-none transition focus:border-[#009fd4] focus:ring-2 focus:ring-[#009fd4]/20">
 
-        .pendiente {
-            background: #FEF3C7;
-            color: #92400E;
-        }
+                            <option value="">Todos los estados</option>
 
-        .atendida {
-            background: #DCFCE7;
-            color: #166534;
-        }
+                            @foreach($citas->pluck('estado_cita')->filter()->unique() as $estado)
+                                <option value="{{ mb_strtolower(trim($estado)) }}">
+                                    {{ $estado }}
+                                </option>
+                            @endforeach
 
-        .cancelada {
-            background: #FEE2E2;
-            color: #991B1B;
-        }
+                        </select>
+                    </div>
 
-        .sin-resultados {
-            text-align: center;
-            padding: 25px;
-            color: var(--gris);
-            display: none;
-        }
+                </div>
 
-        .pie {
-            text-align: center;
-            padding: 25px 10px 5px;
-            color: #94A3B8;
-            font-size: 12px;
-        }
+            </section>
 
-        @media (max-width: 1000px) {
-            .resumen {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            {{-- TABLA DE CITAS --}}
+            <section class="agenda-impresion overflow-hidden rounded-xl border border-slate-200">
 
-            .filtros {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
+                {{-- ENCABEZADO TABLA --}}
+                <div class="flex flex-col justify-between gap-4 border-b border-slate-200 bg-white p-5 md:flex-row md:items-center md:px-6">
 
-        @media (max-width: 760px) {
-            .contenedor {
-                display: block;
-            }
+                    <div>
+                        <h2 class="text-lg font-bold text-[#063d69]">
+                            Listado de citas
+                        </h2>
 
-            .menu {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid var(--borde);
-            }
+                        <p class="mt-1 text-sm text-slate-500">
+                            Citas asignadas al profesional.
+                        </p>
+                    </div>
 
-            .principal {
-                padding: 20px 14px;
-            }
+                    <button
+                        type="button"
+                        onclick="window.print()"
+                        class="agenda-boton inline-flex items-center justify-center gap-2 rounded-xl bg-[#0875bd] px-5 py-3 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-[#063d69]">
 
-            .barra-superior {
-                align-items: flex-start;
-                flex-direction: column;
-            }
+                        <i class="fa-solid fa-print"></i>
+                        Imprimir agenda
 
-            .resumen,
-            .filtros {
-                grid-template-columns: 1fr;
-            }
+                    </button>
 
-            .encabezado-tabla {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-        }
+                </div>
 
-        @media print {
+                {{-- TABLA --}}
+                <div class="w-full overflow-x-auto">
 
-        /* Ocultar toda la página */
+                    <table id="tablaCitas" class="min-w-full whitespace-nowrap text-left text-sm text-slate-700">
+
+                        <thead class="bg-[#063d69] text-xs uppercase tracking-wider text-white">
+
+                            <tr>
+                                <th class="px-5 py-4">Fecha</th>
+                                <th class="px-5 py-4">Hora</th>
+                                <th class="px-5 py-4">Paciente</th>
+                                <th class="px-5 py-4">Servicio</th>
+                                <th class="px-5 py-4">Modalidad</th>
+                                <th class="px-5 py-4">Estado</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody class="divide-y divide-slate-100 bg-white">
+
+                            @forelse($citas as $cita)
+
+                                @php
+                                    $paciente = $cita->usuario;
+
+                                    $nombrePaciente = $paciente
+                                        ? trim(
+                                            ($paciente->primer_nombre ?? '') . ' ' .
+                                            ($paciente->segundo_nombre ?? '') . ' ' .
+                                            ($paciente->primer_apellido ?? '') . ' ' .
+                                            ($paciente->segundo_apellido ?? '')
+                                        )
+                                        : 'Paciente no disponible';
+
+                                    $estado = trim($cita->estado_cita ?? 'Sin estado');
+                                    $estadoNormalizado = mb_strtolower($estado);
+
+                                    $fecha = $cita->fecha_cita
+                                        ? \Carbon\Carbon::parse($cita->fecha_cita)
+                                        : null;
+                                @endphp
+
+                                <tr
+                                    data-paciente="{{ mb_strtolower($nombrePaciente) }}"
+                                    data-fecha="{{ $fecha?->format('Y-m-d') }}"
+                                    data-estado="{{ $estadoNormalizado }}"
+                                    class="transition duration-150 hover:bg-sky-50/70">
+
+                                    {{-- FECHA --}}
+                                    <td class="px-5 py-4 text-slate-600">
+                                        {{ $fecha?->format('d/m/Y') ?? 'Sin fecha' }}
+                                    </td>
+
+                                    {{-- HORA --}}
+                                    <td class="px-5 py-4 text-slate-600">
+                                        {{ $cita->hora_inicio
+                                            ? \Carbon\Carbon::parse($cita->hora_inicio)->format('g:i a')
+                                            : 'Sin hora' }}
+                                    </td>
+
+                                    {{-- PACIENTE --}}
+                                    <td class="px-5 py-4 font-semibold text-[#063d69]">
+                                        {{ $nombrePaciente }}
+                                    </td>
+
+                                    {{-- SERVICIO --}}
+                                    <td class="px-5 py-4">
+                                        {{ $cita->servicio?->nombre_servicio ?? 'Sin servicio' }}
+                                    </td>
+
+                                    {{-- MODALIDAD --}}
+                                    <td class="px-5 py-4">
+                                        {{ $cita->modalidad_cita ?? 'No especificada' }}
+                                    </td>
+
+                                    {{-- ESTADO --}}
+                                    <td class="px-5 py-4">
+
+                                        @if(in_array($estadoNormalizado, ['atendida', 'atendido']))
+
+                                            <span class="inline-flex rounded-full bg-green-100 px-3 py-1.5 text-xs font-bold text-green-700">
+                                                {{ $estado }}
+                                            </span>
+
+                                        @elseif(in_array($estadoNormalizado, ['pendiente', 'en espera']))
+
+                                            <span class="inline-flex rounded-full bg-amber-100 px-3 py-1.5 text-xs font-bold text-amber-700">
+                                                {{ $estado }}
+                                            </span>
+
+                                        @elseif($estadoNormalizado === 'cancelada')
+
+                                            <span class="inline-flex rounded-full bg-red-100 px-3 py-1.5 text-xs font-bold text-red-700">
+                                                {{ $estado }}
+                                            </span>
+
+                                        @else
+
+                                            <span class="inline-flex rounded-full bg-blue-100 px-3 py-1.5 text-xs font-bold text-blue-700">
+                                                {{ $estado }}
+                                            </span>
+
+                                        @endif
+
+                                    </td>
+
+                                </tr>
+
+                            @empty
+
+                                <tr>
+                                    <td colspan="6" class="px-5 py-10 text-center">
+                                        <div class="flex flex-col items-center">
+                                            <i class="fa-solid fa-calendar-xmark mb-3 text-3xl text-slate-300"></i>
+                                            <p class="font-semibold text-slate-600">
+                                                No tienes citas asignadas actualmente.
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            @endforelse
+
+                            {{-- SIN RESULTADOS --}}
+                            <tr id="sinResultados" class="hidden">
+                                <td colspan="6" class="px-5 py-10 text-center">
+                                    <i class="fa-solid fa-calendar-xmark mb-3 text-3xl text-slate-300"></i>
+
+                                    <p class="font-semibold text-slate-600">
+                                        No se encontraron citas.
+                                    </p>
+
+                                    <p class="mt-1 text-sm text-slate-400">
+                                        Intenta modificar los filtros seleccionados.
+                                    </p>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+            {{-- PIE --}}
+            <footer class="pt-6 text-center text-xs text-slate-400">
+                SIGECIR2026 · Renueva IPS · Portal de profesionales
+            </footer>
+
+        </div>
+    </div>
+</div>
+
+{{-- FILTROS E IMPRESIÓN --}}
+@push('scripts')
+
+<style>
+    @media print {
+
         body * {
-            visibility: hidden;
+            visibility: hidden !important;
         }
 
-        /* Mostrar únicamente el cuadro de citas */
-        .seccion-impresion,
-        .seccion-impresion * {
-            visibility: visible;
+        .agenda-impresion,
+        .agenda-impresion * {
+            visibility: visible !important;
         }
 
-        .seccion-impresion {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            margin: 0;
-            padding: 10px;
-            border: none;
-            box-shadow: none;
-            background: white;
+        .agenda-impresion {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 10px !important;
+            border: none !important;
+            box-shadow: none !important;
+            background: white !important;
         }
 
-        /* Ocultar el botón de imprimir */
-        .seccion-impresion .boton {
+        .agenda-boton {
             display: none !important;
         }
 
-        /* Ajustar la tabla para impresión */
-        .tabla-contenedor {
-            overflow: visible !important;
+        #tablaCitas {
+            width: 100% !important;
+            min-width: 0 !important;
+            border-collapse: collapse !important;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
+        #tablaCitas th,
+        #tablaCitas td {
             border: 1px solid #999 !important;
             padding: 10px !important;
             font-size: 11px !important;
             white-space: normal !important;
         }
 
-        thead {
-            background: #EAF7EE !important;
-        }
-
-        .sin-resultados {
-            display: none !important;
+        #tablaCitas thead {
+            background: #e6f7fc !important;
+            color: #063d69 !important;
         }
 
         @page {
@@ -430,279 +435,61 @@
             margin: 1cm;
         }
     }
-    </style>
-</head>
-
-<body>
-
-<div class="contenedor">
-
-    <!-- MENÚ LATERAL -->
-
-    <aside class="menu">
-
-        <div class="marca">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo SIGECIR">
-            <h2>SIGECIR</h2>
-            <p>Portal de profesionales</p>
-        </div>
-
-        <p class="titulo-menu">Menú principal</p>
-
-        <a href="{{ route('profesionales.dashboard') }}" class="enlace-menu">
-            <i class="fa-solid fa-house icono-menu"></i>
-            Inicio
-        </a>
-
-        <a href="{{ route('profesionales.agenda') }}" class="enlace-menu activo">
-            <i class="fa-solid fa-calendar-days icono-menu"></i>
-            Mi agenda
-        </a>
-
-        <a href="{{ route('profesionales.pacientes') }}" class="enlace-menu">
-            <i class="fa-solid fa-users icono-menu"></i>
-            <span>Mis pacientes</span>
-        </a>
-
-        <a href="{{ route('profesionales.notificaciones') }}" class="enlace-menu">
-            <i class="fa-solid fa-bell icono-menu"></i>
-            Notificaciones
-        </a>
-
-        <a href="{{ route('profesionales.horario') }}" class="enlace-menu">
-            <i class="fa-solid fa-clock icono-menu"></i>
-            <span>Mi horario</span>
-        </a>
-
-        <a href="{{ route('profesionales.dashboard') }}#perfil" class="enlace-menu">
-            <i class="fa-solid fa-circle-user icono-menu"></i>
-            Mi perfil
-        </a>
-
-        <p class="titulo-menu">Cuenta</p>
-
-        <a href="{{ url('/') }}" class="enlace-menu">
-            <i class="fa-solid fa-right-from-bracket icono-menu"></i>
-            Cerrar sesión
-        </a>
-
-        <div class="nota-menu">
-            <strong>SIGECIR2026</strong><br>
-            Sistema de Gestión de Citas para Renueva IPS.
-        </div>
-
-    </aside>
-
-    <!-- CONTENIDO PRINCIPAL -->
-
-    <main class="principal">
-
-        <header class="barra-superior">
-            <div>
-                <h1>Mi agenda</h1>
-                <p>Consulta y organiza tus citas asignadas.</p>
-            </div>
-
-            <div class="fecha">
-                <i class="fa-regular fa-calendar"></i>
-                {{ now()->locale('es')->translatedFormat('l, d \d\e F \d\e Y') }}
-            </div>
-        </header>
-
-        <!-- RESUMEN DE CITAS -->
-
-        <section class="resumen">
-
-            <article class="tarjeta">
-                <p><i class="fa-solid fa-calendar-check"></i> Total de citas</p>
-                <h2 id="totalCitas">4</h2>
-            </article>
-
-            <article class="tarjeta">
-                <p><i class="fa-solid fa-clock"></i> Pendientes</p>
-                <h2 id="totalPendientes">1</h2>
-            </article>
-
-            <article class="tarjeta">
-                <p><i class="fa-solid fa-check-circle"></i> Atendidas</p>
-                <h2 id="totalAtendidas">1</h2>
-            </article>
-
-        </section>
-
-        <!-- FILTROS -->
-
-        <section class="panel">
-
-            <h2><i class="fa-solid fa-filter"></i> Buscar y filtrar citas</h2>
-
-            <div class="filtros">
-
-                <div class="campo">
-                    <label for="buscar">Buscar paciente</label>
-                    <input type="text" id="buscar"
-                           placeholder="Escribe el nombre del paciente...">
-                </div>
-
-                <div class="campo">
-                    <label for="fechaFiltro">Fecha</label>
-                    <input type="date" id="fechaFiltro">
-                </div>
-
-                <div class="campo">
-                    <label for="estadoFiltro">Estado de la cita</label>
-                    <select id="estadoFiltro">
-                        <option value="">Todos los estados</option>
-                        <option value="programada">Programada</option>
-                        <option value="pendiente">En espera</option>
-                        <option value="atendida">Atendida</option>
-                        <option value="cancelada">Cancelada</option>
-                    </select>
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- TABLA DE CITAS -->
-
-        <section class="panel seccion-impresion">
-
-            <div class="encabezado-tabla">
-                <div>
-                    <h2>Listado de citas</h2>
-                    <p style="color:#64748B; font-size:13px; margin-top:6px;">
-                        Citas asignadas al profesional.
-                    </p>
-                </div>
-
-                <button class="boton" onclick="window.print()">
-                    <i class="fa-solid fa-print"></i>
-                    Imprimir agenda
-                </button>
-            </div>
-
-            <div class="tabla-contenedor">
-
-                <table id="tablaCitas">
-
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Hora</th>
-                            <th>Paciente</th>
-                            <th>Servicio</th>
-                            <th>Modalidad</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        <tr data-paciente="maria perez"
-                            data-fecha="2026-11-04"
-                            data-estado="pendiente">
-                            <td>04/11/2026</td>
-                            <td>8:00 a. m.</td>
-                            <td>María Pérez</td>
-                            <td>Psicología</td>
-                            <td>Presencial</td>
-                            <td><span class="estado pendiente">En espera</span></td>
-                        </tr>
-
-                        <tr data-paciente="juan diaz"
-                            data-fecha="2026-11-04"
-                            data-estado="atendida">
-                            <td>04/11/2026</td>
-                            <td>9:00 a. m.</td>
-                            <td>Juan Díaz</td>
-                            <td>Fisioterapia</td>
-                            <td>Presencial</td>
-                            <td><span class="estado atendida">Atendida</span></td>
-                        </tr>
-
-                        <tr data-paciente="laura gomez"
-                            data-fecha="2026-11-05"
-                            data-estado="programada">
-                            <td>05/11/2026</td>
-                            <td>10:00 a. m.</td>
-                            <td>Laura Gómez</td>
-                            <td>Terapia ocupacional</td>
-                            <td>Presencial</td>
-                            <td><span class="estado programada">Programada</span></td>
-                        </tr>
-
-                        <tr data-paciente="carlos ruiz"
-                            data-fecha="2026-11-05"
-                            data-estado="cancelada">
-                            <td>05/11/2026</td>
-                            <td>11:00 a. m.</td>
-                            <td>Carlos Ruiz</td>
-                            <td>Fonoaudiología</td>
-                            <td>Virtual</td>
-                            <td><span class="estado cancelada">Cancelada</span></td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-                <p class="sin-resultados" id="sinResultados">
-                    No se encontraron citas con los filtros seleccionados.
-                </p>
-
-            </div>
-
-        </section>
-
-        <footer class="pie">
-            SIGECIR2026 · Renueva IPS · Portal de profesionales
-        </footer>
-
-    </main>
-
-</div>
+</style>
 
 <script>
-    const buscar = document.getElementById('buscar');
-    const fechaFiltro = document.getElementById('fechaFiltro');
-    const estadoFiltro = document.getElementById('estadoFiltro');
+    document.addEventListener('DOMContentLoaded', function () {
 
-    const filas = document.querySelectorAll('#tablaCitas tbody tr');
+        const buscar = document.getElementById('buscar');
+        const fechaFiltro = document.getElementById('fechaFiltro');
+        const estadoFiltro = document.getElementById('estadoFiltro');
 
-    function filtrarCitas() {
-        const nombre = buscar.value.toLowerCase().trim();
-        const fecha = fechaFiltro.value;
-        const estado = estadoFiltro.value;
+        const filas = document.querySelectorAll('#tablaCitas tbody tr[data-paciente]');
 
-        let visibles = 0;
+        const sinResultados = document.getElementById('sinResultados');
 
-        filas.forEach(fila => {
-            const paciente = fila.dataset.paciente;
-            const fechaCita = fila.dataset.fecha;
-            const estadoCita = fila.dataset.estado;
+        function filtrarCitas() {
 
-            const coincideNombre = paciente.includes(nombre);
-            const coincideFecha = !fecha || fechaCita === fecha;
-            const coincideEstado = !estado || estadoCita === estado;
+            const nombre = buscar.value.toLowerCase().trim();
+            const fecha = fechaFiltro.value;
+            const estado = estadoFiltro.value;
 
-            const mostrar = coincideNombre && coincideFecha && coincideEstado;
+            let visibles = 0;
 
-            fila.style.display = mostrar ? '' : 'none';
+            filas.forEach(fila => {
 
-            if (mostrar) {
-                visibles++;
-            }
-        });
+                const paciente = fila.dataset.paciente || '';
+                const fechaCita = fila.dataset.fecha || '';
+                const estadoCita = fila.dataset.estado || '';
 
-        document.getElementById('sinResultados').style.display =
-            visibles === 0 ? 'block' : 'none';
-    }
+                const coincideNombre = paciente.includes(nombre);
+                const coincideFecha = !fecha || fechaCita === fecha;
+                const coincideEstado = !estado || estadoCita === estado;
 
-    buscar.addEventListener('input', filtrarCitas);
-    fechaFiltro.addEventListener('change', filtrarCitas);
-    estadoFiltro.addEventListener('change', filtrarCitas);
+                const mostrar =
+                    coincideNombre &&
+                    coincideFecha &&
+                    coincideEstado;
+
+                fila.style.display = mostrar ? '' : 'none';
+
+                if (mostrar) {
+                    visibles++;
+                }
+
+            });
+
+            sinResultados.classList.toggle('hidden', visibles !== 0);
+
+        }
+
+        buscar.addEventListener('input', filtrarCitas);
+        fechaFiltro.addEventListener('change', filtrarCitas);
+        estadoFiltro.addEventListener('change', filtrarCitas);
+
+    });
 </script>
 
-</body>
-</html>
+@endpush
+
+@endsection

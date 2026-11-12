@@ -23,11 +23,6 @@
                 </p>
             </div>
 
-            <a href="{{ route('mensajes.index') }}"
-               class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2.5 rounded-xl font-semibold transition">
-                Volver
-            </a>
-
         </div>
 
         {{-- Formulario --}}

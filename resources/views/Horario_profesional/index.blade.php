@@ -100,7 +100,6 @@
                         <thead class="bg-[#063d69] text-xs uppercase tracking-wider text-white">
 
                             <tr>
-                                <th class="px-5 py-4 text-center">ID</th>
                                 <th class="px-5 py-4 text-center">Fecha y día</th>
                                 <th class="px-5 py-4 text-center">Hora de inicio</th>
                                 <th class="px-5 py-4 text-center">Hora de fin</th>
@@ -115,11 +114,6 @@
                             @forelse ($horario_profesional as $horario)
 
                                 <tr class="text-center transition duration-150 hover:bg-sky-50/70">
-
-                                    {{-- ID --}}
-                                    <td class="px-5 py-4 font-semibold text-slate-500">
-                                        {{ $horario->id }}
-                                    </td>
 
                                     {{-- FECHA Y DÍA --}}
                                     <td class="px-5 py-4">

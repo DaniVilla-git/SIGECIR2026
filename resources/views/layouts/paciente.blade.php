@@ -28,10 +28,10 @@
 
                 <div>
                     <h1 class="text-xl font-bold text-sky-800">
-                        RENUEVA IPS
+                        SIGECIR 
                     </h1>
                     <p class="text-sm text-gray-500">
-                        Usuario
+                        RENUEVA IPS
                     </p>
                 </div>
             </div>

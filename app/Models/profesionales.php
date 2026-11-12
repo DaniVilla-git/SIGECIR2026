@@ -18,12 +18,26 @@ class profesionales extends Model
         'id_user'
     ];
 
-    public function servicios(){
+    public function servicios()
+    {
         return $this->hasMany(servicios::class);
     }
 
     public function usuario()
     {
         return $this->belongsTo(User::class, 'id_user');
+    }
+
+    // Relación con notificaciones
+    public function notificaciones()
+    {
+        return $this->belongsToMany(
+            notificaciones::class,
+            'notificacion_profesional',
+            'id_profesional',
+            'id_notificacion'
+        )
+        ->withPivot('leida', 'fecha_lectura')
+        ->withTimestamps();
     }
 }

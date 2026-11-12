@@ -11,6 +11,7 @@ use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\ProfesionalesController;
 use App\Http\Controllers\HorariosProfesionalController;
 use App\Http\Controllers\Paciente\PortalPacienteController;
+use App\Http\Controllers\PacientePerfilController;
 use App\Http\Controllers\Seguridad\AuthController;
 
 
@@ -22,6 +23,19 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])
 
 Route::post('/login', [AuthController::class, 'login'])
     ->name('login.procesar');
+
+// RECUPERAR CONTRASEÑA
+Route::get('/recuperar-contrasena', [AuthController::class, 'mostrarFormularioRecuperacion'])
+    ->name('password.request');
+
+Route::post('/recuperar-contrasena', [AuthController::class, 'enviarEnlaceRecuperacion'])
+    ->name('password.email');
+
+Route::get('/restablecer-contrasena/{token}', [AuthController::class, 'mostrarFormularioRestablecimiento'])
+    ->name('password.reset');
+
+Route::post('/restablecer-contrasena', [AuthController::class, 'restablecerContrasena'])
+    ->name('password.update');
 
 
 /*
@@ -49,7 +63,7 @@ Route::middleware('web')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | CIERRE DE SESIÓN PARA TODOS LOS ROLES
+    | CIERRE DE SESIÓN
     |--------------------------------------------------------------------------
     */
 
@@ -69,23 +83,44 @@ Route::middleware('web')->group(function () {
         ->name('paciente.')
         ->group(function () {
 
+            Route::get('/documentos/{id}/ver',[PortalPacienteController::class, 'verDocumento'])
+                ->name('documentos.ver');
+            // INICIO
             Route::get('/', [PortalPacienteController::class, 'index'])
                 ->name('inicio');
 
+            // MIS CITAS
             Route::get('/mis-citas', [PortalPacienteController::class, 'misCitas'])
                 ->name('mis-citas');
 
+            // SOLICITAR CITA
             Route::get('/solicitar-cita', [PortalPacienteController::class, 'crearCita'])
                 ->name('crear-cita');
 
             Route::post('/solicitar-cita', [PortalPacienteController::class, 'guardarCita'])
                 ->name('guardar-cita');
 
+            // PROFESIONAL DEL SERVICIO
             Route::get('/servicio/{id}/profesional', [ServiciosController::class, 'obtenerProfesional'])
                 ->name('servicio.profesional');
 
+            // DISPONIBILIDAD
             Route::get('/disponibilidad-citas', [CitasController::class, 'disponibilidad'])
                 ->name('citas.disponibilidad');
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | EDITAR DATOS DEL PACIENTE
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get('/perfil/editar', [PacientePerfilController::class, 'edit'])
+                ->name('perfil.edit');
+
+            Route::put('/perfil/actualizar', [PacientePerfilController::class, 'update'])
+                ->name('perfil.update');
+
         });
 
 
@@ -138,38 +173,38 @@ Route::middleware('web')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    // Inicio de sesión profesional
+    // INICIO DE SESIÓN PROFESIONAL
     Route::get('/vista-login-profesional', function () {
         return view('Profesionales.login');
     })->name('profesionales.login');
 
 
-    // Rutas exclusivas para profesionales autenticados
+    // RUTAS EXCLUSIVAS PARA PROFESIONALES
     Route::middleware(['auth', 'role:profesional'])->group(function () {
 
-        Route::get('/dashboard-profesional', function () {
-            return view('Profesionales.dashboard');
-        })->name('profesionales.dashboard');
+        Route::get('/dashboard-profesional', [ProfesionalesController::class, 'dashboard'])
+            ->name('profesionales.dashboard');
 
-        Route::get('/agenda-profesional', function () {
-            return view('Profesionales.agenda');
-        })->name('profesionales.agenda');
+        Route::get('/agenda-profesional', [ProfesionalesController::class, 'agenda'])
+            ->name('profesionales.agenda');
 
-        Route::get('/pacientes-profesional', function () {
-            return view('Profesionales.pacientes');
-        })->name('profesionales.pacientes');
+        Route::get('/pacientes-profesional', [ProfesionalesController::class, 'pacientes'])
+            ->name('profesionales.pacientes');
 
-        Route::get('/notificaciones-profesional', function () {
-            return view('Profesionales.notificaciones');
-        })->name('profesionales.notificaciones');
+        Route::get('/notificaciones-profesional', [ProfesionalesController::class, 'notificaciones'])
+            ->name('profesionales.notificaciones');
 
-        Route::get('/horario-profesional', function () {
-            return view('Profesionales.horario');
-        })->name('profesionales.horario');
+        Route::get('/horario-profesional', [ProfesionalesController::class, 'horario'])
+            ->name('profesionales.horario');
 
         Route::get('/perfil-profesional', function () {
             return view('Profesionales.perfil');
         })->name('profesionales.perfil');
+
+        Route::get('/documentos-profesional/{id}', [
+            ProfesionalesController::class,
+            'verDocumento'
+        ])->name('documento');
     });
 
 });

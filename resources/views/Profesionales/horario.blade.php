@@ -1,680 +1,307 @@
+@extends('profesionales.layouts.appProfesional')
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@section('title', 'Mi horario')
 
-    <title>Mi horario</title>
+@section('content')
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+@php
+    use Carbon\Carbon;
 
-    <style>
-        :root {
-            --verde: #20A447;
-            --verde-oscuro: #188638;
-            --verde-claro: #EAF7EE;
-            --fondo: #F5F7F8;
-            --texto: #243447;
-            --gris: #64748B;
-            --borde: #E2E8F0;
-            --blanco: #FFFFFF;
-            --rojo-claro: #FEF2F2;
-            --rojo: #DC2626;
-        }
+    // Organizar los horarios por día
+    $horariosPorDia = $horarios->groupBy(function ($horario) {
+        return mb_strtolower(trim($horario->dia_semana));
+    });
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    // Orden de los días de la semana
+    $ordenDias = [
+        'lunes',
+        'martes',
+        'miércoles',
+        'miercoles',
+        'jueves',
+        'viernes',
+        'sábado',
+        'sabado',
+        'domingo'
+    ];
 
-        body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: var(--fondo);
-            color: var(--texto);
-        }
+    $horariosOrdenados = $horariosPorDia->sortBy(function ($registros, $dia) use ($ordenDias) {
+        return array_search($dia, $ordenDias) !== false
+            ? array_search($dia, $ordenDias)
+            : 99;
+    });
 
-        .contenedor {
-            display: flex;
-            min-height: 100vh;
-        }
+    // Cantidad de días asignados
+    $diasAtencion = $horariosPorDia->count();
 
-        /* MENÚ LATERAL */
 
-        .menu {
-            width: 250px;
-            min-width: 250px;
-            background: var(--blanco);
-            border-right: 1px solid var(--borde);
-            padding: 28px 18px;
-            flex-shrink: 0;
-        }
+    // Encontrar la primera hora de inicio
+    $primerHorario = $horarios->sortBy('hora_inicio')->first();
 
-        .marca {
-            text-align: center;
-            padding-bottom: 28px;
-            border-bottom: 1px solid var(--borde);
-        }
+    $horaInicio = $primerHorario
+        ? Carbon::parse($primerHorario->hora_inicio)->format('h:i A')
+        : 'No asignada';
+@endphp
 
-        .marca img {
-            width: 76px;
-            height: 76px;
-            object-fit: contain;
-            margin-bottom: 8px;
-        }
+<div class="container mx-auto mt-8 space-y-6 px-4 pb-10">
 
-        .marca h2 {
-            font-size: 21px;
-            color: #17324D;
-        }
+    {{-- ENCABEZADO --}}
+    <header class="overflow-hidden rounded-2xl bg-gradient-to-r from-[#063d69] via-[#0875bd] to-[#20a4a7] px-6 py-7 text-white shadow-xl">
 
-        .marca p {
-            color: var(--gris);
-            font-size: 12px;
-            margin-top: 7px;
-        }
-
-        .titulo-menu {
-            color: #94A3B8;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin: 28px 10px 12px;
-            text-transform: uppercase;
-        }
-
-        .enlace-menu {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 13px 14px;
-            margin-bottom: 7px;
-            border-radius: 9px;
-            color: #52677C;
-            text-decoration: none;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-
-        .enlace-menu:hover,
-        .enlace-menu.activo {
-            background: var(--verde-claro);
-            color: var(--verde-oscuro);
-            font-weight: 700;
-        }
-
-        .icono-menu {
-            width: 22px;
-            min-width: 22px;
-            text-align: center;
-            font-size: 17px;
-            color: var(--verde);
-        }
-
-        .nota-menu {
-            margin-top: 35px;
-            padding: 15px;
-            background: #F8FAFC;
-            border-radius: 10px;
-            font-size: 12px;
-            line-height: 1.7;
-            color: var(--gris);
-        }
-
-        /* CONTENIDO PRINCIPAL */
-
-        .principal {
-            flex: 1;
-            min-width: 0;
-            padding: 30px;
-        }
-
-        .barra-superior {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 28px;
-        }
-
-        .barra-superior h1 {
-            font-size: 26px;
-            margin-bottom: 7px;
-            color: #173653;
-        }
-
-        .barra-superior p {
-            font-size: 14px;
-            color: var(--gris);
-        }
-
-        .fecha {
-            padding: 12px 16px;
-            border: 1px solid var(--borde);
-            background: var(--blanco);
-            border-radius: 10px;
-            color: #475569;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        /* TARJETAS DE RESUMEN */
-
-        .resumen {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 18px;
-            margin-bottom: 25px;
-        }
-
-        .tarjeta {
-            background: var(--blanco);
-            border: 1px solid var(--borde);
-            border-radius: 13px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .tarjeta .icono {
-            width: 48px;
-            height: 48px;
-            min-width: 48px;
-            border-radius: 12px;
-            background: var(--verde-claro);
-            color: var(--verde-oscuro);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-        }
-
-        .tarjeta h2 {
-            font-size: 27px;
-            color: #173653;
-            margin-bottom: 5px;
-        }
-
-        .tarjeta p {
-            color: var(--gris);
-            font-size: 13px;
-        }
-
-        /* PANEL DEL HORARIO */
-
-        .panel {
-            background: var(--blanco);
-            border: 1px solid var(--borde);
-            border-radius: 13px;
-            padding: 22px;
-            margin-bottom: 22px;
-        }
-
-        .encabezado-panel {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 18px;
-        }
-
-        .encabezado-panel h2 {
-            font-size: 18px;
-            color: #173653;
-        }
-
-        .encabezado-panel h2 i {
-            color: var(--verde);
-            margin-right: 7px;
-        }
-
-        .etiqueta {
-            background: var(--verde-claro);
-            color: var(--verde-oscuro);
-            padding: 7px 13px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        /* TABLA */
-
-        .tabla-contenedor {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            min-width: 650px;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        thead {
-            background: #F8FAFC;
-        }
-
-        th {
-            color: #64748B;
-            font-size: 12px;
-            padding: 15px;
-            white-space: nowrap;
-        }
-
-        td {
-            padding: 16px 15px;
-            border-top: 1px solid #F1F5F9;
-            font-size: 13px;
-            color: #53677C;
-            white-space: nowrap;
-        }
-
-        .dia {
-            font-weight: 700;
-            color: #173653;
-        }
-
-        .hora {
-            color: var(--verde-oscuro);
-            font-weight: 700;
-        }
-
-        .estado {
-            display: inline-block;
-            border-radius: 20px;
-            padding: 6px 10px;
-            font-size: 11px;
-            font-weight: 700;
-            background: var(--verde-claro);
-            color: var(--verde-oscuro);
-        }
-
-        .estado-descanso {
-            display: inline-block;
-            border-radius: 20px;
-            padding: 6px 10px;
-            font-size: 11px;
-            font-weight: 700;
-            background: var(--rojo-claro);
-            color: var(--rojo);
-        }
-
-        .sin-servicio {
-            color: var(--gris);
-            font-style: italic;
-        }
-
-        /* DURACIÓN DE ATENCIONES */
-
-        .duracion {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: var(--verde-claro);
-            border: 1px solid #D9EFDF;
-            border-radius: 10px;
-            padding: 16px;
-            margin-top: 20px;
-        }
-
-        .duracion i {
-            color: var(--verde);
-            font-size: 23px;
-        }
-
-        .duracion strong {
-            color: #173653;
-            font-size: 14px;
-        }
-
-        .duracion p {
-            color: var(--gris);
-            font-size: 12px;
-            margin-top: 4px;
-        }
-
-        /* INFORMACIÓN IMPORTANTE */
-
-        .nota {
-            display: flex;
-            align-items: flex-start;
-            gap: 13px;
-            background: #F0F8F2;
-            border: 1px solid #D9EFDF;
-            border-left: 4px solid var(--verde);
-            padding: 18px;
-            border-radius: 9px;
-            color: #53677C;
-            font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 22px;
-        }
-
-        .nota i {
-            color: var(--verde);
-            font-size: 19px;
-            margin-top: 2px;
-        }
-
-        .nota strong {
-            color: #173653;
-        }
-
-        /* PIE DE PÁGINA */
-
-        .pie {
-            text-align: center;
-            padding: 25px 10px 5px;
-            color: #94A3B8;
-            font-size: 12px;
-        }
-
-        /* RESPONSIVE */
-
-        @media (max-width: 1000px) {
-            .resumen {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 760px) {
-            .contenedor {
-                display: block;
-            }
-
-            .menu {
-                width: 100%;
-                min-width: 0;
-                border-right: none;
-                border-bottom: 1px solid var(--borde);
-            }
-
-            .principal {
-                padding: 20px 14px;
-            }
-
-            .barra-superior {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .resumen {
-                grid-template-columns: 1fr;
-            }
-
-            .encabezado-panel {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-        }
-
-        .enlace-menu .icono-menu {
-            color: var(--verde) !important;
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="contenedor">
-
-    <!-- MENÚ LATERAL -->
-
-    <aside class="menu">
-
-        <div class="marca">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo SIGECIR">
-            <h2>SIGECIR</h2>
-            <p>Portal de profesionales</p>
-        </div>
-
-        <p class="titulo-menu">Menú principal</p>
-
-        <a href="{{ route('profesionales.dashboard') }}" class="enlace-menu">
-            <i class="fa-solid fa-house icono-menu"></i>
-            Inicio
-        </a>
-
-        <a href="{{ route('profesionales.agenda') }}" class="enlace-menu">
-            <i class="fa-solid fa-calendar-days icono-menu"></i>
-            Mi agenda
-        </a>
-
-        <a href="{{ route('profesionales.pacientes') }}" class="enlace-menu">
-            <i class="fa-solid fa-users icono-menu"></i>
-            <span>Mis pacientes</span>
-        </a>
-
-        <a href="{{ route('profesionales.notificaciones') }}" class="enlace-menu">
-            <i class="fa-solid fa-bell icono-menu"></i>
-            Notificaciones
-        </a>
-
-        <a href="{{ route('profesionales.horario') }}"
-           class="enlace-menu activo">
-            <i class="fa-solid fa-clock icono-menu"
-               style="color: #20A447 !important;"></i>
-            <span>Mi horario</span>
-        </a>
-
-        <a href="{{ route('profesionales.dashboard') }}#perfil"
-           class="enlace-menu">
-            <i class="fa-solid fa-circle-user icono-menu"></i>
-            Mi perfil
-        </a>
-
-        <p class="titulo-menu">Cuenta</p>
-
-        <a href="{{ url('/') }}" class="enlace-menu">
-            <i class="fa-solid fa-right-from-bracket icono-menu"></i>
-            Cerrar sesión
-        </a>
-
-        <div class="nota-menu">
-            <strong>SIGECIR2026</strong><br>
-            Sistema de Gestión de Citas para Renueva IPS.
-        </div>
-
-    </aside>
-
-    <!-- CONTENIDO PRINCIPAL -->
-
-    <main class="principal">
-
-        <header class="barra-superior">
+        <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
 
             <div>
-                <h1>Mi horario</h1>
-                <p>Consulta los días y las horas asignadas para tu atención profesional.</p>
+                <h1 class="text-2xl font-bold sm:text-3xl">
+                    <i class="fa-solid fa-calendar-week mr-2"></i>
+                    Mi horario
+                </h1>
+
+                <p class="mt-2 text-sm text-blue-100">
+                    Consulta los días y las horas asignadas para tu atención profesional.
+                </p>
             </div>
 
-            <div class="fecha">
+            <div class="inline-flex w-fit items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white shadow-sm">
                 <i class="fa-regular fa-calendar"></i>
+
                 {{ now()->locale('es')->translatedFormat('l, d \d\e F \d\e Y') }}
             </div>
 
-        </header>
+        </div>
+    </header>
 
-        <!-- TARJETAS DE RESUMEN -->
+    {{-- TARJETAS DE RESUMEN --}}
+    <section class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
 
-        <section class="resumen">
+        {{-- DÍAS DE ATENCIÓN --}}
+        <article class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-lg transition hover:-translate-y-1 hover:shadow-xl">
 
-            <article class="tarjeta">
-                <div class="icono">
-                    <i class="fa-solid fa-calendar-check"></i>
-                </div>
+            <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-[#e6f7fc] text-2xl text-[#0875bd]">
+                <i class="fa-solid fa-calendar-check"></i>
+            </div>
 
-                <div>
-                    <h2>6</h2>
-                    <p>Días de atención</p>
-                </div>
-            </article>
+            <div>
+                <h2 class="text-2xl font-bold text-[#063d69]">
+                    {{ $diasAtencion }}
+                </h2>
 
-            <article class="tarjeta">
-                <div class="icono">
-                    <i class="fa-solid fa-clock"></i>
-                </div>
+                <p class="text-sm text-slate-500">
+                    Días de atención
+                </p>
+            </div>
 
-                <div>
-                    <h2>54</h2>
-                    <p>Horas semanales</p>
-                </div>
-            </article>
+        </article>
 
-            <article class="tarjeta">
-                <div class="icono">
-                    <i class="fa-solid fa-calendar-day"></i>
-                </div>
+        {{-- HORA DE INICIO --}}
+        <article class="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-lg transition hover:-translate-y-1 hover:shadow-xl">
 
-                <div>
-                    <h2>07:00 AM</h2>
-                    <p>Hora de inicio</p>
-                </div>
-            </article>
+            <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-50 text-2xl text-blue-700">
+                <i class="fa-solid fa-calendar-day"></i>
+            </div>
 
-        </section>
+            <div>
+                <h2 class="text-2xl font-bold text-[#063d69]">
+                    {{ $horaInicio }}
+                </h2>
 
-        <!-- TABLA DE HORARIOS -->
+                <p class="text-sm text-slate-500">
+                    Primera hora de atención
+                </p>
+            </div>
 
-        <section class="panel">
+        </article>
 
-            <div class="encabezado-panel">
+    </section>
 
-                <h2>
-                    <i class="fa-solid fa-calendar-week"></i>
+    {{-- TABLA DE HORARIOS --}}
+    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+
+        {{-- ENCABEZADO DE LA TABLA --}}
+        <div class="flex flex-col justify-between gap-3 border-b border-slate-200 px-5 py-5 md:px-6 sm:flex-row sm:items-center">
+
+            <div>
+                <h2 class="flex items-center gap-2 text-lg font-bold text-[#063d69]">
+                    <i class="fa-solid fa-calendar-week text-[#0875bd]"></i>
                     Horario asignado
                 </h2>
 
-                <span class="etiqueta">Solo consulta</span>
-
+                <p class="mt-1 text-sm text-slate-500">
+                    Distribución semanal de tus jornadas de atención.
+                </p>
             </div>
 
-            <div class="tabla-contenedor">
+            <span class="inline-flex w-fit items-center gap-2 rounded-full bg-[#e6f7fc] px-4 py-2 text-xs font-bold text-[#0860a5]">
+                <i class="fa-solid fa-eye"></i>
+                Solo consulta
+            </span>
 
-                <table>
+        </div>
 
-                    <thead>
+        {{-- CONTENIDO DE LA TABLA --}}
+        <div class="overflow-x-auto">
+
+            <table class="w-full min-w-[650px] text-left">
+
+                <thead class="bg-[#063d69] text-white">
+
+                    <tr>
+                        <th class="px-5 py-4 text-xs font-bold uppercase">
+                            Día
+                        </th>
+
+                        <th class="px-5 py-4 text-xs font-bold uppercase">
+                            Hora de inicio
+                        </th>
+
+                        <th class="px-5 py-4 text-xs font-bold uppercase">
+                            Hora de finalización
+                        </th>
+
+                        <th class="px-5 py-4 text-xs font-bold uppercase">
+                            Estado
+                        </th>
+                    </tr>
+
+                </thead>
+
+                <tbody class="divide-y divide-slate-100 text-sm">
+
+                    @forelse($horariosOrdenados as $dia => $registros)
+
+                        @foreach($registros as $horario)
+
+                            <tr class="transition hover:bg-[#e6f7fc]/60">
+
+                                {{-- DÍA --}}
+                                <td class="px-5 py-4 font-bold capitalize text-[#063d69]">
+
+                                    {{ $horario->dia_semana }}
+
+                                </td>
+
+                                {{-- HORA DE INICIO --}}
+                                <td class="px-5 py-4 font-semibold text-[#0875bd]">
+
+                                    <i class="fa-regular fa-clock mr-1"></i>
+
+                                    {{ Carbon::parse($horario->hora_inicio)->format('h:i A') }}
+
+                                </td>
+
+                                {{-- HORA FINAL --}}
+                                <td class="px-5 py-4 font-semibold text-[#0875bd]">
+
+                                    <i class="fa-regular fa-clock mr-1"></i>
+
+                                    {{ Carbon::parse($horario->hora_fin)->format('h:i A') }}
+
+                                </td>
+
+                                {{-- ESTADO --}}
+                                <td class="px-5 py-4">
+
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1.5 text-xs font-bold text-green-700">
+
+                                        <i class="fa-solid fa-circle-check"></i>
+
+                                        Asignado
+
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        @endforeach
+
+                    @empty
+
                         <tr>
-                            <th>Día</th>
-                            <th>Jornada de mañana</th>
-                            <th>Almuerzo</th>
-                            <th>Jornada de tarde</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
+                            <td colspan="4" class="px-5 py-12 text-center">
 
-                    <tbody>
+                                <div class="flex flex-col items-center">
 
-                        <tr>
-                            <td class="dia">Lunes</td>
-                            <td class="hora">07:00 AM - 12:00 PM</td>
-                            <td>12:00 PM - 01:00 PM</td>
-                            <td class="hora">01:00 PM - 06:00 PM</td>
-                            <td><span class="estado">Asignado</span></td>
-                        </tr>
+                                    <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#e6f7fc] text-3xl text-[#0875bd]">
+                                        <i class="fa-regular fa-calendar-xmark"></i>
+                                    </div>
 
-                        <tr>
-                            <td class="dia">Martes</td>
-                            <td class="hora">07:00 AM - 12:00 PM</td>
-                            <td>12:00 PM - 01:00 PM</td>
-                            <td class="hora">01:00 PM - 06:00 PM</td>
-                            <td><span class="estado">Asignado</span></td>
+                                    <h3 class="text-lg font-bold text-[#063d69]">
+                                        No tienes horarios asignados
+                                    </h3>
+
+                                    <p class="mt-2 max-w-md text-sm text-slate-500">
+                                        Actualmente no hay horarios registrados para tu perfil.
+                                        Cuando el administrador te asigne un horario, aparecerá aquí.
+                                    </p>
+
+                                </div>
+
+                            </td>
                         </tr>
 
-                        <tr>
-                            <td class="dia">Miércoles</td>
-                            <td class="hora">07:00 AM - 12:00 PM</td>
-                            <td>12:00 PM - 01:00 PM</td>
-                            <td class="hora">01:00 PM - 06:00 PM</td>
-                            <td><span class="estado">Asignado</span></td>
-                        </tr>
+                    @endforelse
 
-                        <tr>
-                            <td class="dia">Jueves</td>
-                            <td class="hora">07:00 AM - 12:00 PM</td>
-                            <td>12:00 PM - 01:00 PM</td>
-                            <td class="hora">01:00 PM - 06:00 PM</td>
-                            <td><span class="estado">Asignado</span></td>
-                        </tr>
+                </tbody>
 
-                        <tr>
-                            <td class="dia">Viernes</td>
-                            <td class="hora">07:00 AM - 12:00 PM</td>
-                            <td>12:00 PM - 01:00 PM</td>
-                            <td class="hora">01:00 PM - 06:00 PM</td>
-                            <td><span class="estado">Asignado</span></td>
-                        </tr>
+            </table>
 
-                        <tr>
-                            <td class="dia">Sábado</td>
-                            <td class="hora">08:00 AM - 12:00 PM</td>
-                            <td class="sin-servicio">No aplica</td>
-                            <td class="sin-servicio">No se presta servicio</td>
-                            <td><span class="estado">Asignado</span></td>
-                        </tr>
+        </div>
 
-                        <tr>
-                            <td class="dia">Domingo</td>
-                            <td class="sin-servicio" colspan="3">No se presta servicio</td>
-                            <td><span class="estado-descanso">Descanso</span></td>
-                        </tr>
+        {{-- INFORMACIÓN DE HORARIOS --}}
+        <div class="p-5 md:p-6">
 
-                    </tbody>
+            <div class="flex items-start gap-4 rounded-xl border border-blue-100 bg-[#e6f7fc] p-4">
 
-                </table>
-
-            </div>
-
-            <!-- DURACIÓN DE LAS ATENCIONES -->
-
-            <div class="duracion">
-
-                <i class="fa-solid fa-stopwatch"></i>
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-white text-xl text-[#0875bd]">
+                    <i class="fa-solid fa-stopwatch"></i>
+                </div>
 
                 <div>
-                    <strong>Duración de cada atención: 30 minutos</strong>
-                    <p>
-                        Los espacios de atención se organizan en intervalos
-                        de 30 minutos durante las jornadas disponibles.
+
+                    <h3 class="font-bold text-[#063d69]">
+                        Información sobre tu jornada
+                    </h3>
+
+                    <p class="mt-1 text-sm leading-relaxed text-slate-600">
+                        Los horarios mostrados corresponden a los períodos de atención
+                        registrados por el administrador. Si se modifica tu horario,
+                        los cambios se reflejarán automáticamente en esta sección.
                     </p>
+
                 </div>
 
             </div>
 
-        </section>
+        </div>
 
-        <!-- INFORMACIÓN IMPORTANTE -->
+    </section>
 
-        <section class="nota">
+    {{-- INFORMACIÓN IMPORTANTE --}}
+    <section class="flex items-start gap-4 rounded-xl border border-blue-100 border-l-4 border-l-[#0875bd] bg-blue-50 p-5">
 
+        <div class="mt-1 text-xl text-[#0875bd]">
             <i class="fa-solid fa-circle-info"></i>
+        </div>
 
-            <div>
-                <strong>Información importante</strong><br>
+        <div class="text-sm leading-relaxed text-slate-600">
 
-                El horario de lunes a viernes incluye una hora de almuerzo
-                de 12:00 p. m. a 1:00 p. m. Los sábados se presta servicio
-                de 8:00 a. m. a 12:00 p. m. Los domingos no hay atención.
+            <h3 class="mb-1 font-bold text-[#063d69]">
+                Información importante
+            </h3>
 
-                Cada espacio de atención tiene una duración de 30 minutos,
-                para un total de 108 espacios semanales disponibles,
-                siempre que se utilice toda la disponibilidad.
-            </div>
+            Tu horario es administrado por el personal autorizado de SIGECIR.
+            Desde este apartado puedes consultar los días y las horas asignadas,
+            pero no puedes realizar modificaciones.
 
-        </section>
+        </div>
 
-        <footer class="pie">
-            SIGECIR2026 · Renueva IPS · Portal de profesionales
-        </footer>
+    </section>
 
-    </main>
+    {{-- PIE DE PÁGINA --}}
+    <footer class="py-4 text-center text-xs text-slate-400">
+        SIGECIR2026 · Renueva IPS · Portal de profesionales
+    </footer>
 
 </div>
 
-</body>
-</html>
+@endsection

@@ -81,4 +81,4 @@ class HorariosProfesionalController extends Controller
             ->route('horario_profesional.index')
             ->with('eliminar', 'Horario profesional eliminado correctamente.');
     }
-}
+} 

@@ -137,7 +137,6 @@
                     <thead class="bg-[#063d69] text-xs uppercase tracking-wider text-white">
 
                         <tr>
-                            <th class="px-5 py-4 text-center">ID</th>
                             <th class="px-5 py-4 text-center">Usuario</th>
                             <th class="px-5 py-4 text-center">Profesional</th>
                             <th class="px-5 py-4 text-center">Servicio</th>
@@ -182,11 +181,6 @@
                                 data-servicio="{{ $nombreServicio }}"
                                 data-estado="{{ $cita->estado_cita }}"
                                 data-fecha="{{ $cita->fecha_cita }}">
-
-                                {{-- ID --}}
-                                <td class="whitespace-nowrap px-5 py-4 font-semibold text-gray-600">
-                                    #{{ $cita->id }}
-                                </td>
 
                                 {{-- USUARIO --}}
                                 <td class="px-5 py-4 font-semibold text-gray-800">
@@ -240,46 +234,57 @@
                                 </td>
 
                                 {{-- ESTADO --}}
+                                
                                 <td class="whitespace-nowrap px-5 py-4">
 
-                                    @if($cita->estado_cita == 'Confirmada')
+                                    @php
+                                        $estado = mb_strtolower(trim($cita->estado_cita ?? ''));
+                                    @endphp
 
-                                        <span class="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1.5 font-semibold text-green-700">
+                                    @if($estado == 'confirmada')
+
+                                        <span style="background-color: #dcfce7; color: #15803d;"
+                                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold">
                                             <i class="fa-solid fa-circle-check text-xs"></i>
-                                            {{ $cita->estado_cita }}
+                                            Confirmada
                                         </span>
 
-                                    @elseif($cita->estado_cita == 'Pendiente')
+                                    @elseif($estado == 'pendiente')
 
-                                        <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1.5 font-semibold text-amber-700">
+                                        <span style="background-color: #fef3c7; color: #b45309;"
+                                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold">
                                             <i class="fa-solid fa-clock text-xs"></i>
-                                            {{ $cita->estado_cita }}
+                                            Pendiente
                                         </span>
 
-                                    @elseif($cita->estado_cita == 'En atención')
+                                    @elseif($estado == 'en atención')
 
-                                        <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1.5 font-semibold text-blue-700">
+                                        <span style="background-color: #dbeafe; color: #1d4ed8;"
+                                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold">
                                             <i class="fa-solid fa-stethoscope text-xs"></i>
                                             {{ $cita->estado_cita }}
                                         </span>
 
-                                    @elseif($cita->estado_cita == 'Atendida')
+                                    @elseif($estado == 'atendida')
 
-                                        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1.5 font-semibold text-emerald-700">
+                                        <span style="background-color: #d1fae5; color: #047857;"
+                                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold">
                                             <i class="fa-solid fa-check-double text-xs"></i>
                                             {{ $cita->estado_cita }}
                                         </span>
 
-                                    @elseif($cita->estado_cita == 'Cancelada')
+                                    @elseif($estado == 'cancelada')
 
-                                        <span class="inline-flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1.5 font-semibold text-red-700">
+                                        <span style="background-color: #fee2e2; color: #b91c1c;"
+                                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold">
                                             <i class="fa-solid fa-circle-xmark text-xs"></i>
                                             {{ $cita->estado_cita }}
                                         </span>
 
-                                    @elseif($cita->estado_cita == 'No asistió')
+                                    @elseif($estado == 'no asistió')
 
-                                        <span class="inline-flex items-center gap-1.5 rounded-full bg-rose-100 px-3 py-1.5 font-semibold text-rose-700">
+                                        <span style="background-color: #ffe4e6; color: #be123c;"
+                                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold">
                                             <i class="fa-solid fa-user-xmark text-xs"></i>
                                             {{ $cita->estado_cita }}
                                         </span>
@@ -287,12 +292,13 @@
                                     @else
 
                                         <span class="inline-flex rounded-full bg-gray-100 px-3 py-1.5 font-semibold text-gray-700">
-                                            {{ $cita->estado_cita }}
+                                            {{ $cita->estado_cita ?: 'Sin estado' }}
                                         </span>
 
                                     @endif
 
                                 </td>
+
 
                                 {{-- OBSERVACIONES --}}
                                 <td class="max-w-xs px-5 py-4 text-gray-600">

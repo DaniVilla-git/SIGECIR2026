@@ -116,7 +116,6 @@
                     <thead class="bg-[#063d69] text-xs uppercase tracking-wider text-white">
 
                         <tr>
-                            <th class="px-5 py-4 text-center">ID</th>
                             <th class="px-5 py-4 text-center">Código Servicio</th>
                             <th class="px-5 py-4 text-center">Nombre Servicio</th>
                             <th class="px-5 py-4 text-center">Grupo Servicio</th>
@@ -141,11 +140,6 @@
                                 data-nombre="{{ $servicio->nombre_servicio }}"
                                 data-grupo="{{ $servicio->grupo_servicio }}"
                                 data-profesional="{{ $nombreProfesional }}">
-
-                                {{-- ID --}}
-                                <td class="whitespace-nowrap px-5 py-4 font-semibold text-gray-600">
-                                    #{{ $servicio->id }}
-                                </td>
 
                                 {{-- CÓDIGO --}}
                                 <td class="whitespace-nowrap px-5 py-4">

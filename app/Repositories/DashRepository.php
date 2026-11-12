@@ -24,22 +24,63 @@ class DashRepository
             ->count();
     }
 
+    // CITAS DEL DÍA CON USUARIOS Y PROFESIONALES
     public function CitasDelDia()
     {
-        return DB::table('citas')
-            ->whereDate('fecha_cita', Carbon::today())
-            ->orderBy('hora_inicio', 'asc')
+        return DB::table('citas as c')
+
+            ->leftJoin('usuarios as u', 'c.id_usuario', '=', 'u.id')
+
+            ->leftJoin('profesionales as p', 'c.id_profesional', '=', 'p.id')
+
+            ->select(
+                'c.*',
+
+                'u.primer_nombre as usuario_primer_nombre',
+                'u.segundo_nombre as usuario_segundo_nombre',
+                'u.primer_apellido as usuario_primer_apellido',
+                'u.segundo_apellido as usuario_segundo_apellido',
+
+                'p.nombre_profesional as profesional_nombre',
+            )
+
+            ->whereDate('c.fecha_cita', Carbon::today())
+
+            ->orderBy('c.hora_inicio', 'asc')
+
             ->get();
     }
 
+    // PRÓXIMAS CITAS CON USUARIOS Y PROFESIONALES
     public function ProximasCitas()
     {
-        return DB::table('citas')
-            ->whereDate('fecha_cita', '>=', Carbon::today())
-            ->whereIn('estado_cita', ['Pendiente', 'Confirmada'])
-            ->orderBy('fecha_cita', 'asc')
-            ->orderBy('hora_inicio', 'asc')
+        return DB::table('citas as c')
+
+            ->leftJoin('usuarios as u', 'c.id_usuario', '=', 'u.id')
+
+            ->leftJoin('profesionales as p', 'c.id_profesional', '=', 'p.id')
+
+            ->select(
+                'c.*',
+
+                'u.primer_nombre as usuario_primer_nombre',
+                'u.segundo_nombre as usuario_segundo_nombre',
+                'u.primer_apellido as usuario_primer_apellido',
+                'u.segundo_apellido as usuario_segundo_apellido',
+
+                'p.nombre_profesional as profesional_nombre'
+            )
+
+            ->whereDate('c.fecha_cita', '>=', Carbon::today())
+
+            ->whereIn('c.estado_cita', ['Pendiente', 'Confirmada'])
+
+            ->orderBy('c.fecha_cita', 'asc')
+
+            ->orderBy('c.hora_inicio', 'asc')
+
             ->limit(5)
+
             ->get();
     }
 

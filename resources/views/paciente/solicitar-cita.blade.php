@@ -375,26 +375,23 @@
 
                     <label for="orden_medica" class="etiqueta-cita">
                         Orden médica
-                        <span class="text-slate-400 font-normal">(Opcional)</span>
+                        <span class="text-red-600 font-bold">(Obligatoria)</span>
                     </label>
 
                     <div class="border-2 border-dashed border-cyan-200 bg-cyan-50 rounded-2xl p-6 text-center">
 
                         <div class="text-4xl mb-3">📄</div>
 
-                        <p class="font-bold text-slate-700">
-                            Adjunta tu orden médica
-                        </p>
-
                         <p class="text-sm text-slate-500 mt-1 mb-4">
-                            Puedes cargar archivos PDF, JPG, JPEG o PNG.
-                            Máximo 10 MB.
+                            Debes adjuntar tu orden médica para continuar.
+                            Formatos permitidos: PDF, JPG, JPEG o PNG. Máximo 10 MB.
                         </p>
 
                         <input type="file"
                             name="orden_medica"
                             id="orden_medica"
                             accept=".pdf,.jpg,.jpeg,.png"
+                            required
                             class="campo-cita">
 
                         <p id="nombreArchivo" class="text-sm text-cyan-700 mt-3"></p>

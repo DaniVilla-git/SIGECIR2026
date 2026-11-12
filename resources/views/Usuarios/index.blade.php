@@ -110,7 +110,6 @@
                         <thead class="bg-[#063d69] text-xs uppercase tracking-wider text-white">
 
                             <tr>
-                                <th class="px-5 py-4 text-center">ID</th>
                                 <th class="px-5 py-4 text-center">Documento</th>
                                 <th class="px-5 py-4 text-center">Primer nombre</th>
                                 <th class="px-5 py-4 text-center">Segundo nombre</th>
@@ -144,9 +143,6 @@
                                     data-regimen="{{ $usuario->regimen_usuario }}"
                                     data-usuario-registro="{{ $usuario->usuario_registro }}">
 
-                                    {{-- ID --}}
-                                    <td class="px-5 py-4 font-semibold text-slate-500">
-                                        {{ $usuario->id }}
                                     </td>
 
                                     {{-- DOCUMENTO --}}

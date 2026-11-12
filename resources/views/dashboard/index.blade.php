@@ -286,62 +286,56 @@
             ]">
 
                 @forelse ($citasDelDia as $cita)
+                    
+                <tr class="border-b border-slate-100 transition hover:bg-blue-50/50">
 
-                    <tr class="border-b border-slate-100 transition hover:bg-blue-50/50">
+                    {{-- Usuario --}}
+                    <td class="px-5 py-4 text-sm font-semibold text-slate-700">
+                        {{ collect([
+                            $cita->usuario_primer_nombre,
+                            $cita->usuario_segundo_nombre,
+                            $cita->usuario_primer_apellido,
+                            $cita->usuario_segundo_apellido
+                        ])->filter()->implode(' ') ?: 'No disponible' }}
+                    </td>
 
-                        <td class="px-5 py-4 text-sm font-semibold text-slate-700">
-                            {{ data_get($cita, 'usuario.name')
-                                ?? data_get($cita, 'nombre_usuario')
-                                ?? data_get($cita, 'nombre', 'No disponible') }}
-                        </td>
+                    {{-- Profesional --}}
+                    <td class="px-5 py-4 text-sm text-slate-600">
+                        {{ $cita->profesional_nombre ?? 'No asignado' }}
+                    </td>
 
-                        <td class="px-5 py-4 text-sm text-slate-600">
-                            {{ data_get($cita, 'profesional.name')
-                                ?? data_get($cita, 'nombre_profesional')
-                                ?? 'No asignado' }}
-                        </td>
+                    {{-- Hora --}}
+                    <td class="whitespace-nowrap px-5 py-4 text-sm text-slate-600">
+                        <span class="inline-flex items-center gap-2">
+                            <i class="fa-regular fa-clock text-blue-500"></i>
 
-                        <td class="whitespace-nowrap px-5 py-4 text-sm text-slate-600">
-                            @php
-                                $fecha = data_get($cita, 'fecha')
-                                    ?? data_get($cita, 'fecha_cita');
-                            @endphp
+                            {{ $cita->hora_inicio
+                                ? \Carbon\Carbon::parse($cita->hora_inicio)->format('h:i A')
+                                : 'No disponible' }}
+                        </span>
+                    </td>
 
-                            <span class="inline-flex items-center gap-2">
-                                <i class="fa-regular fa-clock text-blue-500"></i>
+                    {{-- Estado --}}
+                    <td class="px-5 py-4 text-sm">
+                        @php
+                            $estado = $cita->estado_cita ?? 'Pendiente';
 
-                                @if ($fecha)
-                                    {{ \Carbon\Carbon::parse($fecha)->format('h:i A') }}
-                                @else
-                                    No disponible
-                                @endif
-                            </span>
-                        </td>
+                            $colorEstado = match (strtolower((string) $estado)) {
+                                'confirmada' => 'bg-emerald-100 text-emerald-700',
+                                'pendiente' => 'bg-amber-100 text-amber-700',
+                                'cancelada' => 'bg-red-100 text-red-700',
+                                'atendida' => 'bg-blue-100 text-blue-700',
+                                'inasistencia' => 'bg-slate-100 text-slate-700',
+                                default => 'bg-slate-100 text-slate-700',
+                            };
+                        @endphp
 
-                        <td class="px-5 py-4 text-sm">
-                            @php
-                                $estado = data_get($cita, 'estado')
-                                    ?? data_get($cita, 'status')
-                                    ?? 'Pendiente';
-
-                                $colorEstado = match (strtolower((string) $estado)) {
-                                    'confirmada' => 'bg-emerald-100 text-emerald-700',
-                                    'pendiente' => 'bg-amber-100 text-amber-700',
-                                    'cancelada' => 'bg-red-100 text-red-700',
-                                    'atendida' => 'bg-blue-100 text-blue-700',
-                                    'inasistencia' => 'bg-slate-100 text-slate-700',
-                                    default => 'bg-slate-100 text-slate-700',
-                                };
-                            @endphp
-
-                            <span class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold {{ $colorEstado }}">
-                                <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
-                                {{ ucfirst((string) $estado) }}
-                            </span>
-                        </td>
-
-                    </tr>
-
+                        <span class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold {{ $colorEstado }}">
+                            <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                            {{ ucfirst((string) $estado) }}
+                        </span>
+                    </td>
+                </tr>
                 @empty
 
                     <tr>

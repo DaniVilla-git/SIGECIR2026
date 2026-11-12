@@ -17,31 +17,6 @@
                 </span>
 
             </button>
-
-
-            {{-- IDENTIDAD SIGECIR --}}
-            <div class="flex min-w-0 items-center gap-3">
-
-                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-md">
-                    <img
-                        src="{{ asset('images/LogoSIGECIR.png') }}"
-                        alt="Logo SIGECIR"
-                        class="h-11 w-11 rounded-xl object-contain"
-                    >
-                </div>
-
-                <div class="hidden min-w-0 sm:block">
-                    <p class="text-lg font-extrabold tracking-wider text-[#063d69]">
-                        SIGECIR
-                    </p>
-
-                    <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#20a4a7]">
-                        RENUEVA IPS
-                    </p>
-                </div>
-
-            </div>
-
         </div>
 
 

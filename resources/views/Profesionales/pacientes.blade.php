@@ -1,738 +1,535 @@
+@extends('profesionales.layouts.appProfesional')
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@section('title', 'Mis pacientes')
 
-    <title>Mis pacientes</title>
+@section('content')
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<div class="container mx-auto mt-8 px-4 pb-10">
 
-    <style>
-        :root {
-            --verde: #20A447;
-            --verde-oscuro: #188638;
-            --verde-claro: #EAF7EE;
-            --fondo: #F5F7F8;
-            --texto: #243447;
-            --gris: #64748B;
-            --borde: #E2E8F0;
-            --blanco: #FFFFFF;
-        }
+    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        {{-- ENCABEZADO --}}
+        <div class="relative overflow-hidden bg-gradient-to-r from-[#063d69] via-[#0875bd] to-[#20a4a7] px-6 py-8 md:px-8">
 
-        body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: var(--fondo);
-            color: var(--texto);
-        }
+            <div class="absolute -right-10 -top-16 h-52 w-52 rounded-full bg-white/10"></div>
+            <div class="absolute -bottom-20 right-40 h-48 w-48 rounded-full bg-white/10"></div>
 
-        .contenedor {
-            display: flex;
-            min-height: 100vh;
-        }
+            <div class="relative flex flex-col justify-between gap-5 md:flex-row md:items-center">
 
-        /* MENÚ LATERAL */
-
-        .menu {
-            width: 250px;
-            background: var(--blanco);
-            border-right: 1px solid var(--borde);
-            padding: 28px 18px;
-            flex-shrink: 0;
-        }
-
-        .marca {
-            text-align: center;
-            padding-bottom: 28px;
-            border-bottom: 1px solid var(--borde);
-        }
-
-        .marca img {
-            width: 76px;
-            height: 76px;
-            object-fit: contain;
-            margin-bottom: 8px;
-        }
-
-        .marca h2 {
-            font-size: 21px;
-            color: #17324D;
-        }
-
-        .marca p {
-            color: var(--gris);
-            font-size: 12px;
-            margin-top: 7px;
-        }
-
-        .titulo-menu {
-            color: #94A3B8;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin: 28px 10px 12px;
-            text-transform: uppercase;
-        }
-
-        .enlace-menu {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 13px 14px;
-            margin-bottom: 7px;
-            border-radius: 9px;
-            color: #52677C;
-            text-decoration: none;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-
-        .enlace-menu:hover,
-        .enlace-menu.activo {
-            background: var(--verde-claro);
-            color: var(--verde-oscuro);
-            font-weight: 700;
-        }
-
-        .icono-menu {
-            width: 22px;
-            min-width: 22px;
-            text-align: center;
-            font-size: 17px;
-            color: var(--verde);
-        }
-
-        .nota-menu {
-            margin-top: 35px;
-            padding: 15px;
-            background: #F8FAFC;
-            border-radius: 10px;
-            font-size: 12px;
-            line-height: 1.7;
-            color: var(--gris);
-        }
-
-        /* CONTENIDO PRINCIPAL */
-
-        .principal {
-            flex: 1;
-            min-width: 0;
-            padding: 30px;
-        }
-
-        .barra-superior {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 28px;
-        }
-
-        .barra-superior h1 {
-            font-size: 26px;
-            margin-bottom: 7px;
-        }
-
-        .barra-superior p {
-            font-size: 14px;
-            color: var(--gris);
-        }
-
-        .fecha {
-            padding: 12px 16px;
-            border: 1px solid var(--borde);
-            background: var(--blanco);
-            border-radius: 10px;
-            color: #475569;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        /* BIENVENIDA */
-
-        .bienvenida {
-            background: linear-gradient(110deg, #EAF7EE, #F7FCF8);
-            border: 1px solid #D3EEDB;
-            border-radius: 15px;
-            padding: 23px;
-            margin-bottom: 25px;
-        }
-
-        .bienvenida h2 {
-            font-size: 21px;
-            margin-bottom: 9px;
-            color: #176B32;
-        }
-
-        .bienvenida p {
-            color: #52677C;
-            font-size: 14px;
-            line-height: 1.7;
-        }
-
-        /* ESTADÍSTICAS */
-
-        .estadisticas {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 18px;
-            margin-bottom: 25px;
-        }
-
-        .tarjeta {
-            background: var(--blanco);
-            border: 1px solid var(--borde);
-            border-radius: 13px;
-            padding: 21px;
-        }
-
-        .tarjeta-superior {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .tarjeta-superior p {
-            font-size: 13px;
-            color: var(--gris);
-        }
-
-        .icono-tarjeta {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 39px;
-            height: 39px;
-            border-radius: 10px;
-            background: var(--verde-claro);
-            color: var(--verde-oscuro);
-            font-size: 18px;
-        }
-
-        .tarjeta h3 {
-            font-size: 28px;
-            margin-bottom: 6px;
-        }
-
-        .tarjeta small {
-            color: var(--gris);
-            font-size: 12px;
-        }
-
-        /* SECCIÓN DE PACIENTES */
-
-        .seccion-pacientes {
-            background: var(--blanco);
-            border: 1px solid var(--borde);
-            border-radius: 13px;
-            overflow: hidden;
-        }
-
-        .encabezado-seccion {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            padding: 22px;
-            border-bottom: 1px solid var(--borde);
-        }
-
-        .encabezado-seccion h2 {
-            font-size: 18px;
-            margin-bottom: 6px;
-        }
-
-        .encabezado-seccion p {
-            color: var(--gris);
-            font-size: 13px;
-        }
-
-        /* BUSCADOR Y FILTROS */
-
-        .filtros {
-            display: flex;
-            gap: 12px;
-            padding: 20px 22px;
-            flex-wrap: wrap;
-            border-bottom: 1px solid var(--borde);
-        }
-
-        .campo-busqueda {
-            flex: 1;
-            min-width: 220px;
-            position: relative;
-        }
-
-        .campo-busqueda i {
-            position: absolute;
-            left: 13px;
-            top: 13px;
-            color: #94A3B8;
-        }
-
-        .campo-busqueda input,
-        .filtros select {
-            width: 100%;
-            height: 42px;
-            border: 1px solid var(--borde);
-            border-radius: 8px;
-            padding: 0 13px;
-            font-size: 13px;
-            outline: none;
-            background: white;
-            color: var(--texto);
-        }
-
-        .campo-busqueda input {
-            padding-left: 38px;
-        }
-
-        .campo-busqueda input:focus,
-        .filtros select:focus {
-            border-color: var(--verde);
-        }
-
-        .filtros select {
-            width: 200px;
-        }
-
-        /* TABLA */
-
-        .tabla-contenedor {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        thead {
-            background: #F8FAFC;
-        }
-
-        th {
-            color: #64748B;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 15px 18px;
-            white-space: nowrap;
-        }
-
-        td {
-            padding: 17px 18px;
-            border-top: 1px solid #F1F5F9;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        .nombre-paciente {
-            font-weight: 700;
-            color: #334155;
-        }
-
-        .subtexto {
-            display: block;
-            color: var(--gris);
-            font-size: 12px;
-            margin-top: 5px;
-        }
-
-        .estado {
-            display: inline-block;
-            border-radius: 20px;
-            padding: 6px 10px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .activo {
-            color: #166534;
-            background: #DCFCE7;
-        }
-
-        .inactivo {
-            color: #92400E;
-            background: #FEF3C7;
-        }
-
-        .sin-datos {
-            padding: 35px;
-            text-align: center;
-            color: var(--gris);
-            font-size: 14px;
-        }
-
-        .pie {
-            text-align: center;
-            padding: 25px 10px 5px;
-            color: #94A3B8;
-            font-size: 12px;
-        }
-
-        /* RESPONSIVE */
-
-        @media (max-width: 1000px) {
-            .estadisticas {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 760px) {
-            .contenedor {
-                display: block;
-            }
-
-            .menu {
-                width: 100%;
-                padding: 18px;
-                border-right: none;
-                border-bottom: 1px solid var(--borde);
-            }
-
-            .marca img {
-                width: 58px;
-                height: 58px;
-            }
-
-            .nota-menu {
-                display: none;
-            }
-
-            .principal {
-                padding: 20px 14px;
-            }
-
-            .barra-superior {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .estadisticas {
-                gap: 12px;
-            }
-
-            .encabezado-seccion {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .filtros {
-                flex-direction: column;
-            }
-
-            .filtros select {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 430px) {
-            .estadisticas {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="contenedor">
-
-    <!-- MENÚ LATERAL -->
-    <aside class="menu">
-
-        <div class="marca">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo SIGECIR">
-            <h2>SIGECIR</h2>
-            <p>Portal de profesionales</p>
-        </div>
-
-        <p class="titulo-menu">Menú principal</p>
-
-        <a href="{{ route('profesionales.dashboard') }}" class="enlace-menu">
-            <i class="fa-solid fa-house icono-menu"></i>
-            <span>Inicio</span>
-        </a>
-
-        <a href="{{ route('profesionales.agenda') }}" class="enlace-menu">
-            <i class="fa-solid fa-calendar-days icono-menu"></i>
-            <span>Mi agenda</span>
-        </a>
-
-        <a href="{{ route('profesionales.pacientes') }}" class="enlace-menu activo">
-            <i class="fa-solid fa-users icono-menu"></i>
-            <span>Mis pacientes</span>
-        </a>
-
-        <a href="{{ route('profesionales.notificaciones') }}" class="enlace-menu">
-            <i class="fa-solid fa-bell icono-menu"></i>
-            <span>Notificaciones</span>
-        </a>
-
-        <a href="{{ route('profesionales.horario') }}" class="enlace-menu">
-            <i class="fa-solid fa-clock icono-menu"></i>
-            <span>Mi horario</span>
-        </a>
-
-        <a href="{{ route('profesionales.dashboard') }}#perfil" class="enlace-menu">
-            <i class="fa-solid fa-circle-user icono-menu"></i>
-            <span>Mi perfil</span>
-        </a>
-
-        <p class="titulo-menu">Cuenta</p>
-
-        <a href="{{ url('/') }}" class="enlace-menu">
-            <i class="fa-solid fa-right-from-bracket icono-menu"></i>
-            <span>Cerrar sesión</span>
-        </a>
-
-        <div class="nota-menu">
-            <strong>SIGECIR2026</strong><br>
-            Sistema de Gestión de Citas para Renueva IPS.
-        </div>
-
-    </aside>
-
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="principal">
-
-        <header class="barra-superior">
-            <div>
-                <h1>Mis pacientes</h1>
-                <p>Consulta la información de los pacientes asignados.</p>
-            </div>
-
-            <div class="fecha">
-                <i class="fa-regular fa-calendar"></i>
-                {{ now()->locale('es')->translatedFormat('l, d \d\e F \d\e Y') }}
-            </div>
-        </header>
-
-        <!-- BIENVENIDA -->
-        <section class="bienvenida">
-            <h2>Directorio de pacientes</h2>
-            <p>
-                Desde este espacio puedes consultar los datos básicos
-                de tus pacientes y revisar los servicios relacionados
-                con su atención.
-            </p>
-        </section>
-
-        <!-- ESTADÍSTICAS -->
-        <section class="estadisticas">
-
-            <article class="tarjeta">
-                <div class="tarjeta-superior">
-                    <p>Total de pacientes</p>
-                    <span class="icono-tarjeta">
-                        <i class="fa-solid fa-users"></i>
-                    </span>
-                </div>
-                <h3 id="totalPacientes">4</h3>
-                <small>Pacientes registrados en el ejemplo</small>
-            </article>
-
-            <article class="tarjeta">
-                <div class="tarjeta-superior">
-                    <p>Pacientes activos</p>
-                    <span class="icono-tarjeta">
-                        <i class="fa-solid fa-user-check"></i>
-                    </span>
-                </div>
-                <h3 id="pacientesActivos">3</h3>
-                <small>Con atención activa</small>
-            </article>
-
-            <article class="tarjeta">
-                <div class="tarjeta-superior">
-                    <p>Pacientes inactivos</p>
-                    <span class="icono-tarjeta">
-                        <i class="fa-solid fa-user-clock"></i>
-                    </span>
-                </div>
-                <h3 id="pacientesInactivos">1</h3>
-                <small>Sin atención activa</small>
-            </article>
-
-        </section>
-
-        <!-- LISTADO DE PACIENTES -->
-        <section class="seccion-pacientes">
-
-            <div class="encabezado-seccion">
                 <div>
-                    <h2>Listado de pacientes</h2>
-                    <p>Información de los pacientes asignados al profesional.</p>
-                </div>
-            </div>
+                    <div class="mb-3 flex items-center gap-2 text-sm font-medium text-blue-100">
+                        <i class="fa-solid fa-users"></i>
+                        <span>Gestión de pacientes</span>
+                    </div>
 
-            <!-- BUSCADOR Y FILTROS -->
-            <div class="filtros">
+                    <h1 class="text-3xl font-extrabold tracking-tight text-white">
+                        Mis pacientes
+                    </h1>
 
-                <div class="campo-busqueda">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input
-                        type="text"
-                        id="buscarPaciente"
-                        placeholder="Buscar por nombre o documento...">
+                    <p class="mt-2 max-w-xl text-sm text-blue-100">
+                        Consulta la información de tus pacientes y revisa sus documentos médicos adjuntos.
+                    </p>
                 </div>
 
-                <select id="filtroServicio">
-                    <option value="">Todos los servicios</option>
-                    <option value="Fonoaudiología">Fonoaudiología</option>
-                    <option value="Psicología">Psicología</option>
-                    <option value="Fisioterapia">Fisioterapia</option>
-                    <option value="Terapia ocupacional">Terapia ocupacional</option>
-                </select>
-
-                <select id="filtroEstado">
-                    <option value="">Todos los estados</option>
-                    <option value="Activo">Activo</option>
-                    <option value="Inactivo">Inactivo</option>
-                </select>
+                <div class="inline-flex w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#063d69] shadow-lg">
+                    <i class="fa-regular fa-calendar text-[#0875bd]"></i>
+                    {{ now()->locale('es')->translatedFormat('l, d \d\e F \d\e Y') }}
+                </div>
 
             </div>
+        </div>
 
-            <!-- TABLA -->
-            <div class="tabla-contenedor">
+        <div class="p-5 md:p-8">
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Paciente</th>
-                            <th>Documento</th>
-                            <th>Teléfono</th>
-                            <th>Servicio</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
+            {{-- BIENVENIDA --}}
+            <section class="mb-7 rounded-xl border border-blue-100 bg-gradient-to-r from-blue-50 to-white p-5 md:p-6">
 
-                    <tbody id="tablaPacientes">
+                <div class="flex items-start gap-4">
 
-                        <tr data-servicio="Fonoaudiología" data-estado="Activo">
-                            <td>
-                                <span class="nombre-paciente">María Pérez</span>
-                                <span class="subtexto">Paciente de ejemplo</span>
-                            </td>
-                            <td>000000001</td>
-                            <td>300 000 0001</td>
-                            <td>Fonoaudiología</td>
-                            <td><span class="estado activo">Activo</span></td>
-                        </tr>
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-xl text-[#0875bd] shadow-sm">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
 
-                        <tr data-servicio="Psicología" data-estado="Activo">
-                            <td>
-                                <span class="nombre-paciente">Juan Díaz</span>
-                                <span class="subtexto">Paciente de ejemplo</span>
-                            </td>
-                            <td>000000002</td>
-                            <td>300 000 0002</td>
-                            <td>Psicología</td>
-                            <td><span class="estado activo">Activo</span></td>
-                        </tr>
+                    <div>
+                        <h2 class="text-lg font-bold text-[#063d69]">
+                            Directorio de pacientes
+                        </h2>
 
-                        <tr data-servicio="Fisioterapia" data-estado="Inactivo">
-                            <td>
-                                <span class="nombre-paciente">Laura Gómez</span>
-                                <span class="subtexto">Paciente de ejemplo</span>
-                            </td>
-                            <td>000000003</td>
-                            <td>300 000 0003</td>
-                            <td>Fisioterapia</td>
-                            <td><span class="estado inactivo">Inactivo</span></td>
-                        </tr>
+                        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+                            Desde este espacio puedes consultar los datos básicos de tus pacientes,
+                            los servicios relacionados con su atención y las órdenes médicas adjuntadas.
+                        </p>
+                    </div>
 
-                        <tr data-servicio="Terapia ocupacional" data-estado="Activo">
-                            <td>
-                                <span class="nombre-paciente">Carlos Ruiz</span>
-                                <span class="subtexto">Paciente de ejemplo</span>
-                            </td>
-                            <td>000000004</td>
-                            <td>300 000 0004</td>
-                            <td>Terapia ocupacional</td>
-                            <td><span class="estado activo">Activo</span></td>
-                        </tr>
+                </div>
 
-                        <tr id="mensajeSinResultados" style="display:none;">
-                            <td colspan="5" class="sin-datos">
-                                No se encontraron pacientes con esos criterios.
-                            </td>
-                        </tr>
+            </section>
 
-                    </tbody>
-                </table>
+            {{-- ESTADÍSTICAS --}}
+            <section class="mb-7 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
 
-            </div>
+                <article class="rounded-xl border border-slate-200 bg-slate-50/80 p-5 transition duration-200 hover:-translate-y-1 hover:shadow-md">
 
-        </section>
+                    <div class="mb-4 flex items-center justify-between">
+                        <p class="text-sm font-semibold text-slate-500">
+                            Total de pacientes
+                        </p>
 
-        <footer class="pie">
-            SIGECIR2026 · Renueva IPS · Portal de profesionales
-        </footer>
+                        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-lg text-[#0875bd]">
+                            <i class="fa-solid fa-users"></i>
+                        </span>
+                    </div>
 
-    </main>
+                    <h3 id="totalPacientes" class="text-3xl font-extrabold text-[#063d69]">
+                        {{ $citas->pluck('id_usuario')->unique()->count() }}
+                    </h3>
 
+                    <p class="mt-1 text-xs text-slate-400">
+                        Pacientes con citas asignadas
+                    </p>
+
+                </article>
+
+                <article class="rounded-xl border border-slate-200 bg-slate-50/80 p-5 transition duration-200 hover:-translate-y-1 hover:shadow-md">
+
+                    <div class="mb-4 flex items-center justify-between">
+                        <p class="text-sm font-semibold text-slate-500">
+                            Pacientes activos
+                        </p>
+
+                        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-100 text-lg text-green-600">
+                            <i class="fa-solid fa-user-check"></i>
+                        </span>
+                    </div>
+
+                    <h3 id="pacientesActivos" class="text-3xl font-extrabold text-slate-800">
+                        0
+                    </h3>
+
+                    <p class="mt-1 text-xs text-slate-400">
+                        Con citas confirmadas o en atención
+                    </p>
+
+                </article>
+
+                <article class="rounded-xl border border-slate-200 bg-slate-50/80 p-5 transition duration-200 hover:-translate-y-1 hover:shadow-md">
+
+                    <div class="mb-4 flex items-center justify-between">
+                        <p class="text-sm font-semibold text-slate-500">
+                            Pacientes inactivos
+                        </p>
+
+                        <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100 text-lg text-amber-600">
+                            <i class="fa-solid fa-user-clock"></i>
+                        </span>
+                    </div>
+
+                    <h3 id="pacientesInactivos" class="text-3xl font-extrabold text-slate-800">
+                        0
+                    </h3>
+
+                    <p class="mt-1 text-xs text-slate-400">
+                        Sin citas activas
+                    </p>
+
+                </article>
+
+            </section>
+
+            {{-- LISTADO DE PACIENTES --}}
+            <section class="overflow-hidden rounded-xl border border-slate-200">
+
+                <div class="border-b border-slate-200 bg-white px-5 py-5 md:px-6">
+
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+
+                        <div>
+                            <h2 class="text-lg font-bold text-[#063d69]">
+                                Listado de pacientes
+                            </h2>
+
+                            <p class="mt-1 text-sm text-slate-500">
+                                Información de los pacientes asignados al profesional.
+                            </p>
+                        </div>
+
+                        <span class="rounded-lg bg-blue-100 px-3 py-1.5 text-xs font-bold text-[#0875bd]">
+                            <i class="fa-solid fa-address-book mr-1"></i>
+                            Directorio de pacientes
+                        </span>
+
+                    </div>
+
+                </div>
+
+                {{-- BUSCADOR Y FILTROS --}}
+                <div class="grid grid-cols-1 gap-4 border-b border-slate-200 bg-slate-50/80 p-5 md:grid-cols-2 xl:grid-cols-3">
+
+                    <div>
+                        <label for="buscarPaciente" class="mb-2 block text-sm font-semibold text-slate-600">
+                            Buscar paciente
+                        </label>
+
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+
+                            <input
+                                type="text"
+                                id="buscarPaciente"
+                                placeholder="Buscar por nombre o documento..."
+                                class="h-11 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-sm text-slate-700 outline-none transition focus:border-[#009fd4] focus:ring-2 focus:ring-[#009fd4]/20">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="filtroServicio" class="mb-2 block text-sm font-semibold text-slate-600">
+                            Filtrar por servicio
+                        </label>
+
+                        <select
+                            id="filtroServicio"
+                            class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-[#009fd4] focus:ring-2 focus:ring-[#009fd4]/20">
+
+                            <option value="">Todos los servicios</option>
+                            <option value="fonoaudiología">Fonoaudiología</option>
+                            <option value="psicología">Psicología</option>
+                            <option value="fisioterapia">Fisioterapia</option>
+                            <option value="terapia ocupacional">Terapia ocupacional</option>
+
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="filtroEstado" class="mb-2 block text-sm font-semibold text-slate-600">
+                            Filtrar por estado
+                        </label>
+
+                        <select
+                            id="filtroEstado"
+                            class="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-[#009fd4] focus:ring-2 focus:ring-[#009fd4]/20">
+
+                            <option value="">Todos los estados</option>
+                            <option value="confirmada">Confirmada</option>
+                            <option value="pendiente">Pendiente</option>
+                            <option value="en atención">En atención</option>
+                            <option value="atendida">Atendida</option>
+                            <option value="cancelada">Cancelada</option>
+                            <option value="no asistió">No asistió</option>
+
+                        </select>
+                    </div>
+
+                </div>
+
+                {{-- TABLA --}}
+                <div class="overflow-x-auto">
+
+                    <table id="tablaPacientes" class="min-w-full whitespace-nowrap text-left text-sm text-slate-700">
+
+                        <thead class="bg-[#063d69] text-xs uppercase tracking-wider text-white">
+                            <tr>
+                                <th class="px-5 py-4 text-center">Nombre</th>
+                                <th class="px-5 py-4 text-center">Documento</th>
+                                <th class="px-5 py-4 text-center">Teléfono</th>
+                                <th class="px-5 py-4 text-center">Servicio</th>
+                                <th class="px-5 py-4 text-center">Estado</th>
+                                <th class="px-5 py-4 text-center">Documento adjunto</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="divide-y divide-slate-100 bg-white">
+
+                            @forelse($citas as $cita)
+
+                                @php
+                                    $paciente = $cita->usuario;
+
+                                    $nombreUsuario = trim(
+                                        ($paciente->primer_nombre ?? '') . ' ' .
+                                        ($paciente->segundo_nombre ?? '') . ' ' .
+                                        ($paciente->primer_apellido ?? '') . ' ' .
+                                        ($paciente->segundo_apellido ?? '')
+                                    );
+
+                                    $nombreServicio = $cita->servicio?->nombre_servicio ?? 'Sin servicio';
+
+                                    $estado = mb_strtolower(trim($cita->estado_cita ?? ''));
+
+                                    $servicioNormalizado = mb_strtolower(trim($nombreServicio));
+                                @endphp
+
+                                <tr
+                                    class="filaUsuario text-center transition duration-150 hover:bg-sky-50/70"
+                                    data-documento="{{ $paciente->documento_identidad ?? '' }}"
+                                    data-paciente="{{ $cita->id_usuario }}"
+                                    data-servicio="{{ $servicioNormalizado }}"
+                                    data-estado="{{ $estado }}">
+
+                                    {{-- NOMBRE --}}
+                                    <td class="px-5 py-4 font-semibold text-[#063d69]">
+                                        {{ $nombreUsuario ?: 'Sin nombre' }}
+                                    </td>
+
+                                    {{-- DOCUMENTO --}}
+                                    <td class="px-5 py-4 font-bold text-[#063d69]">
+                                        {{ $paciente->documento_identidad ?? 'Sin documento' }}
+                                    </td>
+
+                                    {{-- TELÉFONO --}}
+                                    <td class="px-5 py-4 text-slate-600">
+                                        {{ $paciente->telefono_usuario ?? 'Sin teléfono' }}
+                                    </td>
+
+                                    {{-- SERVICIO --}}
+                                    <td class="px-5 py-4 font-medium text-slate-700">
+                                        {{ $nombreServicio }}
+                                    </td>
+
+                                    {{-- ESTADO --}}
+                                    <td class="whitespace-nowrap px-5 py-4">
+
+                                        @if($estado == 'confirmada')
+
+                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1.5 font-semibold text-green-700">
+                                                <i class="fa-solid fa-circle-check text-xs"></i>
+                                                Confirmada
+                                            </span>
+
+                                        @elseif($estado == 'pendiente')
+
+                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1.5 font-semibold text-amber-700">
+                                                <i class="fa-solid fa-clock text-xs"></i>
+                                                Pendiente
+                                            </span>
+
+                                        @elseif($estado == 'en atención')
+
+                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1.5 font-semibold text-blue-700">
+                                                <i class="fa-solid fa-stethoscope text-xs"></i>
+                                                {{ $cita->estado_cita }}
+                                            </span>
+
+                                        @elseif($estado == 'atendida')
+
+                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1.5 font-semibold text-emerald-700">
+                                                <i class="fa-solid fa-check-double text-xs"></i>
+                                                {{ $cita->estado_cita }}
+                                            </span>
+
+                                        @elseif($estado == 'cancelada')
+
+                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1.5 font-semibold text-red-700">
+                                                <i class="fa-solid fa-circle-xmark text-xs"></i>
+                                                {{ $cita->estado_cita }}
+                                            </span>
+
+                                        @elseif($estado == 'no asistió')
+
+                                            <span class="inline-flex items-center gap-1.5 rounded-full bg-rose-100 px-3 py-1.5 font-semibold text-rose-700">
+                                                <i class="fa-solid fa-user-xmark text-xs"></i>
+                                                {{ $cita->estado_cita }}
+                                            </span>
+
+                                        @else
+
+                                            <span class="inline-flex rounded-full bg-gray-100 px-3 py-1.5 font-semibold text-gray-700">
+                                                {{ $cita->estado_cita ?? 'Sin estado' }}
+                                            </span>
+
+                                        @endif
+
+                                    </td>
+
+                                    {{-- DOCUMENTO ADJUNTO --}}
+                                    <td class="px-5 py-4 text-center">
+
+                                        @forelse($cita->documentos as $documento)
+
+                                            <a
+                                                href="{{ route('documento', $documento->id) }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="inline-flex items-center gap-2 rounded-lg bg-cyan-100 px-3 py-2 text-xs font-bold text-cyan-800 transition hover:bg-cyan-200">
+
+                                                <i class="fa-solid fa-file-pdf"></i>
+                                                Ver orden médica
+
+                                            </a>
+
+                                        @empty
+
+                                            <span class="inline-flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-500">
+                                                <i class="fa-solid fa-file-circle-xmark"></i>
+                                                Sin documento
+                                            </span>
+
+                                        @endforelse
+
+                                    </td>
+
+                                </tr>
+
+                            @empty
+
+                                <tr>
+                                    <td colspan="6" class="px-6 py-12 text-center">
+
+                                        <i class="fa-solid fa-folder-open mb-3 text-3xl text-slate-300"></i>
+
+                                        <p class="font-semibold text-slate-600">
+                                            No hay pacientes asignados
+                                        </p>
+
+                                        <p class="mt-1 text-sm text-slate-400">
+                                            Los pacientes aparecerán aquí cuando tengan citas asignadas a tu usuario profesional.
+                                        </p>
+
+                                    </td>
+                                </tr>
+
+                            @endforelse
+
+                            {{-- SIN RESULTADOS --}}
+                            @if($citas->isNotEmpty())
+
+                                <tr id="mensajeSinResultados" class="hidden">
+                                    <td colspan="6" class="px-6 py-12 text-center">
+
+                                        <i class="fa-solid fa-folder-open mb-3 text-3xl text-slate-300"></i>
+
+                                        <p class="font-semibold text-slate-600">
+                                            No se encontraron pacientes
+                                        </p>
+
+                                        <p class="mt-1 text-sm text-slate-400">
+                                            Intenta cambiar los criterios de búsqueda.
+                                        </p>
+
+                                    </td>
+                                </tr>
+
+                            @endif
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                {{-- PIE DE TABLA --}}
+                <div class="border-t border-slate-100 bg-slate-50 px-5 py-3">
+                    <p class="text-xs text-slate-500">
+                        <i class="fa-solid fa-circle-info mr-1 text-[#009fd4]"></i>
+                        Información obtenida de los usuarios registrados, sus citas y documentos adjuntos.
+                    </p>
+                </div>
+
+            </section>
+
+            <footer class="pt-6 text-center text-xs text-slate-400">
+                SIGECIR2026 · Renueva IPS · Portal de profesionales
+            </footer>
+
+        </div>
+    </div>
 </div>
 
-<!-- BUSCADOR Y FILTROS -->
+@endsection
+
+@push('scripts')
+
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+
     const buscarPaciente = document.getElementById('buscarPaciente');
     const filtroServicio = document.getElementById('filtroServicio');
     const filtroEstado = document.getElementById('filtroEstado');
 
     const filas = document.querySelectorAll(
-        '#tablaPacientes tr[data-servicio]'
+        '#tablaPacientes tbody tr.filaUsuario'
     );
 
     const mensajeSinResultados = document.getElementById(
         'mensajeSinResultados'
     );
 
+    const totalPacientes = document.getElementById('totalPacientes');
+    const pacientesActivos = document.getElementById('pacientesActivos');
+    const pacientesInactivos = document.getElementById('pacientesInactivos');
+
     function filtrarPacientes() {
 
         const texto = buscarPaciente.value.toLowerCase().trim();
-        const servicio = filtroServicio.value;
-        const estado = filtroEstado.value;
+        const servicio = filtroServicio.value.toLowerCase().trim();
+        const estado = filtroEstado.value.toLowerCase().trim();
+
+        const pacientes = new Map();
 
         let visibles = 0;
 
-        filas.forEach(fila => {
+        filas.forEach(function (fila) {
 
             const contenido = fila.innerText.toLowerCase();
-            const servicioFila = fila.dataset.servicio;
-            const estadoFila = fila.dataset.estado;
+            const servicioFila = fila.dataset.servicio.toLowerCase();
+            const estadoFila = fila.dataset.estado.toLowerCase();
 
             const coincideTexto = contenido.includes(texto);
             const coincideServicio = !servicio || servicioFila === servicio;
             const coincideEstado = !estado || estadoFila === estado;
 
             if (coincideTexto && coincideServicio && coincideEstado) {
+
                 fila.style.display = '';
                 visibles++;
+
+                const idPaciente = fila.dataset.paciente;
+
+                if (!pacientes.has(idPaciente)) {
+                    pacientes.set(idPaciente, false);
+                }
+
+                if (['confirmada', 'en atención'].includes(estadoFila)) {
+                    pacientes.set(idPaciente, true);
+                }
+
             } else {
+
                 fila.style.display = 'none';
+
             }
 
         });
 
-        mensajeSinResultados.style.display =
-            visibles === 0 ? '' : 'none';
+        let activos = 0;
+        let inactivos = 0;
+
+        pacientes.forEach(function (tieneCitaActiva) {
+
+            if (tieneCitaActiva) {
+                activos++;
+            } else {
+                inactivos++;
+            }
+
+        });
+
+        totalPacientes.textContent = pacientes.size;
+        pacientesActivos.textContent = activos;
+        pacientesInactivos.textContent = inactivos;
+
+        if (mensajeSinResultados) {
+            mensajeSinResultados.classList.toggle('hidden', visibles !== 0);
+        }
+
     }
 
     buscarPaciente.addEventListener('input', filtrarPacientes);
     filtroServicio.addEventListener('change', filtrarPacientes);
     filtroEstado.addEventListener('change', filtrarPacientes);
+
+    filtrarPacientes();
+
+});
 </script>
 
-</body>
-</html>
+@endpush

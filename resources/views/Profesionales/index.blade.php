@@ -100,7 +100,6 @@
                         <thead class="bg-[#063d69] text-xs uppercase tracking-wider text-white">
 
                             <tr>
-                                <th class="px-5 py-4 text-center">ID</th>
                                 <th class="px-5 py-4 text-left">Nombre</th>
                                 <th class="px-5 py-4 text-left">Apellido</th>
                                 <th class="px-5 py-4 text-left">Especialidad</th>
@@ -117,11 +116,6 @@
                             @forelse ($profesionales as $profesional)
 
                                 <tr class="transition duration-150 hover:bg-sky-50/70">
-
-                                    {{-- ID --}}
-                                    <td class="px-5 py-4 text-center font-semibold text-slate-500">
-                                        {{ $profesional->id }}
-                                    </td>
 
                                     {{-- NOMBRE --}}
                                     <td class="px-5 py-4 font-bold text-[#063d69]">

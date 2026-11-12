@@ -21,6 +21,7 @@ class PortalPacienteController extends Controller
     }
 
     // CONSULTAR MIS CITAS
+    // CONSULTAR MIS CITAS
     public function misCitas(Request $request)
     {
         abort_unless($request->user()->hasRole('Paciente'), 403);
@@ -35,6 +36,20 @@ class PortalPacienteController extends Controller
         ->where('id_usuario', $idUsuario)
         ->orderByDesc('fecha_cita')
         ->get();
+
+        // CONSULTAR DOCUMENTOS DE LAS CITAS DEL PACIENTE
+        $documentos = documentos::where('id_usuario', $idUsuario)
+            ->whereIn('id_cita', $citas->pluck('id'))
+            ->get()
+            ->groupBy('id_cita');
+
+        // ASOCIAR DOCUMENTOS A CADA CITA
+        foreach ($citas as $cita) {
+            $cita->setRelation(
+                'documentos',
+                $documentos->get($cita->id, collect())
+            );
+        }
 
         return view('paciente.mis-citas', compact('citas'));
     }
@@ -95,7 +110,7 @@ class PortalPacienteController extends Controller
             ],
 
             'orden_medica' => [
-                'nullable',
+                'required',
                 'file',
                 'mimes:pdf,jpg,jpeg,png',
                 'max:10240'
@@ -192,10 +207,34 @@ class PortalPacienteController extends Controller
             }
 
         });
+        
 
         // REDIRECCIONAR A MIS CITAS
         return redirect()
             ->route('paciente.mis-citas')
             ->with('success', 'Tu solicitud de cita fue registrada correctamente. Está pendiente de aprobación.');
+    }
+        // VISUALIZAR DOCUMENTO DEL PACIENTE
+    public function verDocumento(Request $request, $id)
+    {
+        abort_unless($request->user()->hasRole('Paciente'), 403);
+
+        $idUsuario = $request->user()->id_usuario;
+
+        // BUSCAR ÚNICAMENTE DOCUMENTOS DEL PACIENTE
+        $documento = documentos::where('id', $id)
+            ->where('id_usuario', $idUsuario)
+            ->firstOrFail();
+
+        // VERIFICAR QUE LA CITA TAMBIÉN SEA DEL PACIENTE
+        $cita = citas::where('id', $documento->id_cita)
+            ->where('id_usuario', $idUsuario)
+            ->firstOrFail();
+
+        $ruta = storage_path('app/public/' . $documento->ruta_documento);
+
+        abort_unless(file_exists($ruta), 404, 'El archivo no está disponible.');
+
+        return response()->file($ruta);
     }
 }

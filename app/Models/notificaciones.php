@@ -26,4 +26,17 @@ class notificaciones extends Model
             'id'
         );
     }
+
+    // Relación con profesionales
+    public function profesionales()
+    {
+        return $this->belongsToMany(
+            profesionales::class,
+            'notificacion_profesional',
+            'id_notificacion',
+            'id_profesional'
+        )
+        ->withPivot('leida', 'fecha_lectura')
+        ->withTimestamps();
+    }
 }
