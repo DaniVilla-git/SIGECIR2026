@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\URL;
 use Carbon\Carbon;
 
 class CitasController extends Controller
-{
+{ 
     // HORARIOS PERMITIDOS
     private function horariosPermitidos()
     {
@@ -380,8 +380,6 @@ class CitasController extends Controller
             ->with('mensaje', '¡Tu cita ha sido confirmada correctamente!');
     }
 
-
-    // ELIMINAR CITA
     // ELIMINAR CITA
     public function destroy($id)
     {
@@ -478,5 +476,37 @@ class CitasController extends Controller
             'fechas_ocupadas' => $fechasOcupadas,
             'horas_ocupadas' => $horasOcupadas
         ]);
+    }
+
+    // ACTUALIZAR ESTADO DIRECTAMENTE DESDE EL LISTADO
+    public function actualizarEstado(Request $request, int $id)
+    {
+        $datos = $request->validate([
+            'estado_cita' => [
+                'required',
+                Rule::in([
+                    'Confirmada',
+                    'En atención',
+                    'Atendida',
+                    'Cancelada',
+                    'Inasistencia'
+                ])
+            ]
+        ]);
+
+        $cita = citas::findOrFail($id);
+
+        $estadoAnterior = $cita->estado_cita;
+
+        $cita->update($datos);
+
+        // Enviar correo solamente si cambió el estado
+        if ($estadoAnterior !== $cita->estado_cita) {
+            $this->enviarCorreoEstado($cita);
+        }
+
+        return redirect()
+            ->route('citas.index')
+            ->with('actualizar', 'Estado de la cita actualizado correctamente.');
     }
 }

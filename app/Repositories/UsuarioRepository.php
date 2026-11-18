@@ -13,6 +13,13 @@ class usuarioRepository {
 
     public function guardar(array $datos)
     {
+        if (isset($datos['numero_documento'])) {
+            $datos['documento_identidad'] = $datos['numero_documento'];
+        }
+
+        unset($datos['numero_documento']);
+        unset($datos['_token']);
+
         usuarios::create($datos);
     }
 
@@ -26,20 +33,18 @@ class usuarioRepository {
         return usuarios::findOrFail($id);
     }
 
-    public function actualizar(int $id, array $datos)
+    public function actualizar($id, array $datos)
     {
-        $usuario = usuarios::findOrFail($id);
-
-        // CONSERVAR EL USUARIO DE REGISTRO
-        // SI EL FORMULARIO ENVÍA EL CAMPO VACÍO
-        if (
-            !isset($datos['usuario_registro']) ||
-            trim((string) $datos['usuario_registro']) === ''
-        ) {
-            unset($datos['usuario_registro']);
+        if (isset($datos['numero_documento'])) {
+            $datos['documento_identidad'] = $datos['numero_documento'];
         }
 
-        // ACTUALIZAR LOS DATOS
+        unset($datos['numero_documento']);
+        unset($datos['_token']);
+        unset($datos['_method']);
+
+        $usuario = usuarios::findOrFail($id);
+
         $usuario->update($datos);
 
         return $usuario;

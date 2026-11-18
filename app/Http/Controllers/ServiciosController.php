@@ -23,8 +23,8 @@ class ServiciosController extends Controller
     public function index()
     {
         $servicios = $this->ServiciosService->listartodo();
+
         return view('Servicios.index', compact('servicios'));
-        
     }
     
     public function create()

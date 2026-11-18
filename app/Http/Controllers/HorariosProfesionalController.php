@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Horario_ProfesionalRequest;
 use App\Services\horario_profesionalService;
 use App\Services\ProfesionalService;
+use App\Models\horarios_profesional;
+use App\Models\citas;
+use App\Models\profesionales;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class HorariosProfesionalController extends Controller
 {
@@ -20,11 +25,131 @@ class HorariosProfesionalController extends Controller
         $this->profesionalservice = $profesionalservice;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $horario_profesional = $this->Horario_profesionalService->listartodo();
+        // Listado de profesionales para el filtro
+        $profesionales = $this->profesionalservice->listartodo();
 
-        return view('Horario_profesional.index', compact('horario_profesional'));
+        // Mes seleccionado
+        $mes = $request->input('mes', now()->format('Y-m'));
+
+        try {
+            $fechaMes = Carbon::createFromFormat('Y-m', $mes)->startOfMonth();
+        } catch (\Exception $e) {
+            $fechaMes = now()->startOfMonth();
+            $mes = $fechaMes->format('Y-m');
+        }
+
+        // Profesional seleccionado
+        $idProfesional = $request->input('profesional');
+
+        // Fecha seleccionada
+        $fechaSeleccionada = $request->input(
+            'fecha',
+            $fechaMes->format('Y-m-d')
+        );
+
+        // Fechas que ocupa el calendario
+        $inicioCalendario = $fechaMes->copy()
+            ->startOfWeek(Carbon::MONDAY);
+
+        $finCalendario = $fechaMes->copy()
+            ->endOfMonth()
+            ->endOfWeek(Carbon::SUNDAY);
+
+        $calendario = collect();
+
+        // Consultar horarios y citas únicamente si hay profesional seleccionado
+        if ($idProfesional) {
+
+            $horarios = horarios_profesional::where(
+                'id_profesional',
+                $idProfesional
+            )
+            ->whereBetween('dia_semana', [
+                $inicioCalendario->format('Y-m-d'),
+                $finCalendario->format('Y-m-d')
+            ])
+            ->get()
+            ->groupBy(function ($horario) {
+                return Carbon::parse($horario->dia_semana)->format('Y-m-d');
+            });
+
+            $citas = citas::where('id_profesional', $idProfesional)
+                ->whereBetween('fecha_cita', [
+                    $inicioCalendario->format('Y-m-d'),
+                    $finCalendario->format('Y-m-d')
+                ])
+                ->whereRaw("LOWER(TRIM(estado_cita)) != ?", ['cancelada'])
+                ->get()
+                ->groupBy(function ($cita) {
+                    return Carbon::parse($cita->fecha_cita)->format('Y-m-d');
+                });
+
+            // Construir los días del calendario
+            $fechaActual = $inicioCalendario->copy();
+
+            while ($fechaActual->lte($finCalendario)) {
+
+                $fecha = $fechaActual->format('Y-m-d');
+
+                $horariosDia = $horarios->get($fecha, collect());
+                $citasDia = $citas->get($fecha, collect());
+
+                if ($horariosDia->isEmpty()) {
+                    $estado = 'sin_horario';
+                } elseif ($citasDia->isNotEmpty()) {
+                    $estado = 'ocupado';
+                } else {
+                    $estado = 'disponible';
+                }
+
+                $calendario->push([
+                    'fecha' => $fecha,
+                    'numero' => $fechaActual->day,
+                    'es_mes_actual' => $fechaActual->month === $fechaMes->month,
+                    'estado' => $estado,
+                    'horarios' => $horariosDia,
+                    'citas' => $citasDia
+                ]);
+
+                $fechaActual->addDay();
+            }
+        }
+
+        // Información del día seleccionado
+        $horariosSeleccionados = collect();
+        $citasSeleccionadas = collect();
+
+        if ($idProfesional && $fechaSeleccionada) {
+
+            $horariosSeleccionados = horarios_profesional::where(
+                'id_profesional',
+                $idProfesional
+            )
+            ->whereDate('dia_semana', $fechaSeleccionada)
+            ->get();
+
+            $citasSeleccionadas = citas::where(
+                'id_profesional',
+                $idProfesional
+            )
+            ->whereDate('fecha_cita', $fechaSeleccionada)
+            ->whereRaw("LOWER(TRIM(estado_cita)) != ?", ['cancelada'])
+            ->orderBy('hora_inicio')
+            ->get();
+        }
+
+        return view('Horario_profesional.index', compact(
+            'profesionales',
+            'idProfesional',
+            'mes',
+            'fechaMes',
+            'fechaSeleccionada',
+            'calendario',
+            'horariosSeleccionados',
+            'citasSeleccionadas'
+        ));
     }
 
     public function create()

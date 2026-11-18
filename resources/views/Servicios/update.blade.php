@@ -102,7 +102,8 @@
                                     value="{{ $profesional->id }}"
                                     {{ old('id_profesional', $servicios->id_profesional) == $profesional->id ? 'selected' : '' }}
                                 >
-                                    {{ $profesional->nombre_profesional }}
+                                    {{ strtoupper($profesional->nombre_profesional . ' ' . $profesional->apellido_profesional) }}
+                                    - {{ strtoupper($profesional->especialidad) }}
                                 </option>
                             @endforeach
 

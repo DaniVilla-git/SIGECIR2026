@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('titulo')
     Citas
 @endsection
@@ -173,6 +172,8 @@
                                 $nombreServicio = $cita->servicio
                                     ? $cita->servicio->nombre_servicio
                                     : 'Servicio no encontrado';
+
+                                $estado = mb_strtolower(trim($cita->estado_cita ?? ''));
                             @endphp
 
                             <tr class="filaCita text-center transition duration-150 hover:bg-blue-50/70"
@@ -234,71 +235,90 @@
                                 </td>
 
                                 {{-- ESTADO --}}
-                                
                                 <td class="whitespace-nowrap px-5 py-4">
 
-                                    @php
-                                        $estado = mb_strtolower(trim($cita->estado_cita ?? ''));
-                                    @endphp
+                                    @if($estado == 'pendiente')
 
-                                    @if($estado == 'confirmada')
+                                        <form action="{{ route('citas.actualizarEstado', $cita->id) }}"
+                                            method="POST"
+                                            class="flex flex-col items-center gap-2">
 
-                                        <span style="background-color: #dcfce7; color: #15803d;"
-                                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold">
-                                            <i class="fa-solid fa-circle-check text-xs"></i>
-                                            Confirmada
-                                        </span>
+                                            @csrf
+                                            @method('PATCH')
 
-                                    @elseif($estado == 'pendiente')
+                                            <select name="estado_cita"
+                                                class="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-800 focus:border-blue-500 focus:outline-none"
+                                                required>
 
-                                        <span style="background-color: #fef3c7; color: #b45309;"
-                                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold">
-                                            <i class="fa-solid fa-clock text-xs"></i>
-                                            Pendiente
-                                        </span>
+                                                <option value="">Cambiar estado</option>
+                                                <option value="Confirmada">Confirmada</option>
+                                                <option value="En atención">En atención</option>
+                                                <option value="Atendida">Atendida</option>
+                                                <option value="Cancelada">Cancelada</option>
+                                                <option value="Inasistencia">No asistió</option>
 
-                                    @elseif($estado == 'en atención')
+                                            </select>
 
-                                        <span style="background-color: #dbeafe; color: #1d4ed8;"
-                                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold">
-                                            <i class="fa-solid fa-stethoscope text-xs"></i>
-                                            {{ $cita->estado_cita }}
-                                        </span>
+                                            <button type="submit"
+                                                class="rounded-lg bg-[#0875bd] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#063d69]">
+                                                Guardar estado
+                                            </button>
 
-                                    @elseif($estado == 'atendida')
-
-                                        <span style="background-color: #d1fae5; color: #047857;"
-                                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold">
-                                            <i class="fa-solid fa-check-double text-xs"></i>
-                                            {{ $cita->estado_cita }}
-                                        </span>
-
-                                    @elseif($estado == 'cancelada')
-
-                                        <span style="background-color: #fee2e2; color: #b91c1c;"
-                                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold">
-                                            <i class="fa-solid fa-circle-xmark text-xs"></i>
-                                            {{ $cita->estado_cita }}
-                                        </span>
-
-                                    @elseif($estado == 'no asistió')
-
-                                        <span style="background-color: #ffe4e6; color: #be123c;"
-                                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold">
-                                            <i class="fa-solid fa-user-xmark text-xs"></i>
-                                            {{ $cita->estado_cita }}
-                                        </span>
+                                        </form>
 
                                     @else
 
-                                        <span class="inline-flex rounded-full bg-gray-100 px-3 py-1.5 font-semibold text-gray-700">
-                                            {{ $cita->estado_cita ?: 'Sin estado' }}
-                                        </span>
+                                        @if($estado == 'confirmada')
+
+                                            <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold"
+                                                style="background-color: #dcfce7; color: #15803d;">
+                                                <i class="fa-solid fa-circle-check text-xs"></i>
+                                                Confirmada
+                                            </span>
+
+                                        @elseif($estado == 'en atención')
+
+                                            <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold"
+                                                style="background-color: #dbeafe; color: #1d4ed8;">
+                                                <i class="fa-solid fa-stethoscope text-xs"></i>
+                                                En atención
+                                            </span>
+
+                                        @elseif($estado == 'atendida')
+
+                                            <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold"
+                                                style="background-color: #d1fae5; color: #047857;">
+                                                <i class="fa-solid fa-check-double text-xs"></i>
+                                                Atendida
+                                            </span>
+
+                                        @elseif($estado == 'cancelada')
+
+                                            <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold"
+                                                style="background-color: #fee2e2; color: #b91c1c;">
+                                                <i class="fa-solid fa-circle-xmark text-xs"></i>
+                                                Cancelada
+                                            </span>
+
+                                        @elseif($estado == 'inasistencia' || $estado == 'no asistió')
+
+                                            <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold"
+                                                style="background-color: #ffe4e6; color: #be123c;">
+                                                <i class="fa-solid fa-user-xmark text-xs"></i>
+                                                No asistió
+                                            </span>
+
+                                        @else
+
+                                            <span class="inline-flex rounded-full bg-gray-100 px-3 py-1.5 font-semibold text-gray-700">
+                                                {{ $cita->estado_cita ?: 'Sin estado' }}
+                                            </span>
+
+                                        @endif
 
                                     @endif
 
                                 </td>
-
 
                                 {{-- OBSERVACIONES --}}
                                 <td class="max-w-xs px-5 py-4 text-gray-600">

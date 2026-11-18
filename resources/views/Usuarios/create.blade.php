@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('titulo')
@@ -6,224 +7,344 @@
 
 @section('content')
 
-<div class="container mx-auto mt-10 px-4">
+<div class="container mx-auto mt-8 px-4 pb-10">
 
-    <div class="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl border border-gray-100 p-6 md:p-8">
+    {{-- CONTENEDOR PRINCIPAL --}}
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl border border-slate-200 overflow-hidden">
 
-        {{-- Encabezado --}}
-        <div class="mb-8 text-center">
+        {{-- ENCABEZADO --}}
+        <div class="bg-gradient-to-r from-[#063d69] via-[#0875bd] to-[#20a4a7] px-6 py-7 text-white">
 
-            <h2 class="text-3xl font-bold text-gray-700">
-                Nuevo Usuario
-            </h2>
+            <div class="flex items-center gap-4">
 
-            <p class="text-sm text-gray-500 mt-2">
-                Registra la información del usuario en SIGECIR.
-            </p>
+                <div class="bg-white/20 p-3 rounded-xl">
+                    <i class="fas fa-user-plus text-2xl"></i>
+                </div>
+
+                <div>
+                    <h2 class="text-2xl font-bold">
+                        Nuevo Usuario
+                    </h2>
+
+                    <p class="text-sm text-blue-50 mt-1">
+                        Registra la información del usuario en SIGECIR.
+                    </p>
+                </div>
+
+            </div>
 
         </div>
 
-        {{-- Errores de validación --}}
-        @if($errors->any())
-            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6">
+        {{-- FORMULARIO --}}
+        <div class="p-6 md:p-8">
 
-                <p class="font-semibold mb-2">
-                    Por favor, revisa los siguientes errores:
-                </p>
+            {{-- ERRORES DE VALIDACIÓN --}}
+            @if($errors->any())
 
-                <ul class="list-disc pl-5 space-y-1">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-4 rounded-xl mb-6">
 
-            </div>
-        @endif
+                    <p class="font-semibold mb-2">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        Por favor, revisa los siguientes errores:
+                    </p>
 
-        {{-- Formulario --}}
-        <form action="{{ route('usuarios.store') }}" method="POST">
+                    <ul class="list-disc pl-5 space-y-1 text-sm">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
 
-            @csrf
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                {{-- Documento Identidad --}}
-                <div>
-                    <label class="block mb-2 text-sm font-semibold text-gray-700">
-                        Documento Identidad
-                    </label>
-
-                    <input
-                        type="text"
-                        name="documento_identidad"
-                        value="{{ old('documento_identidad') }}"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                    >
                 </div>
 
-                {{-- Primer Nombre --}}
-                <div>
-                    <label class="block mb-2 text-sm font-semibold text-gray-700">
-                        Primer Nombre
-                    </label>
+            @endif
 
-                    <input
-                        type="text"
-                        name="primer_nombre"
-                        value="{{ old('primer_nombre') }}"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                    >
+            <form action="{{ route('usuarios.store') }}" method="POST">
+
+                @csrf
+
+                {{-- ================= INFORMACIÓN PERSONAL ================= --}}
+                <div class="mb-8">
+
+                    <h3 class="text-lg font-bold text-[#063d69] mb-5 border-b border-slate-200 pb-3">
+                        <i class="fas fa-id-card mr-2"></i>
+                        Información personal
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                        {{-- TIPO DE DOCUMENTO --}}
+                        <div>
+                            <label for="tipo_documento" class="block mb-2 text-sm font-semibold text-gray-700">
+                                Tipo de documento
+                            </label>
+
+                            <select
+                                name="tipo_documento"
+                                id="tipo_documento"
+                                required
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#0875bd] focus:border-[#0875bd] transition">
+
+                                <option value="">Seleccione</option>
+                                <option value="CC" {{ old('tipo_documento') == 'CC' ? 'selected' : '' }}>Cédula de ciudadanía</option>
+                                <option value="TI" {{ old('tipo_documento') == 'TI' ? 'selected' : '' }}>Tarjeta de identidad</option>
+                                <option value="CE" {{ old('tipo_documento') == 'CE' ? 'selected' : '' }}>Cédula de extranjería</option>
+                                <option value="PA" {{ old('tipo_documento') == 'PA' ? 'selected' : '' }}>Pasaporte</option>
+
+                            </select>
+                        </div>
+
+                        {{-- NÚMERO DE DOCUMENTO --}}
+                        <div>
+                            <label for="documento_identidad" class="block mb-2 text-sm font-semibold text-gray-700">
+                                Número de documento
+                            </label>
+
+                            <input
+                                type="text"
+                                name="numero_documento"
+                                id="numero_documento"
+                                value="{{ old('numero_documento') }}"
+                                placeholder="Ingrese el número de documento"
+                                required
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0875bd] focus:border-[#0875bd] transition">
+                        </div>
+
+                        {{-- PRIMER NOMBRE --}}
+                        <div>
+                            <label for="primer_nombre" class="block mb-2 text-sm font-semibold text-gray-700">
+                                Primer nombre
+                            </label>
+
+                            <input
+                                type="text"
+                                name="primer_nombre"
+                                id="primer_nombre"
+                                value="{{ old('primer_nombre') }}"
+                                placeholder="Ingrese el primer nombre"
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0875bd] focus:border-[#0875bd] transition">
+                        </div>
+
+                        {{-- SEGUNDO NOMBRE --}}
+                        <div>
+                            <label for="segundo_nombre" class="block mb-2 text-sm font-semibold text-gray-700">
+                                Segundo nombre
+                            </label>
+
+                            <input
+                                type="text"
+                                name="segundo_nombre"
+                                id="segundo_nombre"
+                                value="{{ old('segundo_nombre') }}"
+                                placeholder="Ingrese el segundo nombre"
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0875bd] focus:border-[#0875bd] transition">
+                        </div>
+
+                        {{-- PRIMER APELLIDO --}}
+                        <div>
+                            <label for="primer_apellido" class="block mb-2 text-sm font-semibold text-gray-700">
+                                Primer apellido
+                            </label>
+
+                            <input
+                                type="text"
+                                name="primer_apellido"
+                                id="primer_apellido"
+                                value="{{ old('primer_apellido') }}"
+                                placeholder="Ingrese el primer apellido"
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0875bd] focus:border-[#0875bd] transition">
+                        </div>
+
+                        {{-- SEGUNDO APELLIDO --}}
+                        <div>
+                            <label for="segundo_apellido" class="block mb-2 text-sm font-semibold text-gray-700">
+                                Segundo apellido
+                            </label>
+
+                            <input
+                                type="text"
+                                name="segundo_apellido"
+                                id="segundo_apellido"
+                                value="{{ old('segundo_apellido') }}"
+                                placeholder="Ingrese el segundo apellido"
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0875bd] focus:border-[#0875bd] transition">
+                        </div>
+
+                    </div>
                 </div>
 
-                {{-- Segundo Nombre --}}
-                <div>
-                    <label class="block mb-2 text-sm font-semibold text-gray-700">
-                        Segundo Nombre
-                    </label>
+                {{-- ================= INFORMACIÓN DE CONTACTO ================= --}}
+                <div class="mb-8">
 
-                    <input
-                        type="text"
-                        name="segundo_nombre"
-                        value="{{ old('segundo_nombre') }}"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                    >
+                    <h3 class="text-lg font-bold text-[#063d69] mb-5 border-b border-slate-200 pb-3">
+                        <i class="fas fa-address-book mr-2"></i>
+                        Información de contacto
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                        {{-- TELÉFONO --}}
+                        <div>
+                            <label for="telefono_usuario" class="block mb-2 text-sm font-semibold text-gray-700">
+                                Teléfono
+                            </label>
+
+                            <input
+                                type="text"
+                                name="telefono_usuario"
+                                id="telefono_usuario"
+                                value="{{ old('telefono_usuario') }}"
+                                placeholder="Ingrese el teléfono"
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0875bd] focus:border-[#0875bd] transition">
+                        </div>
+
+                        {{-- CORREO --}}
+                        <div>
+                            <label for="correo_usuario" class="block mb-2 text-sm font-semibold text-gray-700">
+                                Correo electrónico
+                            </label>
+
+                            <input
+                                type="email"
+                                name="correo_usuario"
+                                id="correo_usuario"
+                                value="{{ old('correo_usuario') }}"
+                                placeholder="ejemplo@correo.com"
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0875bd] focus:border-[#0875bd] transition">
+                        </div>
+
+                    </div>
                 </div>
 
-                {{-- Primer Apellido --}}
-                <div>
-                    <label class="block mb-2 text-sm font-semibold text-gray-700">
-                        Primer Apellido
-                    </label>
+                {{-- ================= INFORMACIÓN DE AFILIACIÓN ================= --}}
+                <div class="mb-8">
 
-                    <input
-                        type="text"
-                        name="primer_apellido"
-                        value="{{ old('primer_apellido') }}"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                    >
+                    <h3 class="text-lg font-bold text-[#063d69] mb-5 border-b border-slate-200 pb-3">
+                        <i class="fas fa-hospital mr-2"></i>
+                        Información de afiliación
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                        {{-- EPS --}}
+                        <div>
+                            <label for="eps_usuario" class="block mb-2 text-sm font-semibold text-gray-700">
+                                EPS
+                            </label>
+
+                            <input
+                                type="text"
+                                name="eps_usuario"
+                                id="eps_usuario"
+                                value="{{ old('eps_usuario') }}"
+                                placeholder="Ingrese la EPS"
+                                required
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0875bd] focus:border-[#0875bd] transition">
+                        </div>
+
+                        {{-- RÉGIMEN --}}
+                        <div>
+                            <label for="regimen_usuario" class="block mb-2 text-sm font-semibold text-gray-700">
+                                Régimen
+                            </label>
+
+                            <select
+                                name="regimen_usuario"
+                                id="regimen_usuario"
+                                required
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#0875bd] focus:border-[#0875bd] transition">
+
+                                <option value="">Seleccione un régimen</option>
+
+                                <option value="Contributivo" {{ old('regimen_usuario') == 'Contributivo' ? 'selected' : '' }}>
+                                    Contributivo
+                                </option>
+
+                                <option value="Subsidiado" {{ old('regimen_usuario') == 'Subsidiado' ? 'selected' : '' }}>
+                                    Subsidiado
+                                </option>
+
+                                <option value="Especial" {{ old('regimen_usuario') == 'Especial' ? 'selected' : '' }}>
+                                    Especial
+                                </option>
+
+                                <option value="Excepción" {{ old('regimen_usuario') == 'Excepción' ? 'selected' : '' }}>
+                                    Excepción
+                                </option>
+
+                            </select>
+                        </div>
+
+                    </div>
                 </div>
 
-                {{-- Segundo Apellido --}}
-                <div>
-                    <label class="block mb-2 text-sm font-semibold text-gray-700">
-                        Segundo Apellido
-                    </label>
+                {{-- ================= INFORMACIÓN DE REGISTRO ================= --}}
+                <div class="mb-8">
 
-                    <input
-                        type="text"
-                        name="segundo_apellido"
-                        value="{{ old('segundo_apellido') }}"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                    >
+                    <h3 class="text-lg font-bold text-[#063d69] mb-5 border-b border-slate-200 pb-3">
+                        <i class="fas fa-clipboard-list mr-2"></i>
+                        Información de registro
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                        {{-- FECHA DE REGISTRO --}}
+                        <div>
+                            <label for="fecha_registro" class="block mb-2 text-sm font-semibold text-gray-700">
+                                Fecha de registro
+                            </label>
+
+                            <input
+                                type="date"
+                                name="fecha_registro"
+                                id="fecha_registro"
+                                value="{{ old('fecha_registro') }}"
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0875bd] focus:border-[#0875bd] transition">
+                        </div>
+
+                        {{-- USUARIO DE REGISTRO --}}
+                        <div>
+                            <label for="usuario_registro" class="block mb-2 text-sm font-semibold text-gray-700">
+                                Usuario de registro
+                            </label>
+
+                            <input
+                                type="text"
+                                name="usuario_registro"
+                                id="usuario_registro"
+                                value="{{ old('usuario_registro') }}"
+                                placeholder="Ingrese el usuario de registro"
+                                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0875bd] focus:border-[#0875bd] transition">
+                        </div>
+
+                    </div>
                 </div>
 
-                {{-- Telefono Usuario --}}
-                <div>
-                    <label class="block mb-2 text-sm font-semibold text-gray-700">
-                        Telefono Usuario
-                    </label>
+                {{-- BOTONES --}}
+                <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-slate-200">
 
-                    <input
-                        type="text"
-                        name="telefono_usuario"
-                        value="{{ old('telefono_usuario') }}"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                    >
+                    <a
+                        href="{{ route('usuarios.index') }}"
+                        class="inline-flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-6 py-3 rounded-xl transition">
+
+                        <i class="fas fa-times"></i>
+                        Cancelar
+
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#063d69] to-[#0875bd] hover:from-[#052f50] hover:to-[#06649f] text-white font-semibold px-8 py-3 rounded-xl shadow-md hover:shadow-lg transition duration-200">
+
+                        <i class="fas fa-save"></i>
+                        Guardar usuario
+
+                    </button>
+
                 </div>
 
-                {{-- Correo Usuario --}}
-                <div>
-                    <label class="block mb-2 text-sm font-semibold text-gray-700">
-                        Correo Usuario
-                    </label>
+            </form>
 
-                    <input
-                        type="text"
-                        name="correo_usuario"
-                        value="{{ old('correo_usuario') }}"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                    >
-                </div>
-
-                {{-- EPS Usuario --}}
-                <div>
-                    <label class="block mb-2 text-sm font-semibold text-gray-700">
-                        EPS Usuario
-                    </label>
-
-                    <input
-                        type="text"
-                        name="eps_usuario"
-                        value="{{ old('eps_usuario') }}"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                    >
-                </div>
-
-                {{-- Regimen Usuario --}}
-                <div>
-                    <label class="block mb-2 text-sm font-semibold text-gray-700">
-                        Regimen Usuario
-                    </label>
-
-                    <input
-                        type="text"
-                        name="regimen_usuario"
-                        value="{{ old('regimen_usuario') }}"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                    >
-                </div>
-
-                {{-- Fecha Registro --}}
-                <div>
-                    <label class="block mb-2 text-sm font-semibold text-gray-700">
-                        Fecha Registro
-                    </label>
-
-                    <input
-                        type="date"
-                        name="fecha_registro"
-                        value="{{ old('fecha_registro') }}"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                    >
-                </div>
-
-                {{-- Usuario Registro --}}
-                <div class="md:col-span-2">
-                    <label class="block mb-2 text-sm font-semibold text-gray-700">
-                        Usuario Registro
-                    </label>
-
-                    <input
-                        type="text"
-                        name="usuario_registro"
-                        value="{{ old('usuario_registro') }}"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                    >
-                </div>
-
-            </div>
-
-            {{-- Botones --}}
-            <div class="flex flex-col sm:flex-row justify-end gap-3 mt-8 pt-6 border-t border-gray-100">
-
-                <a href="{{ route('usuarios.index') }}"
-                   class="text-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl transition">
-
-                    Cancelar
-
-                </a>
-
-                <button
-                    type="submit"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-3 rounded-xl shadow-md transition duration-200">
-
-                    Guardar
-
-                </button>
-
-            </div>
-
-        </form>
+        </div>
 
     </div>
 

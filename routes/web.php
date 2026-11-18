@@ -52,7 +52,16 @@ Route::post('/citas/{id}/confirmar-correo', [CitasController::class, 'confirmarD
     ->middleware('signed')
     ->name('citas.confirmar.procesar');
 
+    
+// MOSTRAR FORMULARIO DE CONFIRMACIÓN
+Route::get('/citas/{id}/confirmar-formulario', [CitasController::class, 'mostrarConfirmacion'])
+    ->middleware('signed')
+    ->name('citas.confirmar.formulario');
 
+// PROCESAR CONFIRMACIÓN O CANCELACIÓN
+Route::post('/citas/{id}/confirmar-formulario', [CitasController::class, 'confirmarDesdeCorreo'])
+    ->middleware('signed')
+    ->name('citas.procesar.confirmacion');
 /*
 |--------------------------------------------------------------------------
 | RUTAS GENERALES
@@ -158,6 +167,9 @@ Route::middleware('web')->group(function () {
                 ->name('citas.disponibilidad');
 
             Route::resource('citas', CitasController::class);
+
+            Route::patch('/citas/{id}/estado', [CitasController::class, 'actualizarEstado'])
+                ->name('citas.actualizarEstado');
 
             Route::resource('mensajes', MensajesController::class);
 

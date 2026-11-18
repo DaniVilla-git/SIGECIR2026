@@ -6,7 +6,6 @@
 
 <div class="container mx-auto mt-8 px-4 pb-10">
 
-    {{-- CONTENEDOR PRINCIPAL --}}
     <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
 
         {{-- ENCABEZADO --}}
@@ -28,12 +27,12 @@
                     </h1>
 
                     <p class="mt-2 text-sm text-blue-100">
-                        Organiza y consulta la disponibilidad de los profesionales de RENUEVA IPS.
+                        Organiza y consulta la disponibilidad mensual de cada profesional de RENUEVA IPS.
                     </p>
                 </div>
 
                 <a href="{{ route('horario_profesional.create') }}"
-                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-bold text-[#063d69] shadow-lg transition duration-200 hover:-translate-y-1 hover:bg-blue-50">
+                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-bold text-[#063d69] shadow-lg transition hover:-translate-y-1 hover:bg-blue-50">
 
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -70,171 +69,393 @@
                 </div>
             @endif
 
-            {{-- INFORMACIÓN --}}
-            <div class="mb-6 flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+            {{-- FILTRO POR PROFESIONAL --}}
+            <div class="mb-6 rounded-xl border border-slate-200 bg-slate-50 p-5">
 
-                <div>
+                <div class="mb-4">
                     <h2 class="font-bold text-slate-800">
-                        Disponibilidad profesional
+                        Consultar disponibilidad
                     </h2>
 
                     <p class="mt-1 text-sm text-slate-500">
-                        Consulta los días y las horas asignadas a cada profesional.
+                        Selecciona un profesional para visualizar su calendario mensual.
                     </p>
                 </div>
 
-                <div class="inline-flex w-fit items-center gap-2 rounded-lg bg-blue-100 px-4 py-2 text-sm font-bold text-[#0875bd]">
-                    <i class="fa-solid fa-calendar-days"></i>
-                    {{ $horario_profesional->count() }} horarios registrados
-                </div>
+                <form action="{{ route('horario_profesional.index') }}" method="GET"
+                    class="flex flex-col gap-3 sm:flex-row sm:items-end">
 
+                    <div class="w-full sm:max-w-md">
+
+                        <label for="profesional" class="mb-2 block text-sm font-semibold text-slate-700">
+                            Profesional
+                        </label>
+
+                        <select name="profesional" id="profesional"
+                            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-700 outline-none focus:border-[#0875bd] focus:ring-2 focus:ring-blue-100">
+
+                            <option value="">Seleccione un profesional</option>
+
+                            @foreach($profesionales as $profesional)
+
+                                <option value="{{ $profesional->id }}"
+                                    {{ (string)$idProfesional === (string)$profesional->id ? 'selected' : '' }}>
+
+                                    {{ $profesional->nombre_profesional }}
+                                    {{ $profesional->apellido_profesional ?? '' }}
+
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+                    <input type="hidden" name="mes" value="{{ $mes }}">
+
+                    <button type="submit"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0875bd] px-5 py-3 font-bold text-white transition hover:bg-[#063d69]">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Consultar
+                    </button>
+
+                </form>
             </div>
 
-            {{-- TABLA --}}
-            <div class="overflow-hidden rounded-xl border border-slate-200">
+            @if($idProfesional)
 
-                <div class="overflow-x-auto">
+                {{-- CALENDARIO --}}
+                <div class="overflow-hidden rounded-xl border border-slate-200">
 
-                    <table class="min-w-full text-sm text-slate-700">
+                    {{-- ENCABEZADO DEL CALENDARIO --}}
+                    <div class="flex flex-col justify-between gap-4 bg-[#063d69] px-5 py-5 text-white sm:flex-row sm:items-center">
 
-                        <thead class="bg-[#063d69] text-xs uppercase tracking-wider text-white">
+                        <div>
+                            <h2 class="text-xl font-bold capitalize">
+                                {{ $fechaMes->locale('es')->translatedFormat('F Y') }}
+                            </h2>
 
-                            <tr>
-                                <th class="px-5 py-4 text-center">Fecha y día</th>
-                                <th class="px-5 py-4 text-center">Hora de inicio</th>
-                                <th class="px-5 py-4 text-center">Hora de fin</th>
-                                <th class="px-5 py-4 text-center">Profesional</th>
-                                <th class="px-5 py-4 text-center">Acciones</th>
-                            </tr>
+                            <p class="mt-1 text-sm text-blue-100">
+                                Calendario mensual del profesional seleccionado.
+                            </p>
+                        </div>
 
-                        </thead>
+                        @php
+                            $mesAnterior = $fechaMes->copy()->subMonth()->format('Y-m');
+                            $mesSiguiente = $fechaMes->copy()->addMonth()->format('Y-m');
+                        @endphp
 
-                        <tbody class="divide-y divide-slate-100 bg-white">
+                        <div class="flex items-center gap-2">
 
-                            @forelse ($horario_profesional as $horario)
+                            <a href="{{ route('horario_profesional.index', [
+                                'profesional' => $idProfesional,
+                                'mes' => $mesAnterior
+                            ]) }}"
+                                class="rounded-lg bg-white/10 px-4 py-2 transition hover:bg-white/20"
+                                title="Mes anterior">
 
-                                <tr class="text-center transition duration-150 hover:bg-sky-50/70">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </a>
 
-                                    {{-- FECHA Y DÍA --}}
-                                    <td class="px-5 py-4">
+                            <a href="{{ route('horario_profesional.index', [
+                                'profesional' => $idProfesional,
+                                'mes' => now()->format('Y-m')
+                            ]) }}"
+                                class="rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold transition hover:bg-white/20">
 
-                                        <div class="font-bold text-[#063d69]">
-                                            {{ ucfirst(\Carbon\Carbon::parse($horario->dia_semana)->locale('es')->translatedFormat('l')) }}
-                                        </div>
+                                Hoy
+                            </a>
 
-                                        <div class="mt-1 text-xs text-slate-500">
-                                            {{ \Carbon\Carbon::parse($horario->dia_semana)->format('d/m/Y') }}
-                                        </div>
+                            <a href="{{ route('horario_profesional.index', [
+                                'profesional' => $idProfesional,
+                                'mes' => $mesSiguiente
+                            ]) }}"
+                                class="rounded-lg bg-white/10 px-4 py-2 transition hover:bg-white/20"
+                                title="Mes siguiente">
 
-                                    </td>
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </a>
 
-                                    {{-- HORA INICIO --}}
-                                    <td class="px-5 py-4">
+                        </div>
+                    </div>
 
-                                        <span class="inline-flex items-center gap-2 rounded-lg bg-sky-50 px-3 py-2 font-semibold text-[#0875bd]">
-                                            <i class="fa-regular fa-clock"></i>
-                                            {{ \Carbon\Carbon::parse($horario->hora_inicio)->format('H:i') }}
+                    <div class="p-3 sm:p-5">
+
+                        {{-- LEYENDA --}}
+                        <div class="mb-5 flex flex-wrap gap-4 text-xs font-semibold text-slate-600">
+
+                            <div class="flex items-center gap-2">
+                                <span class="h-3 w-3 rounded-full bg-emerald-500"></span>
+                                Disponible
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <span class="h-3 w-3 rounded-full bg-rose-500"></span>
+                                Con citas
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <span class="h-3 w-3 rounded-full bg-slate-300"></span>
+                                Sin horario
+                            </div>
+
+                        </div>
+
+                        {{-- DÍAS DE LA SEMANA --}}
+                        <div class="grid grid-cols-7 gap-1 sm:gap-2">
+
+                            @foreach(['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'] as $dia)
+
+                                <div class="py-3 text-center text-xs font-extrabold uppercase text-slate-500 sm:text-sm">
+                                    {{ $dia }}
+                                </div>
+
+                            @endforeach
+
+                            {{-- DÍAS DEL MES --}}
+                            @foreach($calendario as $dia)
+
+                                @php
+                                    $seleccionado = $fechaSeleccionada === $dia['fecha'];
+
+                                    $clase = match($dia['estado']) {
+                                        'disponible' => 'border-emerald-200 bg-emerald-50 hover:bg-emerald-100',
+                                        'ocupado' => 'border-rose-200 bg-rose-50 hover:bg-rose-100',
+                                        default => 'border-slate-200 bg-slate-50 hover:bg-slate-100'
+                                    };
+
+                                    $colorNumero = match($dia['estado']) {
+                                        'disponible' => 'text-emerald-800',
+                                        'ocupado' => 'text-rose-800',
+                                        default => 'text-slate-500'
+                                    };
+                                @endphp
+
+                                <a href="{{ route('horario_profesional.index', [
+                                    'profesional' => $idProfesional,
+                                    'mes' => $mes,
+                                    'fecha' => $dia['fecha']
+                                ]) }}"
+                                    class="relative flex min-h-20 flex-col items-center justify-center rounded-xl border p-1 transition sm:min-h-24 sm:p-3
+                                    {{ $clase }}
+                                    {{ $seleccionado ? 'ring-2 ring-[#0875bd] ring-offset-2' : '' }}
+                                    {{ !$dia['es_mes_actual'] ? 'opacity-40' : '' }}">
+
+                                    <span class="text-base font-extrabold {{ $colorNumero }}">
+                                        {{ $dia['numero'] }}
+                                    </span>
+
+                                    @if($dia['estado'] === 'disponible')
+                                        <span class="mt-1 hidden text-[10px] font-bold text-emerald-700 sm:block">
+                                            Disponible
                                         </span>
+                                        <span class="mt-1 h-2 w-2 rounded-full bg-emerald-500 sm:hidden"></span>
 
-                                    </td>
-
-                                    {{-- HORA FIN --}}
-                                    <td class="px-5 py-4">
-
-                                        <span class="inline-flex items-center gap-2 rounded-lg bg-teal-50 px-3 py-2 font-semibold text-teal-700">
-                                            <i class="fa-regular fa-clock"></i>
-                                            {{ \Carbon\Carbon::parse($horario->hora_fin)->format('H:i') }}
+                                    @elseif($dia['estado'] === 'ocupado')
+                                        <span class="mt-1 hidden text-[10px] font-bold text-rose-700 sm:block">
+                                            Con citas
                                         </span>
+                                        <span class="mt-1 h-2 w-2 rounded-full bg-rose-500 sm:hidden"></span>
 
-                                    </td>
+                                    @else
+                                        <span class="mt-1 hidden text-[10px] font-bold text-slate-500 sm:block">
+                                            Sin horario
+                                        </span>
+                                        <span class="mt-1 h-2 w-2 rounded-full bg-slate-400 sm:hidden"></span>
+                                    @endif
 
-                                    {{-- PROFESIONAL --}}
-                                    <td class="px-5 py-4">
+                                </a>
 
-                                        <div class="flex items-center justify-center gap-2 font-semibold text-slate-700">
-                                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-[#0875bd]">
-                                                @include('layouts.partials.icons', ['icon' => 'miperfil'])
-                                            </span>
+                            @endforeach
 
-                                            {{ $horario->profesionales->nombre_profesional ?? 'Sin profesional asignado' }}
-                                        </div>
+                        </div>
 
-                                    </td>
+                    </div>
+                </div>
 
-                                    {{-- ACCIONES --}}
-                                    <td class="px-5 py-4">
+                {{-- DETALLE DEL DÍA --}}
+                <div class="mt-7 overflow-hidden rounded-xl border border-slate-200">
 
-                                        <div class="flex items-center justify-center gap-2">
+                    <div class="bg-slate-50 px-5 py-4">
 
-                                            {{-- EDITAR --}}
-                                            <a href="{{ route('horario_profesional.edit', $horario->id) }}"
-                                                class="rounded-lg bg-blue-50 p-2.5 text-[#0875bd] transition hover:bg-blue-100 hover:text-[#063d69]"
-                                                title="Editar horario">
+                        <h3 class="font-bold text-slate-800">
+                            Detalle del día seleccionado
+                        </h3>
 
-                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                                </svg>
+                        <p class="mt-1 text-sm text-slate-500">
+                            {{ \Carbon\Carbon::parse($fechaSeleccionada)->locale('es')->translatedFormat('l, d \de F \de Y') }}
+                        </p>
 
-                                            </a>
+                    </div>
 
-                                            {{-- ELIMINAR --}}
-                                            <form action="{{ route('horario_profesional.destroy', $horario->id) }}"
-                                                method="POST"
-                                                onsubmit="return confirm('¿Estás seguro de eliminar este horario?');">
+                    <div class="grid grid-cols-1 gap-5 p-5 lg:grid-cols-2">
 
-                                                @csrf
-                                                @method('DELETE')
+                        {{-- HORARIOS REGISTRADOS --}}
+                        <div>
 
-                                                <button type="submit"
-                                                    class="rounded-lg bg-rose-50 p-2.5 text-rose-600 transition hover:bg-rose-100 hover:text-rose-800"
-                                                    title="Eliminar horario">
+                            <h4 class="mb-3 flex items-center gap-2 font-bold text-[#0875bd]">
+                                <i class="fa-regular fa-clock"></i>
+                                Horarios de atención
+                            </h4>
 
-                                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                    </svg>
+                            <div class="overflow-x-auto rounded-lg border border-slate-200">
 
-                                                </button>
+                                <table class="min-w-full text-sm">
 
-                                            </form>
+                                    <thead class="bg-[#063d69] text-white">
+                                        <tr>
+                                            <th class="px-3 py-3 text-left">Inicio</th>
+                                            <th class="px-3 py-3 text-left">Fin</th>
+                                            <th class="px-3 py-3 text-center">Acciones</th>
+                                        </tr>
+                                    </thead>
 
-                                        </div>
+                                    <tbody class="divide-y divide-slate-100 bg-white">
 
-                                    </td>
+                                        @forelse($horariosSeleccionados as $horario)
 
-                                </tr>
+                                            <tr>
+                                                <td class="px-3 py-3 font-semibold text-slate-700">
+                                                    {{ \Carbon\Carbon::parse($horario->hora_inicio)->format('H:i') }}
+                                                </td>
 
-                            @empty
+                                                <td class="px-3 py-3 font-semibold text-slate-700">
+                                                    {{ \Carbon\Carbon::parse($horario->hora_fin)->format('H:i') }}
+                                                </td>
 
-                                <tr>
-                                    <td colspan="6" class="px-5 py-10 text-center">
+                                                <td class="px-3 py-3">
+                                                    <div class="flex justify-center gap-2">
 
-                                        <div class="flex flex-col items-center">
-                                            <i class="fa-solid fa-calendar-xmark mb-3 text-3xl text-slate-300"></i>
+                                                        <a href="{{ route('horario_profesional.edit', $horario->id) }}"
+                                                            class="rounded-lg bg-blue-50 p-2 text-[#0875bd] transition hover:bg-blue-100"
+                                                            title="Editar horario">
+                                                            <i class="fa-solid fa-pen"></i>
+                                                        </a>
 
-                                            <p class="font-semibold text-slate-600">
-                                                No hay horarios profesionales registrados.
-                                            </p>
+                                                        <form action="{{ route('horario_profesional.destroy', $horario->id) }}"
+                                                            method="POST"
+                                                            onsubmit="return confirm('¿Estás seguro de eliminar este horario?');">
 
-                                            <p class="mt-1 text-sm text-slate-400">
-                                                Los horarios que registres aparecerán aquí.
-                                            </p>
-                                        </div>
+                                                            @csrf
+                                                            @method('DELETE')
 
-                                    </td>
-                                </tr>
+                                                            <button type="submit"
+                                                                class="rounded-lg bg-rose-50 p-2 text-rose-600 transition hover:bg-rose-100"
+                                                                title="Eliminar horario">
+                                                                <i class="fa-solid fa-trash"></i>
+                                                            </button>
 
-                            @endforelse
+                                                        </form>
 
-                        </tbody>
+                                                    </div>
+                                                </td>
+                                            </tr>
 
-                    </table>
+                                        @empty
+
+                                            <tr>
+                                                <td colspan="3" class="px-3 py-6 text-center text-sm text-slate-500">
+                                                    No hay horarios registrados para este día.
+                                                </td>
+                                            </tr>
+
+                                        @endforelse
+
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </div>
+
+                        {{-- CITAS DEL DÍA --}}
+                        <div>
+
+                            <h4 class="mb-3 flex items-center gap-2 font-bold text-rose-600">
+                                <i class="fa-solid fa-calendar-check"></i>
+                                Citas registradas
+                            </h4>
+
+                            <div class="overflow-x-auto rounded-lg border border-slate-200">
+
+                                <table class="min-w-full text-sm">
+
+                                    <thead class="bg-rose-600 text-white">
+                                        <tr>
+                                            <th class="px-3 py-3 text-left">Hora</th>
+                                            <th class="px-3 py-3 text-left">Estado</th>
+                                            <th class="px-3 py-3 text-left">Modalidad</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody class="divide-y divide-slate-100 bg-white">
+
+                                        @forelse($citasSeleccionadas as $cita)
+
+                                            <tr>
+
+                                                <td class="whitespace-nowrap px-3 py-3 font-semibold text-slate-700">
+                                                    {{ \Carbon\Carbon::parse($cita->hora_inicio)->format('H:i') }}
+                                                    -
+                                                    {{ \Carbon\Carbon::parse($cita->hora_fin)->format('H:i') }}
+                                                </td>
+
+                                                <td class="px-3 py-3">
+                                                    <span class="inline-flex rounded-full bg-rose-50 px-2 py-1 text-xs font-bold text-rose-700">
+                                                        {{ $cita->estado_cita }}
+                                                    </span>
+                                                </td>
+
+                                                <td class="px-3 py-3 text-slate-600">
+                                                    {{ $cita->modalidad_cita }}
+                                                </td>
+
+                                            </tr>
+
+                                        @empty
+
+                                            <tr>
+                                                <td colspan="3" class="px-3 py-6 text-center text-sm text-slate-500">
+                                                    No hay citas registradas para este día.
+                                                </td>
+                                            </tr>
+
+                                        @endforelse
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            @else
+
+                {{-- MENSAJE INICIAL --}}
+                <div class="rounded-xl border-2 border-dashed border-slate-200 px-5 py-14 text-center">
+
+                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-3xl text-[#0875bd]">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-slate-700">
+                        Consulta el calendario de un profesional
+                    </h3>
+
+                    <p class="mx-auto mt-2 max-w-md text-sm text-slate-500">
+                        Selecciona un profesional en el filtro para visualizar sus días disponibles, los días con citas y sus horarios de atención.
+                    </p>
 
                 </div>
-            </div>
+
+            @endif
+
         </div>
     </div>
 </div>

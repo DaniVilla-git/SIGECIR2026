@@ -167,10 +167,10 @@
                                             @include('layouts.partials.icons', ['icon' => 'miperfil'])
                                         </span>
 
-                                        {{ $nombreProfesional }}
+                                        {{ strtoupper($nombreProfesional) }}
+                                            - {{ strtoupper($servicio->profesionales->especialidad ?? 'SIN ESPECIALIDAD') }}
                                     </div>
                                 </td>
-
                                 {{-- ACCIONES --}}
                                 <td class="whitespace-nowrap px-5 py-4">
 

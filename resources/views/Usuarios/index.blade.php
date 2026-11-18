@@ -146,8 +146,8 @@
                                     </td>
 
                                     {{-- DOCUMENTO --}}
-                                    <td class="px-5 py-4 font-bold text-[#063d69]">
-                                        {{ $usuario->documento_identidad }}
+                                    <td>
+                                        {{ $usuario->tipo_documento }}-{{ $usuario->documento_identidad }}
                                     </td>
 
                                     {{-- NOMBRES --}}

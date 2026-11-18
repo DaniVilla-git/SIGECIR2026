@@ -43,7 +43,6 @@
                             <svg class="w-12 h-12 text-white"
                                 fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
-
                                 <path stroke-linecap="round"
                                     stroke-linejoin="round"
                                     stroke-width="1.8"
@@ -142,16 +141,6 @@
                         <div class="bg-slate-50 px-5 py-4 border-b border-gray-200">
 
                             <h3 class="font-bold text-gray-800 flex items-center gap-2">
-                                <svg class="w-5 h-5 text-sky-600"
-                                    fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-
-                                    <path stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                                </svg>
-
                                 Detalles de la cita
                             </h3>
 
@@ -161,7 +150,6 @@
 
                             {{-- PACIENTE --}}
                             <div class="flex justify-between gap-4 border-b border-gray-100 pb-3">
-
                                 <span class="text-sm text-gray-500">
                                     Paciente
                                 </span>
@@ -170,12 +158,10 @@
                                     {{ $cita->usuario->primer_nombre ?? '' }}
                                     {{ $cita->usuario->primer_apellido ?? '' }}
                                 </span>
-
                             </div>
 
                             {{-- FECHA --}}
                             <div class="flex justify-between gap-4 border-b border-gray-100 pb-3">
-
                                 <span class="text-sm text-gray-500">
                                     Fecha de la cita
                                 </span>
@@ -183,12 +169,10 @@
                                 <span class="text-sm font-semibold text-gray-800 text-right">
                                     {{ \Carbon\Carbon::parse($cita->fecha_cita)->format('d/m/Y') }}
                                 </span>
-
                             </div>
 
                             {{-- HORARIO --}}
                             <div class="flex justify-between gap-4 border-b border-gray-100 pb-3">
-
                                 <span class="text-sm text-gray-500">
                                     Horario
                                 </span>
@@ -196,12 +180,10 @@
                                 <span class="text-sm font-semibold text-gray-800 text-right">
                                     {{ $cita->hora_inicio }} - {{ $cita->hora_fin }}
                                 </span>
-
                             </div>
 
                             {{-- MODALIDAD --}}
                             <div class="flex justify-between gap-4 border-b border-gray-100 pb-3">
-
                                 <span class="text-sm text-gray-500">
                                     Modalidad
                                 </span>
@@ -209,12 +191,10 @@
                                 <span class="text-sm font-semibold text-gray-800 text-right">
                                     {{ $cita->modalidad_cita }}
                                 </span>
-
                             </div>
 
                             {{-- CONSULTORIO --}}
                             <div class="flex justify-between gap-4 border-b border-gray-100 pb-3">
-
                                 <span class="text-sm text-gray-500">
                                     Consultorio
                                 </span>
@@ -222,7 +202,6 @@
                                 <span class="text-sm font-semibold text-gray-800 text-right">
                                     {{ $cita->consultorio }}
                                 </span>
-
                             </div>
 
                         </div>
@@ -235,7 +214,6 @@
                         <div class="mt-8">
 
                             <div class="text-center mb-5">
-
                                 <h3 class="text-lg font-bold text-gray-800">
                                     ¿Qué deseas hacer?
                                 </h3>
@@ -243,13 +221,13 @@
                                 <p class="text-sm text-gray-500 mt-1">
                                     Selecciona una de las siguientes opciones.
                                 </p>
-
                             </div>
 
                             {{-- CONFIRMAR CITA --}}
                             @if($cita->estado_cita == 'Pendiente')
 
-                                <form action="{{ request()->fullUrl() }}" method="POST">
+                                <form action="{{ route('citas.procesar.confirmacion', ['id' => $cita->id] + request()->query()) }}"
+                                    method="POST">
 
                                     @csrf
 
@@ -263,7 +241,6 @@
                                         <svg class="w-5 h-5"
                                             fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
-
                                             <path stroke-linecap="round"
                                                 stroke-linejoin="round"
                                                 stroke-width="2"
@@ -279,7 +256,7 @@
                             @endif
 
                             {{-- CANCELAR CITA --}}
-                            <form action="{{ request()->fullUrl() }}"
+                            <form action="{{ route('citas.procesar.confirmacion', ['id' => $cita->id] + request()->query()) }}"
                                 method="POST"
                                 class="mt-4"
                                 onsubmit="return confirm('¿Estás seguro de que deseas cancelar esta cita?');">
@@ -297,7 +274,6 @@
                                     <svg class="w-5 h-5"
                                         fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
-
                                         <path stroke-linecap="round"
                                             stroke-linejoin="round"
                                             stroke-width="2"
@@ -315,7 +291,6 @@
                     @elseif($cita->estado_cita == 'Cancelada')
 
                         <div class="mt-8 p-5 rounded-xl bg-red-50 border border-red-200 text-center">
-
                             <h3 class="text-lg font-bold text-red-700">
                                 Esta cita ha sido cancelada
                             </h3>
@@ -323,13 +298,11 @@
                             <p class="text-sm text-red-600 mt-2">
                                 Si necesitas atención, puedes comunicarte con RENUEVA IPS para solicitar una nueva cita.
                             </p>
-
                         </div>
 
                     @elseif($cita->estado_cita == 'Confirmada')
 
                         <div class="mt-8 p-5 rounded-xl bg-green-50 border border-green-200 text-center">
-
                             <h3 class="text-lg font-bold text-green-700">
                                 Tu cita ya está confirmada
                             </h3>
@@ -337,17 +310,14 @@
                             <p class="text-sm text-green-600 mt-2">
                                 Gracias por confirmar tu asistencia. Te esperamos en RENUEVA IPS.
                             </p>
-
                         </div>
 
                     @else
 
                         <div class="mt-8 p-5 rounded-xl bg-gray-50 border border-gray-200 text-center">
-
                             <p class="font-semibold text-gray-700">
                                 El estado actual de tu cita es: {{ $cita->estado_cita }}.
                             </p>
-
                         </div>
 
                     @endif
